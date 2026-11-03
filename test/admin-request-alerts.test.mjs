@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {isRequestAlertSuppressedUser,isRequestLifecycleAlert} from '../whatsapp-recipient-policy.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {userSiteScope,reportScopeIncludesSite} from '../region-scope.mjs';
-import {canonicalSiteName} from '../site-location.mjs';
+import {isRequestAlertSuppressedUser,isRequestLifecycleAlert} from '../shared/notifications/whatsapp-recipient-policy.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {userSiteScope,reportScopeIncludesSite} from '../shared/masters/region-scope.mjs';
+import {canonicalSiteName} from '../shared/masters/site-location.mjs';
 
-const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
+const server=await readFile(new URL('../server/app.mjs',import.meta.url),'utf8');
 test('admin group blocks request lifecycle and reminder messages, including untyped request alerts',async()=>{
   const source=server.slice(server.indexOf('async function deliverToTelegramGroup('),server.indexOf('// Admin and Super Admin users'));
   const deliver=new Function('isRequestLifecycleAlert',`${source};return deliverToTelegramGroup;`)(isRequestLifecycleAlert);

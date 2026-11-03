@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
-import {LOG_BOOK_SCHEMA,registerLogBooks} from '../log-book.mjs';
-import {twoStageEnabled,validateFleetEntry,buildMachineSnapshot,buildFleetList,closureBlockers,activeSiteHolds,holdSummary,machineReportRows} from '../vlb-two-stage.mjs';
+import {LOG_BOOK_SCHEMA,registerLogBooks} from '../server/routes/logbooks/log-book.mjs';
+import {twoStageEnabled,validateFleetEntry,buildMachineSnapshot,buildFleetList,closureBlockers,activeSiteHolds,holdSummary,machineReportRows} from '../server/services/logbooks/vlb-two-stage.mjs';
 
 const assets=[
  {id:'1',category:'Vehicle',door:'V1',currentLocation:'Sasti OC'},

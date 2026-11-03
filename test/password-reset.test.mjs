@@ -8,7 +8,7 @@ import {
   PASSWORD_RESET_OTP_TTL_MINUTES,
   passwordResetValidationError,
   validPasswordResetOtp,
-} from "../password-reset.mjs";
+} from "../server/services/auth/password-reset.mjs";
 
 test("password reset OTPs are six digits and expire under bounded limits", () => {
   assert.equal(generatePasswordResetOtp(() => 42), "000042");
@@ -29,7 +29,7 @@ test("password reset validates confirmation and rejects the registered phone num
 });
 
 test("server stores only hashed OTPs and enforces expiry, attempts, rate limits, and session revocation", () => {
-  const source = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const requestRoute = source.slice(source.indexOf("app.post('/api/password-reset/request'"), source.indexOf("app.post('/api/password-reset/confirm'"));
   const confirmRoute = source.slice(source.indexOf("app.post('/api/password-reset/confirm'"), source.indexOf("app.post('/api/change-initial-password'"));
 

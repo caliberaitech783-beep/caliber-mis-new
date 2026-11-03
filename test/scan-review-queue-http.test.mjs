@@ -1,6 +1,6 @@
 import {prepareVlbFixture} from './operational-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import express from 'express';import {PGlite} from '@electric-sql/pglite';import {randomUUID} from 'node:crypto';
-import {registerBulkCardScanning} from '../bulk-card-scanning.mjs';import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
+import {registerBulkCardScanning} from '../server/routes/scanning/bulk-card-scanning.mjs';import {LOG_BOOK_SCHEMA} from '../server/routes/logbooks/log-book.mjs';
 import {remainingScanCards,scanReviewPosition} from '../src/utils/scanning/scan-review-queue.mjs';
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations

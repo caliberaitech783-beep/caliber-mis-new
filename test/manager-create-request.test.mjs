@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {navigationPermissionsForView, MANAGER_ROLE_OPTIONS} from '../admin-access.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {navigationPermissionsForView, MANAGER_ROLE_OPTIONS} from '../shared/auth/admin-access.mjs';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import {recordsForSite} from '../site-location.mjs';
+import {recordsForSite} from '../shared/masters/site-location.mjs';
 
 test('manager form forwards Jayant and multi-site assignments to the existing equipment filter',async()=>{
   const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
@@ -35,7 +35,7 @@ test('all manager profiles require an explicit desktop or mobile create privileg
 });
 
 test('manager creation enforces current permission and site scope before writing',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const route=server.slice(server.indexOf("app.post('/api/requests',"),server.indexOf("app.post('/api/requests',")+6000);
   assert.match(route,/requirePermission\('createRequests'\)/);
   assert.match(route,/resolveMobileAccess\(\{user:requester\}\)\.permissions\.createRequests/);

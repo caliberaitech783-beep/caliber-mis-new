@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {GRN_REGISTER_SQL,grnRegisterRow} from '../grn-register.mjs';
+import {GRN_REGISTER_SQL,grnRegisterRow} from '../server/domain/accounts/grn-register.mjs';
 
 test('GRN register retains all item lines under a repeated receipt number',()=>{
   const first=grnRegisterRow({GRN_ID:42,LINE_ID:1,GRN_NO:'CMPL/PUR/26-27/009103',GRN_DATE:'2026-08-03'},0);
@@ -27,7 +27,7 @@ test('GRN register uses the latest receipt status without multiplying item lines
 });
 
 test('GRN report retains its permission protection and page after its IBOSS link is removed',()=>{
-  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const ui=fs.readFileSync(new URL('../src/pages/reports/grn-register.jsx',import.meta.url),'utf8');
   assert.match(server,/app\.get\('\/api\/reports\/grn-register',requireSession/);

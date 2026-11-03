@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
-import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
-import {registerVehicleTransferExpress,expressTransferMessage,pendingTransferFor} from '../vehicle-transfer-express.mjs';
-import {registerEquipmentCreateExpress,normalizeEquipmentDraft,findExistingEquipment} from '../equipment-create-express.mjs';
-import {checkOtpAttempt,hashOtp,OTP_MAX_ATTEMPTS} from '../otp-approval.mjs';
-import {createOtpDelivery} from '../otp-delivery.mjs';
-import {activeSiteHolds} from '../vlb-two-stage.mjs';
+import {LOG_BOOK_SCHEMA} from '../server/routes/logbooks/log-book.mjs';
+import {registerVehicleTransferExpress,expressTransferMessage,pendingTransferFor} from '../server/routes/people/vehicle-transfer-express.mjs';
+import {registerEquipmentCreateExpress,normalizeEquipmentDraft,findExistingEquipment} from '../server/routes/masters/equipment-create-express.mjs';
+import {checkOtpAttempt,hashOtp,OTP_MAX_ATTEMPTS} from '../server/services/auth/otp-approval.mjs';
+import {createOtpDelivery} from '../server/domain/auth/otp-delivery.mjs';
+import {activeSiteHolds} from '../server/services/logbooks/vlb-two-stage.mjs';
 
 test('OTP attempts expire, count down and die after five wrong codes',()=>{
  const row={id:'r1',status:'sent',otp_hash:hashOtp('r1','482913'),attempts:0,expires_at:new Date(Date.now()+60000).toISOString()};

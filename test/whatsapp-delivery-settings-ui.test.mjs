@@ -4,8 +4,8 @@ import test from 'node:test';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import * as policy from '../whatsapp-report-settings.mjs';
-import * as templates from '../whatsapp-template-catalog.mjs';
+import * as policy from '../shared/notifications/whatsapp-report-settings.mjs';
+import * as templates from '../shared/notifications/whatsapp-template-catalog.mjs';
 
 const source=readFileSync(new URL('../src/pages/integrations/whatsapp-report-settings.jsx',import.meta.url),'utf8');
 const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');

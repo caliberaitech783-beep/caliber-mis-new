@@ -58,7 +58,7 @@ test("a failing poll does not stop later polls",async()=>{
 });
 
 test("live feeds keep their cadence and reminders stay off the notification request path",()=>{
-  const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
+  const server=fs.readFileSync(new URL("../server/app.mjs",import.meta.url),"utf8");
   const main=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const assist=fs.readFileSync(new URL("../src/components/notifications/remote-assistance.jsx",import.meta.url),"utf8");
   assert.match(main,/startVisiblePoll\(load,3000\)/);

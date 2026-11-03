@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {buildUserActivitySummary,totalUserWorkedMinutes} from '../user-activity-report.mjs';
+import {buildUserActivitySummary,totalUserWorkedMinutes} from '../server/domain/people/user-activity-report.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('user activity report totals sessions, actions, outcomes and active time',()=>{

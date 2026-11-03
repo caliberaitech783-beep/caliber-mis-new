@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const access = readFileSync(new URL("../admin-access.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
+const access = readFileSync(new URL("../shared/auth/admin-access.mjs", import.meta.url), "utf8");
 const css = readFileSync(new URL("../src/styles/meta-whatsapp-setup.css", import.meta.url), "utf8");
 
 test("Meta API setup is an administrator-only WhatsApp workspace", () => {

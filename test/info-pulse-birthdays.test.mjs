@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {birthdayNames,currentBirthdayNames} from '../info-pulse-birthdays.mjs';
+import {birthdayNames,currentBirthdayNames} from '../server/services/notifications/info-pulse-birthdays.mjs';
 
 test('birthdays use India calendar day, active employees and stable deduplication',()=>{
   const person={empId:'1',name:'Today',status:'ACTIVE',dobMonth:9,dobDay:27,contact:'private',dobISO:'1990-09-27'};
@@ -36,7 +36,7 @@ test('birthday banner hides empty state, escapes names and supports pause',()=>{
   assert.equal(Component({names:['Person']}).props['data-paused'],true);
 });
 test('birthday endpoint is authenticated and animations honor reduced motion',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(server,/app.get\('\/api\/info-pulse\/birthdays',requireSession/);
   assert.match(source,/\[token,today\]/);
   assert.match(source,/result\?\.today===today/);

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("overdue maintenance requests support daily remarks and twice-daily reminders", () => {
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(server, /CREATE TABLE IF NOT EXISTS maintenance_daily_remarks/);
   assert.match(server, /app\.post\('\/api\/requests\/:reference\/daily-remarks'/);

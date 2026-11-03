@@ -1,4 +1,4 @@
-import {withSerialColumn} from '../../../serial-column.mjs';
+import {withSerialColumn} from '../../../shared/core/serial-column.mjs';
 import {DAILY_UPDATES_DETAIL_COLUMNS,prepareDailyUpdatesLayout} from '../../utils/reports/xlsx-daily-updates.mjs';
 
 export function printColumnOptions(columns=[]) {

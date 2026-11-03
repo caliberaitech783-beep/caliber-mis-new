@@ -4,7 +4,7 @@ import test from "node:test";
 
 test("login uses one account form and lets the saved user type choose the workspace", () => {
   const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
   const login=source.slice(source.indexOf("function Login"),source.indexOf("function Side"));
   assert.doesNotMatch(login, /setRole|Choose your access role|Desktop View|Mobile View/);

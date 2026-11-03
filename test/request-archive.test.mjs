@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PGlite} from '@electric-sql/pglite';
-import {archiveSchemaSql,previewRequestArchive,archiveRequests,restoreRequestArchive} from '../request-archive.mjs';
-import {requestsVisibleToSession} from '../mis-request-visibility.mjs';
+import {archiveSchemaSql,previewRequestArchive,archiveRequests,restoreRequestArchive} from '../server/services/requests/request-archive.mjs';
+import {requestsVisibleToSession} from '../shared/core/mis-request-visibility.mjs';
 import {readFileSync} from 'node:fs';
 
 test('archive endpoints require administrator access and explicit actions',()=>{
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   for(const route of ["app.get('/api/request-archives/preview'","app.get('/api/request-archives'","app.post('/api/request-archives'","app.post('/api/request-archives/:batchId/restore'"]){
     assert.ok(source.includes(`${route},requireSession,requireAdministrator,`));
   }

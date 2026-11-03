@@ -10,8 +10,8 @@ import {
   alertTypesForRole,
   effectiveInfoPulseEtcTimestamp,
   parseIstTimestamp,
-} from "../ai-feeder.mjs";
-import {infoPulseRequestScope,isInfoPulseDirector,scopeInfoPulseRequests} from "../info-pulse-scope.mjs";
+} from "../shared/core/ai-feeder.mjs";
+import {infoPulseRequestScope,isInfoPulseDirector,scopeInfoPulseRequests} from "../server/domain/notifications/info-pulse-scope.mjs";
 
 const NOW = Date.parse("2026-09-02T12:00:00+05:30");
 const ist = (value) => value;
@@ -193,7 +193,7 @@ test("Info Pulse fails closed when an operational user has no assigned location"
 test("Info Pulse retains its scoped countdown behavior while staying absent from MIS chrome", () => {
   const mainSource = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const styles = fs.readFileSync(new URL("../src/styles/ai-feeder.css", import.meta.url), "utf8");
-  const serverSource = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const serverSource = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
   assert.match(mainSource, /function AiFeederPanel\(/);
   assert.match(mainSource, /function AiFeeder\(/);

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {canEditBreakdownResponsibility} from '../breakdown-responsibility.mjs';
+import {canEditBreakdownResponsibility} from '../server/domain/requests/breakdown-responsibility.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const manager=role=>({role:'super',login:'manager',name:'Manager',permissions:{adminLevel:'Manager',managerRoles:[role]}});
 test('only the two specified manager roles qualify, including multi-role profiles',()=>{
   for(const role of ['Maintenance Manager','Project Manager'])assert.equal(canEditBreakdownResponsibility(manager(role)),true);

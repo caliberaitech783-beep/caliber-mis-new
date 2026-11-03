@@ -1,17 +1,17 @@
 import '../../styles/log-book-readability.css';
-import {compactLogBookLabel,tripSerialNumber} from '../../../log-book-labels.mjs';
-import {resolveTripEquipment,validateTripEquipment} from '../../../trip-equipment-validation.mjs';
+import {compactLogBookLabel,tripSerialNumber} from '../../../shared/logbooks/log-book-labels.mjs';
+import {resolveTripEquipment,validateTripEquipment} from '../../../shared/scanning/trip-equipment-validation.mjs';
 import {vlbEntryFields,sameVlbEntryContext} from '../../utils/logbooks/vlb-entry-context.mjs';
 import ManualLogBookDetails from '../../components/logbooks/manual-log-book-details.jsx';
-import {blankJob,blankBreakdown,padManualRows} from '../../../manual-log-book-details.mjs';
+import {blankJob,blankBreakdown,padManualRows} from '../../../shared/logbooks/manual-log-book-details.mjs';
 import BreakdownHoursField from '../../components/logbooks/breakdown-hours-field.jsx';
-import {employeeAtLocation} from '../../../log-book-access.mjs';
-import {blankTrip,nextTripEntry} from '../../../trip-entry.mjs';
+import {employeeAtLocation} from '../../../shared/logbooks/log-book-access.mjs';
+import {blankTrip,nextTripEntry} from '../../../shared/scanning/trip-entry.mjs';
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import DoorCombobox from '../../components/ui/door-combobox.jsx';
 import ManualAliasDialog from '../../components/logbooks/manual-alias-dialog.jsx';
 import {missingAssetMessage} from '../../utils/logbooks/log-book-asset-options.mjs';
-import {matchingWorkOrders,machineSummary,machineTripTotal,CARD_SHIFTS,machineLabel,latestWorkOrder,interTripGap} from '../../../trip-card-rules.mjs';
+import {matchingWorkOrders,machineSummary,machineTripTotal,CARD_SHIFTS,machineLabel,latestWorkOrder,interTripGap} from '../../../shared/scanning/trip-card-rules.mjs';
 import EmployeeIdLookup from '../../components/people/employee-id-lookup.jsx';
 import ManualBookDate from '../../components/logbooks/manual-book-date.jsx';
 import {continueManualRemark,advanceLogBookField,focusNextLogBookField,isEmptyTripPlaceholder} from '../../utils/logbooks/log-book-enter-navigation.mjs';
@@ -19,7 +19,7 @@ import React,{useEffect,useState,useRef} from 'react';
 
 import {Plus,Save,Trash2,RotateCcw,BookOpen,Search,ChevronsLeft,ChevronsRight,Pencil,Printer,X,LogOut,Info,ListFilter} from 'lucide-react';
 
-import {canonicalSiteName} from '../../../site-location.mjs';
+import {canonicalSiteName} from '../../../shared/masters/site-location.mjs';
 
 import '../../styles/log-book-form.css';
 

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {buildDashboard,dashboardMetric,DASHBOARD_QUERIES,DASHBOARD_METRICS} from '../iboss-dashboard.mjs';
+import {buildDashboard,dashboardMetric,DASHBOARD_QUERIES,DASHBOARD_METRICS} from '../server/domain/accounts/iboss-dashboard.mjs';
 const range={from:'2026-09-01',to:'2026-10-02'};
 test('Dashboard preserves signed credits and totals across parties and ageing buckets',()=>{
  const result=buildDashboard({bank:[{BALANCEAMOUNT:1000},{BALANCEAMOUNT:-200}],payable:[{PARTY_CODE:'A',PARTY_NAME:'A',AGE_BAND:'0–30',BALANCE:500,BILLS:2},{PARTY_CODE:'A',AGE_BAND:'180+',BALANCE:-100,BILLS:1}],receivable:[{PARTY_CODE:'B',AGE_BAND:'180+',BALANCE:350,BILLS:3}]},range);
@@ -40,7 +40,7 @@ test('Unknown metrics, malformed ranges and invalid pages cannot become SQL',()=
  assert.throws(()=>dashboardMetric('bank',{from:'bad',to:range.to}));
 });
 test('Dashboard endpoints retain authenticated Accounts report access and no-store responses',()=>{
- const s=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const s=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  for(const path of ['/api/reports/iboss-accounts-dashboard','/api/reports/iboss-accounts-dashboard/:metric']){
  const start=s.indexOf(`app.get('${path}',requireSession`);assert.ok(start>=0);const handler=s.slice(start,s.indexOf('\n});',start));assert.match(handler,/accountsMergeAllowed\(req\)/);assert.match(handler,/Cache-Control','no-store/);assert.match(handler,/status\(503\)/);
  }

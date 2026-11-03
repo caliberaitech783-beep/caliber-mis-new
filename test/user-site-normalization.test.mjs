@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {REGION_DATA,displaySiteName,displaySiteSelection,normalizeOperationalSiteFields,normalizeUserSiteFields} from '../region-scope.mjs';
+import {REGION_DATA,displaySiteName,displaySiteSelection,normalizeOperationalSiteFields,normalizeUserSiteFields} from '../shared/masters/region-scope.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('every spelling of a site resolves to the single display name',()=>{

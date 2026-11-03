@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {scanFleetIssues,scanFleetSignature} from '../scan-fleet-assignment.mjs';
+import {scanFleetIssues,scanFleetSignature} from '../shared/scanning/scan-fleet-assignment.mjs';
 import {fleetReviewKey,nextFleetReviewPrompt} from '../src/utils/scanning/scan-fleet-review-prompt.mjs';
 
 function card(door='V99'){

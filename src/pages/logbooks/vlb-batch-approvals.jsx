@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {displaySiteName} from '../../../region-scope.mjs';
+import {displaySiteName} from '../../../shared/masters/region-scope.mjs';
 import {batchDateTime} from '../../components/logbooks/vlb-reopen-dialog.jsx';
 import '../../styles/log-book-form.css';
 import '../../styles/vlb-create-batch.css';

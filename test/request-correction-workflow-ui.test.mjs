@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
 const [server,main,view]=await Promise.all([
-  readFile(new URL('../server.mjs',import.meta.url),'utf8'),
+  readFile(new URL('../server/app.mjs',import.meta.url),'utf8'),
   readFile(new URL('../src/app/App.jsx',import.meta.url),'utf8'),
   readFile(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8'),
 ]);
@@ -58,7 +58,7 @@ test('correction screen explains and enforces the approval sequence',()=>{
 });
 
 test('Breakdown type in the correction form is a dropdown from the Repair type master',async()=>{
-  const {REQUEST_CORRECTION_TYPES}=await import('../request-correction-policy.mjs');
+  const {REQUEST_CORRECTION_TYPES}=await import('../shared/requests/request-correction-policy.mjs');
   const category=REQUEST_CORRECTION_TYPES.offRoad.fields.find((field)=>field.key==='category');
   assert.equal(category.optionsSource,'breakdownTypes');
   assert.equal(category.kind,'text','server normalisation of the value is unchanged');

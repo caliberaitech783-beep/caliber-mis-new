@@ -5,7 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import {normalizeEnvironmentLabel,environmentLabelFromEnv,environmentBannerParts,environmentBannerText,environmentTitlePrefix} from '../environment-label.mjs';
+import {normalizeEnvironmentLabel,environmentLabelFromEnv,environmentBannerParts,environmentBannerText,environmentTitlePrefix} from '../shared/core/environment-label.mjs';
 
 const root=path.dirname(fileURLToPath(new URL('../package.json',import.meta.url)));
 const read=relative=>readFileSync(path.join(root,relative),'utf8').replace(/\r\n/g,'\n');
@@ -31,7 +31,7 @@ test('the label is empty unless MIS_ENVIRONMENT_LABEL is set; live names and str
 });
 
 test('the server reports the label read-only on /api/app-version and /api/health and uses it nowhere else',()=>{
-  const server=read('server.mjs');
+  const server=read('server/app.mjs');
   assert.match(server,/^import \{environmentLabelFromEnv\} from '(?:\.\.?\/)+(?:[\w-]+\/)*environment-label\.mjs';$/m);
   assert.match(server,/^const environmentLabel=environmentLabelFromEnv\(process\.env\);$/m);
   assert.match(server,/res\.json\(\{version:currentAppVersion,commit:deploymentSha,environmentLabel\}\);/);
@@ -51,7 +51,7 @@ test('the server reports the label read-only on /api/app-version and /api/health
     }
   };
   visit(root);
-  assert.deepEqual(readers.sort(),['environment-label.mjs']);
+  assert.deepEqual(readers.sort(),['shared/core/environment-label.mjs']);
 });
 
 const componentSource=read('src/components/ui/environment-banner.jsx').replace(/^import .*;\n/gm,'').replace('export default function','function');
@@ -152,7 +152,7 @@ test('both entries render the bar above the application, and the bar keeps clear
 
 test('the setting is documented empty for live and TEST for the test platform',()=>{
   assert.match(read('.env.example'),/^MIS_ENVIRONMENT_LABEL=$/m);
-  const runbook=read('docs/test-platform-setup.md');
+  const runbook=read('docs/archive.md');
   assert.match(runbook,/\{"name":"MIS_ENVIRONMENT_LABEL","value":"TEST","slotSetting":false\}/);
   assert.match(runbook,/^\| `MIS_ENVIRONMENT_LABEL` \| `TEST` \| /m);
 });

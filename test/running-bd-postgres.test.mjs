@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {PGlite} from '@electric-sql/pglite';
-import {resolveRequestIssues,hasOutstandingRequestIssues} from '../request-workflow.mjs';
+import {resolveRequestIssues,hasOutstandingRequestIssues} from '../shared/requests/request-workflow.mjs';
 
 // Execute the production statement in PostgreSQL, including its parameter type
 // inference. A mocked query cannot catch the timestamp CASE regression.
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const statement=server.match(/`(UPDATE maintenance_requests SET issues=\$1::jsonb,running_bd_at=[^`]+)`/)[1]
   .replace('${requestProjection}','*');
 

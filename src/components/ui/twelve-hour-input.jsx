@@ -4,7 +4,7 @@ import {
   parseTwelveHourTime,
   TWELVE_HOUR_TIME_PATTERN,
   TWELVE_HOUR_TIME_SECONDS_PATTERN,
-} from '../../../date-time-format.mjs';
+} from '../../../shared/core/date-time-format.mjs';
 import DateInput from '../../utils/ui/date-input.mjs';
 import '../../styles/twelve-hour-input.css';
 

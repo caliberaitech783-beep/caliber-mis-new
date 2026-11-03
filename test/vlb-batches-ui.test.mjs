@@ -1,18 +1,18 @@
 import {frontendSourceUrl} from './helpers/frontend-source.mjs';
-import {meterCorrectionReport} from '../scan-meter-history.mjs';
+import {meterCorrectionReport} from '../shared/scanning/scan-meter-history.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {canonicalSiteName} from '../site-location.mjs';
-import {displaySiteName} from '../region-scope.mjs';
-import {bookShiftCode,systemBookDate} from '../trip-card-rules.mjs';
-import {vlbRecordSource} from '../vlb-batch-format.mjs';
+import {canonicalSiteName} from '../shared/masters/site-location.mjs';
+import {displaySiteName} from '../shared/masters/region-scope.mjs';
+import {bookShiftCode,systemBookDate} from '../shared/scanning/trip-card-rules.mjs';
+import {vlbRecordSource} from '../shared/logbooks/vlb-batch-format.mjs';
 import {requestedMisPage,misPageUrl} from '../src/utils/ui/mis-navigation.mjs';
-import {misPageAllowed,misRequestAllowed} from '../mis-application-access.mjs';
-import {formatDisplayDateTime} from '../date-time-format.mjs';
+import {misPageAllowed,misRequestAllowed} from '../shared/auth/mis-application-access.mjs';
+import {formatDisplayDateTime} from '../shared/core/date-time-format.mjs';
 
 async function compile(file,scope,names){
  const source=readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');

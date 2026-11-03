@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
 
-const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const auth=source.slice(source.indexOf('async function requireSession('),source.indexOf('async function requireSuper('));
 const route=source.slice(source.indexOf("app.post('/api/exports/pdf',"),source.indexOf("app.get('/api/reports/director/timing',"));
 

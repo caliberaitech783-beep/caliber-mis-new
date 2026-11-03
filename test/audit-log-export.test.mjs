@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {auditLogExportDue,auditLogExportSlot,buildAuditLogExportEmail} from '../audit-log-export.mjs';
+import {auditLogExportDue,auditLogExportSlot,buildAuditLogExportEmail} from '../server/services/core/audit-log-export.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 
 test('Audit Trail export becomes due at 5 PM IST after two calendar days',()=>{
   const before=new Date('2026-09-11T11:29:59Z');

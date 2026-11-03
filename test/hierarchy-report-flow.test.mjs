@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {DIRECTOR_REPORT_TITLES} from '../director-report-bundle.mjs';
-import {applyHierarchyDeliveryRule,defaultHierarchyReportScheduleSettings,flowDesignationForUser,GENERAL_REPORT_TITLES,HIERARCHY_REPORT_DESIGNATIONS,hierarchyScheduleLabel,normalizeHierarchyReportScheduleSettings,reportsDueForDesignation,scheduledReportWindow} from '../hierarchy-report-flow.mjs';
+import {DIRECTOR_REPORT_TITLES} from '../shared/reports/director-report-bundle.mjs';
+import {applyHierarchyDeliveryRule,defaultHierarchyReportScheduleSettings,flowDesignationForUser,GENERAL_REPORT_TITLES,HIERARCHY_REPORT_DESIGNATIONS,hierarchyScheduleLabel,normalizeHierarchyReportScheduleSettings,reportsDueForDesignation,scheduledReportWindow} from '../shared/reports/hierarchy-report-flow.mjs';
 
 test('Super Admin receives only the configurable consolidated schedule even when designated Director',()=>{
   const designation=flowDesignationForUser({adminLevel:' SUPER  ADMIN ',designation:'Director'});
@@ -402,7 +402,7 @@ test('window helper rejects disabled, invalid, event and empty-day schedules',()
 });
 
 test('hierarchy report scheduler is wired into the server',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(server,/flowDesignationForUser/);
   assert.match(server,/reportsDueForDesignation/);
   assert.match(server,/applyHierarchyDeliveryRule/);

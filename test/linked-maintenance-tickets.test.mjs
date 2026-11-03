@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 import {PGlite} from '@electric-sql/pglite';
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const helper=server.slice(server.indexOf('async function withLinkedMaintenanceSelection('),server.indexOf("app.post('/api/requests/:reference/daily-remarks'"));
 const linkSql=server.match(/`(UPDATE maintenance_requests SET linked_request_references=[^`]+)`/)[1];
 test('separate visits are linked without changing the older ticket and selected updates are atomic',async()=>{

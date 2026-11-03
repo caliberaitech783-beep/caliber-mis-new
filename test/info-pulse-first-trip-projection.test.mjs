@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {buildInfoPulseFirstTripPending, isProductionFirstTripPending} from '../info-pulse-data.mjs';
+import {buildInfoPulseFirstTripPending, isProductionFirstTripPending} from '../shared/notifications/info-pulse-data.mjs';
 
 test('Info Pulse selects the same saved first-trip timestamp as the Production feed', () => {
-  const server = readFileSync(new URL('../server.mjs', import.meta.url),'utf8');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url),'utf8');
   const projection = server.match(/const infoPulseProjection=`([\s\S]*?)`;/)[1];
   const timestamp = `(SELECT to_char(pfta.production_first_trip_at AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') FROM production_first_trip_acceptances pfta WHERE pfta.request_reference=maintenance_requests.reference) AS "productionFirstTripAt"`;
   assert.ok(projection.includes(timestamp));

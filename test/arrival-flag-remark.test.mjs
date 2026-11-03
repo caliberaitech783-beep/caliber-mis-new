@@ -1,11 +1,11 @@
-import * as siteAccess from '../region-scope.mjs';
-import {managerRoleSelection} from '../admin-access.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
+import {managerRoleSelection} from '../shared/auth/admin-access.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const routeSource=server.slice(server.indexOf("app.patch('/api/requests/:reference/arrival-flag'"),server.indexOf('async function activeRequestConflict'));
 const authSource=server.slice(server.indexOf('async function requireSession('),server.indexOf('async function requireSuper('));
 const guardSource=server.slice(server.indexOf('const arrivalDelaySql='),server.indexOf("app.post('/api/requests/:reference/daily-remarks'"));

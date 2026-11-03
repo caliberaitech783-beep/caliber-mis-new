@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dailyCountChange, formatCountDelta, indiaCountDayWindow, resolveCountTrend } from "../src/utils/dashboard/fleet-count-trend.mjs";
-import { dashboardFleetSnapshot } from "../dashboard-fleet-snapshot.mjs";
-import { fleetChartCounts } from "../dashboard-equipment-metrics.mjs";
-import * as access from "../dashboard-equipment-access.mjs";
+import { dashboardFleetSnapshot } from "../shared/core/dashboard-fleet-snapshot.mjs";
+import { fleetChartCounts } from "../shared/core/dashboard-equipment-metrics.mjs";
+import * as access from "../server/domain/core/dashboard-equipment-access.mjs";
 
 test("the daily count window rolls over at midnight in India regardless of device timezone", () => {
   const before = indiaCountDayWindow("2026-09-19T18:29:59.999Z");
@@ -27,7 +27,7 @@ test("daily movement is current minus the shared midnight count", () => {
 });
 
 test("the dashboard endpoint gives the same result on both devices for the same combined site access", async () => {
-  const source = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const route = source.slice(source.indexOf("app.get('/api/dashboard/equipment'"), source.indexOf("app.get('/api/reports/master-data'"));
   const fleet = [
     {id:1,door:"A",category:"Vehicle",currentLocation:"Sasti OB"},

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("maintenance reminders use their partial unique index without breaking notification polling", () => {
   assert.match(server, /ON CONFLICT \(notification_key\) WHERE notification_key IS NOT NULL DO NOTHING/);

@@ -4,9 +4,9 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { transformWithOxc } from "vite";
-import { isSessionViewOnlyUser } from "../user-session-access.mjs";
-import { canViewBdAgeingReport } from "../bd-ageing-report.mjs";
-import { ibossAccountsAllowed } from "../iboss-access.mjs";
+import { isSessionViewOnlyUser } from "../shared/auth/user-session-access.mjs";
+import { canViewBdAgeingReport } from "../shared/reports/bd-ageing-report.mjs";
+import { ibossAccountsAllowed } from "../shared/accounts/iboss-access.mjs";
 
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const sideSource = source.slice(source.indexOf("function Side("), source.indexOf("function formatTwelveHourDateTime("));

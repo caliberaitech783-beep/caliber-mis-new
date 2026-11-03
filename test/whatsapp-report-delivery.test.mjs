@@ -1,20 +1,20 @@
-import {siteReportMessageContext,recipientReportMessage} from '../whatsapp-message-format.mjs';
+import {siteReportMessageContext,recipientReportMessage} from '../server/domain/notifications/whatsapp-message-format.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {defaultWhatsAppReportSettings,whatsappPurposeEnabled} from '../whatsapp-report-settings.mjs';
-import {ticketReportWindow,prepareTicketReportRows,buildTicketReportTable,buildTicketWhatsAppReport} from '../ticket-consolidated-report.mjs';
-import {defaultHierarchyReportScheduleSettings,flowDesignationForUser,applyHierarchyDeliveryRule,applyUserReportScheduleOverride,reportsDueForDesignation} from '../hierarchy-report-flow.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {displaySiteName,reportScopeIncludesSite} from '../region-scope.mjs';
-import {hierarchyRecipientReportScope} from '../hierarchy-report-scope.mjs';
-import {canonicalSiteName} from '../site-location.mjs';
-import {buildSiteReportMessage,reportSites,siteReportFilename,timestampInReportWindow} from '../site-consolidated-report.mjs';
-import {formatDisplayDateTime} from '../date-time-format.mjs';
-import {whatsAppRecipientRole} from '../whatsapp-workflow-policy.mjs';
-import {scheduledReportWindowsDue} from '../report-delivery-window.mjs';
+import {defaultWhatsAppReportSettings,whatsappPurposeEnabled} from '../shared/notifications/whatsapp-report-settings.mjs';
+import {ticketReportWindow,prepareTicketReportRows,buildTicketReportTable,buildTicketWhatsAppReport} from '../server/domain/notifications/ticket-consolidated-report.mjs';
+import {defaultHierarchyReportScheduleSettings,flowDesignationForUser,applyHierarchyDeliveryRule,applyUserReportScheduleOverride,reportsDueForDesignation} from '../shared/reports/hierarchy-report-flow.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {displaySiteName,reportScopeIncludesSite} from '../shared/masters/region-scope.mjs';
+import {hierarchyRecipientReportScope} from '../server/domain/reports/hierarchy-report-scope.mjs';
+import {canonicalSiteName} from '../shared/masters/site-location.mjs';
+import {buildSiteReportMessage,reportSites,siteReportFilename,timestampInReportWindow} from '../server/domain/reports/site-consolidated-report.mjs';
+import {formatDisplayDateTime} from '../shared/core/date-time-format.mjs';
+import {whatsAppRecipientRole} from '../server/domain/notifications/whatsapp-workflow-policy.mjs';
+import {scheduledReportWindowsDue} from '../shared/reports/report-delivery-window.mjs';
 
-const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const now=new Date('2026-09-15T15:00:00+05:30');
 const users=[
   {login:'admin',userType:'Super User',adminLevel:'Admin',phone:'9000000001'},

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS,accountView,accountRecord} from '../iboss-accounts.mjs';
+import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS,accountView,accountRecord} from '../shared/accounts/iboss-accounts.mjs';
 test('Accounts includes every link from the reference in its row order',()=>{
  assert.deepEqual(ACCOUNT_SECTIONS.masters.map(key=>ACCOUNT_VIEWS[key].title),['Account Master','Vendor Master','Account Opening Register','Cost Centre Master','Work Centre Master','Chart Of Accounts','Day Book','Bank Interest']);
 });
@@ -18,7 +18,7 @@ test('records retain account code leading zeros, signed amounts and null metadat
  assert.equal(row.ID,'15');assert.equal(row.ACCOUNT_CODE,'0012');assert.equal(row.AMOUNT,-42.5);assert.equal(row.REMARK,null);
 });
 test('Accounts endpoint is session and report permission protected; UI loads live Oracle views',()=>{
- const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const ui=fs.readFileSync(new URL('../src/pages/accounts/iboss-accounts.jsx',import.meta.url),'utf8');
  const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(server,/app\.get\('\/api\/reports\/iboss-accounts\/:view',requireSession/);

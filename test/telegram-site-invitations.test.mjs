@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {telegramInvitationBatch,telegramInvitationSummary} from '../telegram-site-invitations.mjs';
-import {telegramSiteName,telegramUserHasSite} from '../telegram-site-groups.mjs';
+import {telegramInvitationBatch,telegramInvitationSummary} from '../server/domain/notifications/telegram-site-invitations.mjs';
+import {telegramSiteName,telegramUserHasSite} from '../server/domain/notifications/telegram-site-groups.mjs';
 
 function harness(ids){
   const records=new Map(),sent=[];
@@ -47,7 +47,7 @@ test('summaries include only current assigned users and deduplicate chat ids',()
     {invited:1,alreadyMember:0,failed:0,uncertain:0,pending:1});
 });
 test('actual invitation endpoint retains administrator guards and only sends to assigned site users',async()=>{
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const snippet=source.slice(source.indexOf("app.post('/api/telegram/site-groups/invite',"),source.indexOf("app.post('/api/telegram/site-groups/test',"));
   const records=new Map(),sent=[];let handler;const guards=[()=>{},()=>{}];
   const bindings={app:{post:(path,...functions)=>{

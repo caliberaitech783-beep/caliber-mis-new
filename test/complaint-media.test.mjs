@@ -1,9 +1,9 @@
-import {userSiteScope, reportScopeIncludesSite} from '../region-scope.mjs';
+import {userSiteScope, reportScopeIncludesSite} from '../shared/masters/region-scope.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
-import {validComplaintMedia,readComplaintMedia,COMPLAINT_MEDIA_LIMIT} from '../complaint-media.mjs';
-import {auditSubmittedFields} from '../audit-trail.mjs';
+import {validComplaintMedia,readComplaintMedia,COMPLAINT_MEDIA_LIMIT} from '../shared/core/complaint-media.mjs';
+import {auditSubmittedFields} from '../server/domain/core/audit-trail.mjs';
 const photo={name:'photo.png',data:'data:image/png;base64,aGVsbG8='};
 const video={name:'video.mp4',data:'data:video/mp4;base64,aGVsbG8='};
 test('complaint evidence is protected in audit records',()=>{
@@ -19,7 +19,7 @@ test('empty fields preserve text-only requests and oversized video is rejected b
  await assert.rejects(readComplaintMedia({get:()=>({size:COMPLAINT_MEDIA_LIMIT+1,type:'video/mp4'})}),/5 MB/);
 });
 test('attachment endpoint checks ownership and site before loading private media',async()=>{
- const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const route=server.slice(server.indexOf("app.get('/api/requests/:reference/complaint-media'"),server.indexOf('const requestAudioFields='));
  const body=route.slice(route.indexOf('  try{'),route.lastIndexOf('});'));
  const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;

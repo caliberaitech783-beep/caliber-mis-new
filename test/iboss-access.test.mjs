@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {ibossAccountsEligible,ibossAccountsAllowed} from '../iboss-access.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
+import {ibossAccountsEligible,ibossAccountsAllowed} from '../shared/accounts/iboss-access.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
 const session=user=>{const p=resolveMobileAccess({user:{userType:'Super User',...user}});return {role:p.sessionRole,permissions:p.permissions};};
 test('IBOSS admits explicit administrators, directors and Accounts staff',()=>{
  for(const user of [{adminLevel:'Admin'},{adminLevel:'Super Admin'},{designation:'Director'},{department:'Accounts'},{designation:'Senior Accountant'},{department:'Finance & Accounts'}])assert.equal(ibossAccountsAllowed(session(user)),true,JSON.stringify(user));
@@ -29,7 +29,7 @@ test('Manager profiles are denied even with matching assignments or older sessio
  assert.equal(ibossAccountsAllowed({role:'super',permissions:{adminLevel:' manager ',ibossAccounts:true,reportAccess:['Accounts']}}),false);
 });
 test('all Accounts endpoints and navigation share the eligibility gate',()=>{
- const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const section=server.slice(server.indexOf("app.get('/api/reports/iboss-accounts/:view'"),server.indexOf("app.get('/api/reports/po-grn-reconciliation'"));
  assert.equal((section.match(/if\(!await accountsMergeAllowed\(req\)\)/g)||[]).length,6);
  assert.match(section,/currentUserRecord\(req.session\)/);

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const client=readFileSync(new URL('../src/pages/admin/backup-administration.jsx',import.meta.url),'utf8');
 const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 

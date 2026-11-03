@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {SHIFT_MASTER_DEFAULTS,normalizeShiftRecord,shiftDurationMinutes,shiftIdentity} from '../shift-master.mjs';
-import {displaySiteName,normalizeOperationalSiteFields} from '../region-scope.mjs';
+import {SHIFT_MASTER_DEFAULTS,normalizeShiftRecord,shiftDurationMinutes,shiftIdentity} from '../shared/masters/shift-master.mjs';
+import {displaySiteName,normalizeOperationalSiteFields} from '../shared/masters/region-scope.mjs';
 
 test('supplied Shift Master workbook rows are represented once with the supplied shift times',()=>{
   assert.equal(SHIFT_MASTER_DEFAULTS.length,23);
@@ -30,7 +30,7 @@ test('Shift Master accepts workbook headers, normalizes time, and validates effe
 
 test('Shift Master is wired into navigation, CRUD, seed data, and Equipment Master exposes only targeted ERP sync',()=>{
   const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(client,/\["Shift Master", Clock, "shift"\]/);
   assert.match(client,/"Shift Master": \[/);
   assert.match(client,/name === "Shift Master" \? privilegeSiteOptions/);

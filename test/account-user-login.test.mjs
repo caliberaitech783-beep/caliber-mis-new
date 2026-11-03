@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {ibossAccountsAllowed,ibossAccountsEligible} from '../iboss-access.mjs';
-import {ADMIN_SUBMENU_OPTIONS} from '../admin-access.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {ibossAccountsAllowed,ibossAccountsEligible} from '../shared/accounts/iboss-access.mjs';
+import {ADMIN_SUBMENU_OPTIONS} from '../shared/auth/admin-access.mjs';
 test('Account User retains Accounts access after the profile refresh',()=>{
   const user={userType:'Account User',userGroup:'Account User',adminLevel:''};
   const profile=resolveMobileAccess({user});
@@ -29,7 +29,7 @@ test('Account User has Accounts and scoped Directory, never administrator or fle
   }
 });
 test('Accounts login checks server authority before issuing a session or password-change token',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const check=server.indexOf("req.body.portal==='accounts'");
   assert.ok(check>0);
   assert.ok(check<server.indexOf('if(employee.mustChangePassword===true)',check));
@@ -40,7 +40,7 @@ test('Accounts login checks server authority before issuing a session or passwor
   assert.match(client,/ibossAccountsAllowed\(session\)\?<IbossAccounts/);
 });
 test('selected login portal rejects cross-portal IDs before login, including missing portal',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const start=server.indexOf("    if(req.body.portal==='accounts'&&(profile");
   const end=server.indexOf('    if(!profile.userType)',start);
   const guard=new Function('req','profile','res','ibossAccountsAllowed',server.slice(start,end)+';return null;');

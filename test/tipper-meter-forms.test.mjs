@@ -1,20 +1,20 @@
-import {maintenanceMetersRequired,requireMaintenanceMeters} from '../maintenance-meter-required.mjs';
-import * as siteAccess from '../region-scope.mjs';
-import {isIdleVehicleRequest} from '../request-idle.mjs';
+import {maintenanceMetersRequired,requireMaintenanceMeters} from '../shared/requests/maintenance-meter-required.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
-import * as equipment from "../request-equipment.mjs";
-import * as workflow from "../request-workflow.mjs";
-import {approvedDelayedReason} from '../delayed-reason.mjs';
+import * as equipment from "../shared/requests/request-equipment.mjs";
+import * as workflow from "../shared/requests/request-workflow.mjs";
+import {approvedDelayedReason} from '../shared/requests/delayed-reason.mjs';
 import DateInput from '../src/utils/ui/date-input.mjs';
-import {isProductionFirstTripRequired,PRODUCTION_FIRST_TRIP_ROLLOUT_LABEL} from '../info-pulse-data.mjs';
+import {isProductionFirstTripRequired,PRODUCTION_FIRST_TRIP_ROLLOUT_LABEL} from '../shared/notifications/info-pulse-data.mjs';
 
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const evaluate = (code, dependencies) => new Function("DateInput", "isIdleVehicleRequest", ...Object.keys(dependencies), code)(DateInput, isIdleVehicleRequest, ...Object.values(dependencies));
 const tipper = {oemResponsibility: "OEM", ref: "REQ-T1", equipmentGroup: "TIPPERS", meterType: "KMR", door: "T1", chassis: "CH1", site: "Sasti OB", status: "In progress", openingMeterReading: "1000", openingMeterFileUploaded: true, category: "Breakdown"};
 const snippet = source.slice(source.indexOf("function MeterReadingFields"), source.indexOf("function VerifyRequestForm"));

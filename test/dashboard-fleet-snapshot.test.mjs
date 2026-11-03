@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {dashboardFleetSnapshot} from '../dashboard-fleet-snapshot.mjs';
-import {liveEquipmentMetrics, fleetChartCounts} from '../dashboard-equipment-metrics.mjs';
+import {dashboardFleetSnapshot} from '../shared/core/dashboard-fleet-snapshot.mjs';
+import {liveEquipmentMetrics, fleetChartCounts} from '../shared/core/dashboard-equipment-metrics.mjs';
 import {dailyCountChange,indiaCountDayWindow} from '../src/utils/dashboard/fleet-count-trend.mjs';
-import * as access from '../dashboard-equipment-access.mjs';
+import * as access from '../server/domain/core/dashboard-equipment-access.mjs';
 
 const assets = Object.freeze([
   Object.freeze({id:1,door:'V-01',chassisNo:'CH-01',category:'Vehicle',currentLocation:'Majri OB',status:'Off road'}),
@@ -76,7 +76,7 @@ test('historical recomputation replaces live status metadata without modifying i
 });
 
 test('actual read-only dashboard route derives status before enforcing every role scope', async () => {
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const route=source.slice(source.indexOf("app.get('/api/dashboard/equipment'"),source.indexOf("app.get('/api/reports/master-data'"));
   let handlers,authorization;
   const queries=[];

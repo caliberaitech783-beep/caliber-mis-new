@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 import {renderToStaticMarkup} from 'react-dom/server';
-import * as policy from '../request-correction-policy.mjs';
+import * as policy from '../shared/requests/request-correction-policy.mjs';
 import * as icons from 'lucide-react';
 
 const source=readFileSync(new URL('../src/components/notifications/returned-correction-gate.jsx',import.meta.url),'utf8');
@@ -30,7 +30,7 @@ test('gate is mounted for both workspaces and fetches owner-only durable records
   const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(main,/<ReturnedCorrectionGate key=\{"corrections:"\+token\} token=\{token\} \/>/);
   assert.equal((main.match(/<AppBackgroundServices session=\{session\} logout=\{logout\} \/>/g)||[]).length,3);
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const route=server.slice(server.indexOf("app.get('/api/request-corrections/returned'"),server.indexOf("app.patch('/api/request-corrections/:id/admin-decision'"));
   assert.match(route,/requireSession/);
   assert.match(route,/lower\(trim\(requested_by_login\)\)=\$1 AND status=\$2/);

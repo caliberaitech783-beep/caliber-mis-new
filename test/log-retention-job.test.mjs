@@ -1,9 +1,9 @@
-import {CONTENT_DELETION_POLICY} from '../content-deletion-policy.mjs';
+import {CONTENT_DELETION_POLICY} from '../server/domain/storage/content-deletion-policy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8');
 const slice = server.slice(server.indexOf("const LOG_RETENTION_SETTING_KEY="), server.indexOf("app.get('/api/log-retention'"));
 
 // Run the real settings reader and daily job against a recording fake database.

@@ -12,7 +12,7 @@ import {
   vehicleTransferValidationError,
   vehicleTransferViewRecords,
   vehicleTransferWorkStatus,
-} from '../vehicle-transfer-workflow.mjs';
+} from '../shared/people/vehicle-transfer-workflow.mjs';
 
 test('vehicle transfer lifecycle exposes each accountable stage',()=>{
   const submitted={status:VEHICLE_TRANSFER_STATUS.SOURCE_APPROVAL,submittedBy:'MIS User'};
@@ -72,7 +72,7 @@ test('audit details identify the full route, completed work, and next pending ow
 });
 
 test('server and interface wire submission, both PM actions, audit, notifications and master update',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const client=readFileSync(new URL('../src/pages/people/vehicle-transfer-workflow.jsx',import.meta.url),'utf8');
   const styles=readFileSync(new URL('../src/styles/vehicle-transfer-workflow.css',import.meta.url),'utf8');
   assert.match(server,/app\.post\('\/api\/vehicle-transfers'/);

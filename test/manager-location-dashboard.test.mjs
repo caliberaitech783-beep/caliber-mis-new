@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("manager requests, equipment, and dashboard metrics are scoped to selected sites", () => {
-  const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
+  const server=fs.readFileSync(new URL("../server/app.mjs",import.meta.url),"utf8");
   const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const styles=fs.readFileSync(new URL("../src/styles/style.css",import.meta.url),"utf8");
   assert.match(server,/adminLevel==='Manager'[\s\S]*scopedManagerSites=managerReportScope\(\{\.\.\.manager,site:assignedUserSiteName\(manager\)\}\)\.sites/);

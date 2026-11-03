@@ -5,11 +5,11 @@ import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
 import * as model from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
-import {REGION_DATA} from "../region-scope.mjs";
-import {calculateBreakdownMinutes, formatBreakdownDaysHours} from "../breakdown-duration.mjs";
+import {REGION_DATA} from "../shared/masters/region-scope.mjs";
+import {calculateBreakdownMinutes, formatBreakdownDaysHours} from "../shared/requests/breakdown-duration.mjs";
 import {requestStatusSortRank} from "../src/utils/requests/request-status.mjs";
 import {filterRecordsByDate} from "../src/utils/ui/record-date-range.mjs";
-import {formatDisplayDateTime} from "../date-time-format.mjs";
+import {formatDisplayDateTime} from "../shared/core/date-time-format.mjs";
 import {tableModel, dateColumnsFirst, tableExportModel} from "../src/utils/ui/table-actions-model.mjs";
 
 const source = readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8")
@@ -138,4 +138,4 @@ test("BD Out closing times, table order, counts and exports stay consistent thro
   props.showBdClosingTime = false;
   assert.doesNotMatch(renderToStaticMarkup(render()), /<th>BD closing time<\/th>/);
 });
-import {matchesSmartSearch} from '../smart-search.mjs';
+import {matchesSmartSearch} from '../shared/core/smart-search.mjs';

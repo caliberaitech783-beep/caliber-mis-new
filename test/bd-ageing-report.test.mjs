@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {buildBdAgeingReport,canViewBdAgeingReport,bdAgeingReportHandler} from '../bd-ageing-report.mjs';
+import {buildBdAgeingReport,canViewBdAgeingReport,bdAgeingReportHandler} from '../shared/reports/bd-ageing-report.mjs';
 
 const now = Date.parse('2026-10-06T06:30:00Z');
 const day = 86400000;
@@ -46,7 +46,7 @@ test('authorized endpoint uses loader-scoped records, returns only report fields
   assert.equal(caught,failure);
 });
 test('route requires session, preserves site scope, and UI has independent account guard',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(server,/app.get\('\/api\/reports\/bd-ageing',requireSession,bdAgeingReportHandler/);
   const route=server.split("app.get('/api/reports/bd-ageing'")[1].split("app.get('/api/requests'")[0];
   assert.match(route,/currentDashboardAuthorization/); assert.match(route,/scopeInfoPulseRequests/); assert.match(route,/archived_at IS NULL/);

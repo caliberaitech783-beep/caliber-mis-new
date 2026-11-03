@@ -1,8 +1,8 @@
 import '../../styles/meter-correction-report.css';
 import {scanReportCardStatus,CARD_STATUS_LEGEND} from '../../utils/scanning/scan-report-card-status.mjs';
 import React,{useState} from 'react';
-import {buildXlsxSheetsWorkbook} from '../../../report-xlsx.mjs';
-import {scanBatchReport,scanBatchReportTables} from '../../../scan-batch-report.mjs';
+import {buildXlsxSheetsWorkbook} from '../../../shared/reports/report-xlsx.mjs';
+import {scanBatchReport,scanBatchReportTables} from '../../../shared/scanning/scan-batch-report.mjs';
 import '../../styles/scan-batch-report.css';
 const display=value=>value===null||value===undefined||value===''?'—':String(value);
 export default function ScanBatchReport({batch,cards,token,ReportSection,contextBlocked=false,options=null,onReviewCard,reviewDisabled=false,duplicates=[]}){

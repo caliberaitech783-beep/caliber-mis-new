@@ -145,7 +145,7 @@ test("browser entry static imports exclude Node builtins", async () => {
 
 test("synthetic trip fixture satisfies real equipment identity validation", async () => {
   const { validateTripEquipment } =
-    await import("../trip-equipment-validation.mjs");
+    await import("../shared/scanning/trip-equipment-validation.mjs");
   const state = createFixtures();
   assert.deepEqual(
     validateTripEquipment(state.records[0].data, state.assets).issues,

@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const routes=server.slice(server.indexOf("app.get('/api/tickets/resolution-notices'"),server.indexOf("app.patch('/api/tickets/resolve'"));
 test('resolution notices and acknowledgement are restricted to the creator and closing preserves ticket status',async()=>{
   const handlers={},queries=[];

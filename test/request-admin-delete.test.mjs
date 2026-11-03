@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {requestDeletionBlocker,requestDeletable,requestStageLabel,requestDeletionSnapshot,normalizeDeletionReferences,REQUEST_BULK_DELETE_LIMIT} from '../request-deletion.mjs';
+import {requestDeletionBlocker,requestDeletable,requestStageLabel,requestDeletionSnapshot,normalizeDeletionReferences,REQUEST_BULK_DELETE_LIMIT} from '../shared/requests/request-deletion.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('verified and Idle requests only for an Admin; every other unverified stage for both',()=>{

@@ -4,9 +4,9 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 import * as model from '../src/utils/ui/table-actions-model.mjs';
-import * as shifts from '../request-shift.mjs';
-import {SHIFT_MASTER_DEFAULTS} from '../shift-master.mjs';
-import {withSerialColumn} from '../serial-column.mjs';
+import * as shifts from '../shared/requests/request-shift.mjs';
+import {SHIFT_MASTER_DEFAULTS} from '../shared/masters/shift-master.mjs';
+import {withSerialColumn} from '../shared/core/serial-column.mjs';
 
 test('request shift follows site-specific boundaries, overnight and saved history',()=>{
   const label=(site,start)=>shifts.requestShiftLabel({site,start},SHIFT_MASTER_DEFAULTS);

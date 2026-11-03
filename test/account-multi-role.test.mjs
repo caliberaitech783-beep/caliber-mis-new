@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resolveMobileAccess,loginRecordCandidates,userLoginCandidates} from '../mobile-access.mjs';
-import {assignedUserRoles,hasAccountRole,accountPrivileges,ACCOUNT_PRIVILEGES} from '../account-role-access.mjs';
-import {ibossAccountsEligible,ibossAccountsAllowed,accountSectionAllowed} from '../iboss-access.mjs';
+import {resolveMobileAccess,loginRecordCandidates,userLoginCandidates} from '../shared/auth/mobile-access.mjs';
+import {assignedUserRoles,hasAccountRole,accountPrivileges,ACCOUNT_PRIVILEGES} from '../shared/auth/account-role-access.mjs';
+import {ibossAccountsEligible,ibossAccountsAllowed,accountSectionAllowed} from '../shared/accounts/iboss-access.mjs';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 const session=profile=>({...profile,role:profile.sessionRole});
@@ -43,7 +43,7 @@ test('explicit empty privileges deny every section; legacy accounts retain defau
  assert.deepEqual(accountPrivileges({accountAccess:'Dashboard | unknown | Dashboard'}),['Dashboard']);
 });
 test('real login handler selects assigned fleet roles and isolates the Accounts session',async()=>{
- const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const route=server.slice(server.indexOf("app.post('/api/login',"),server.indexOf('const passwordResetRequestMessage='));
  const user={login:'multi',employee:'Multi Test',phone:'fixture-only',userType:'Mobile User',userRoles:'Production User | Maintenance User | Account User',accountAccess:'Masters'};
  const issued=[];let handler;

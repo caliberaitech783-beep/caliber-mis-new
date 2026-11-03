@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {paddleLayout} from '../paddle-layout.mjs';import {extractCard} from '../scan-extraction.mjs';import {machineSummary} from '../trip-card-rules.mjs';import {paddleFixture} from './paddle-fixture.mjs';
+import {paddleLayout} from '../server/domain/scanning/paddle-layout.mjs';import {extractCard} from '../server/domain/scanning/scan-extraction.mjs';import {machineSummary} from '../shared/scanning/trip-card-rules.mjs';import {paddleFixture} from './paddle-fixture.mjs';
 test('spatial extraction retains every populated row, split merged times, and repeats equipment only on occupied rows',()=>{
  const source=paddleFixture({invalidTime:true}),hints=paddleLayout(source),{draft}=extractCard(source.text,'vehicle',[],hints);
  assert.equal(draft.trips.length,18);assert.deepEqual(draft.trips.map(t=>t.rowNumber),Array.from({length:18},(_,i)=>i+1));

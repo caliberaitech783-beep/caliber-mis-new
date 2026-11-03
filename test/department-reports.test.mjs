@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
-import {availabilityRows,buildDepartmentReports,DEPARTMENT_REPORT_TITLES,TICKET_ACCEPTANCE_REPORT_TITLE} from '../department-reports.mjs';
+import {availabilityRows,buildDepartmentReports,DEPARTMENT_REPORT_TITLES,TICKET_ACCEPTANCE_REPORT_TITLE} from '../shared/reports/department-reports.mjs';
 const now = new Date('2026-09-07T12:00:00+05:30');
 const build = requests => buildDepartmentReports({requests,now,from:'2026-09-01',to:'2026-09-07'});
 const cell = (report,key,row=report.rows[0]) => report.columns.find(c=>c.key===key).value(row);
@@ -196,13 +196,13 @@ test('availability uses 24 hours per full day and actual hours for partial days'
   assert.equal(partial.percentage,10/12*100);
 });
 test('acceptance capture is additive, atomic and preserves first transition; report source includes remarks',()=>{
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(source,/ADD COLUMN IF NOT EXISTS in_progress_at TIMESTAMPTZ/);
   assert.match(source,/status<>'In progress' AND \$3='In progress' THEN COALESCE\(in_progress_at,NOW\(\)\)/);
   assert.match(source,/requests:await attachDailyRemarks\(requestsVisibleGlobally\(requestRows\)\)/);
 });
 test('report master reads use current authorization and site scope without granting master writes',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const route=server.slice(server.indexOf("app.get('/api/reports/master-data'"),server.indexOf("app.get('/api/masters'"));
   assert.match(route,/requireSession/);
   assert.match(route,/currentDashboardAuthorization\(req.session\)/);

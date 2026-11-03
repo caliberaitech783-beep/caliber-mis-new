@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {TELEGRAM_SITES,telegramSiteName,telegramUserHasSite,normalizeTelegramSiteGroups} from '../telegram-site-groups.mjs';
-import {parseTelegramUpdate,telegramSiteGroupDetails,createTelegramJoinRequestLink} from '../telegram.mjs';
+import {TELEGRAM_SITES,telegramSiteName,telegramUserHasSite,normalizeTelegramSiteGroups} from '../server/domain/notifications/telegram-site-groups.mjs';
+import {parseTelegramUpdate,telegramSiteGroupDetails,createTelegramJoinRequestLink} from '../server/services/notifications/telegram.mjs';
 
 test('site groups use all eight sites and recognize legacy and short labels',()=>{
   assert.equal(TELEGRAM_SITES.length,8);
@@ -56,7 +56,7 @@ test('site invitation always requires approval and keeps site label within Teleg
 });
 
 function webhookHarness(user){
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const snippet=source.slice(source.indexOf("app.post('/api/telegram/webhook',"),source.indexOf('// ---------- C-Dir'));
   let handler;const decisions=[],messages=[],registered=[];
   const bindings={app:{post:(_path,fn)=>{handler=fn}},telegramWebhookSecret:()=> 'secret',parseTelegramUpdate,

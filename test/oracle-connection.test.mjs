@@ -3,8 +3,8 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("Oracle integration is read-only, lazy, protected, and environment configured", () => {
-  const oracle = fs.readFileSync(new URL("../oracle-db.mjs", import.meta.url), "utf8");
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const oracle = fs.readFileSync(new URL("../server/services/core/oracle-db.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const example = fs.readFileSync(new URL("../.env.example", import.meta.url), "utf8");
   assert.match(oracle, /process\.env\.ORACLE_DB_USER/);
   assert.match(oracle, /process\.env\.ORACLE_DB_PASSWORD/);
@@ -17,7 +17,7 @@ test("Oracle integration is read-only, lazy, protected, and environment configur
 });
 
 test("Equipment Master Oracle synchronization is manual only", () => {
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const startup = server.slice(server.indexOf("async function initializeDatabase"));
   assert.doesNotMatch(startup, /syncOracleEquipmentTransfers\(\)/);
   assert.match(server, /app\.post\('\/api\/oracle\/equipment\/sync',requireSuper/);
@@ -25,8 +25,8 @@ test("Equipment Master Oracle synchronization is manual only", () => {
 });
 
 test("request forms fetch and persist Oracle logbook driver names", () => {
-  const oracle = fs.readFileSync(new URL("../oracle-db.mjs", import.meta.url), "utf8");
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const oracle = fs.readFileSync(new URL("../server/services/core/oracle-db.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(oracle, /equipmentlogbookdetail/i);
   assert.match(oracle, /vehiclelogbookdetail/i);

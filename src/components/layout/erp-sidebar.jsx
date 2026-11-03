@@ -1,4 +1,4 @@
-import {isMisAdministrator} from '../../../mis-admin-access.mjs';
+import {isMisAdministrator} from '../../../shared/auth/mis-admin-access.mjs';
 import React, {useState} from 'react';
 import '../../styles/erp-layout.css';
 import {ChevronDown, ChevronRight, LayoutDashboard, Search, PanelLeftClose, LogOut, FileText} from 'lucide-react';

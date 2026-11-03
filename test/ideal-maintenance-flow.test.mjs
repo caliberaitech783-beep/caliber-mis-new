@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("Idle requests require a reason and assigned-site manager approval before MIS",()=>{
-  const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
+  const server=fs.readFileSync(new URL("../server/app.mjs",import.meta.url),"utf8");
   const client=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   assert.match(server,/ideal_requested_at TIMESTAMPTZ/);
   assert.match(server,/idle_reason TEXT NOT NULL DEFAULT ''/);

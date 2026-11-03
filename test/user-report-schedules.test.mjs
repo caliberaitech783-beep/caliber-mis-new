@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {applyHierarchyDeliveryRule,applyUserReportScheduleOverride,defaultHierarchyReportScheduleSettings,flowDesignationForUser,GENERAL_REPORT_TITLES,normalizeHierarchyReportScheduleSettings,normalizeUserReportSchedule,reportsAssignedToDesignation,reportsDueForDesignation,reportsForHierarchyEvent,userReportScheduleValidationError} from '../hierarchy-report-flow.mjs';
-import {DIRECTOR_REPORT_TITLES} from '../director-report-bundle.mjs';
-import {hierarchyAccessAllowsReport} from '../hierarchy-report-catalogue.mjs';
-import {hierarchyRecipientReportScope} from '../hierarchy-report-scope.mjs';
-import {displaySiteName} from '../region-scope.mjs';
-import {reportSites,siteSourceData} from '../site-consolidated-report.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {siteReportMessageContext,recipientReportMessage} from '../whatsapp-message-format.mjs';
+import {applyHierarchyDeliveryRule,applyUserReportScheduleOverride,defaultHierarchyReportScheduleSettings,flowDesignationForUser,GENERAL_REPORT_TITLES,normalizeHierarchyReportScheduleSettings,normalizeUserReportSchedule,reportsAssignedToDesignation,reportsDueForDesignation,reportsForHierarchyEvent,userReportScheduleValidationError} from '../shared/reports/hierarchy-report-flow.mjs';
+import {DIRECTOR_REPORT_TITLES} from '../shared/reports/director-report-bundle.mjs';
+import {hierarchyAccessAllowsReport} from '../shared/reports/hierarchy-report-catalogue.mjs';
+import {hierarchyRecipientReportScope} from '../server/domain/reports/hierarchy-report-scope.mjs';
+import {displaySiteName} from '../shared/masters/region-scope.mjs';
+import {reportSites,siteSourceData} from '../server/domain/reports/site-consolidated-report.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {siteReportMessageContext,recipientReportMessage} from '../server/domain/notifications/whatsapp-message-format.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const OPEN_BD=DIRECTOR_REPORT_TITLES[0];
 const CLOSING_BD=DIRECTOR_REPORT_TITLES[1];

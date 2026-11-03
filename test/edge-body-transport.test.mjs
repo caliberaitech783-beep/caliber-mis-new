@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {EDGE_INSPECTED_BODY_LIMIT_BYTES,JSON_BODY_CONTENT_TYPES,LARGE_JSON_BODY_THRESHOLD_BYTES,LARGE_JSON_CONTENT_TYPE,edgeSafeJsonInit,edgeSignatureJsonBody,embeddedMediaJsonBody,largeJsonBody} from '../request-body-transport.mjs';
+import {EDGE_INSPECTED_BODY_LIMIT_BYTES,JSON_BODY_CONTENT_TYPES,LARGE_JSON_BODY_THRESHOLD_BYTES,LARGE_JSON_CONTENT_TYPE,edgeSafeJsonInit,edgeSignatureJsonBody,embeddedMediaJsonBody,largeJsonBody} from '../shared/requests/request-body-transport.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('large JSON bodies are re-sent as text/plain so the edge firewall does not size-reject them',()=>{

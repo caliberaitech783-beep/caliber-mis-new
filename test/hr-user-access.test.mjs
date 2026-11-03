@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {assignedUserRoles} from '../account-role-access.mjs';
-import {resolveMobileAccess,normalizeMobileUserRole,MOBILE_USER_ROLES} from '../mobile-access.mjs';
-import {masterAccessAllows,accessAllows,navigationPermissionsForView} from '../admin-access.mjs';
-import {CDIR_MASTERS} from '../cdir-masters.mjs';
-import {cdirViewerContext} from '../cdir-access.mjs';
-import {canReadDashboardEquipment} from '../dashboard-equipment-access.mjs';
+import {assignedUserRoles} from '../shared/auth/account-role-access.mjs';
+import {resolveMobileAccess,normalizeMobileUserRole,MOBILE_USER_ROLES} from '../shared/auth/mobile-access.mjs';
+import {masterAccessAllows,accessAllows,navigationPermissionsForView} from '../shared/auth/admin-access.mjs';
+import {CDIR_MASTERS} from '../shared/people/cdir-masters.mjs';
+import {cdirViewerContext} from '../server/domain/people/cdir-access.mjs';
+import {canReadDashboardEquipment} from '../server/domain/core/dashboard-equipment-access.mjs';
 
 test('existing HR sessions read the shared breakdown feed using current account permissions',async()=>{
  const {readFileSync}=await import('node:fs');
  const {runInNewContext}=await import('node:vm');
- const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const route=source.slice(source.indexOf("app.get('/api/requests',requireSession"));
  const guard=route.slice(route.indexOf("if(req.session.assignedRole==='HR User')"),route.indexOf('    const requesterLogin='));
  const profile=resolveMobileAccess({user:{userType:'Mobile User',userRoles:'HR User'},selectedRole:'HR User'});
@@ -68,7 +68,7 @@ test('HR checkbox round-trips and produces only directory master permissions',()
 });
 test('HR master API permits all C-Dir employee/contact edits and denies unrelated masters',async()=>{
  const {readFileSync}=await import('node:fs');const vm=await import('node:vm');
- const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const start=source.indexOf('async function requireSuper('),end=source.indexOf("app.post('/api/session-heartbeat'",start);
  const directory={matrix:{'office|A':[{cat:'A',name:'Director',empId:'A1'}]}};
  const requireSuper=vm.runInNewContext(source.slice(start,end)+'\nrequireSuper',{

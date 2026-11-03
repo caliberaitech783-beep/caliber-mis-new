@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {defaultWhatsAppReportSettings,normalizeWhatsAppReportSettings,EVENT_OPTIONS,PURPOSE_OPTIONS,WORKFLOW_ROLE_OPTIONS,whatsappSettingsValidationError,whatsappPurposeEnabled} from '../whatsapp-report-settings.mjs';
-import {META_WORKFLOW_TEMPLATES,reportTemplateChoices,validateCustomTemplate,previewReportTemplate,isSingleReportPurpose,SINGLE_REPORT_TEMPLATE_PURPOSES,hierarchyReportMessagePurpose} from '../whatsapp-template-catalog.mjs';
-import {candidateReportTemplate,effectiveReportTemplate,reportTemplateFallback,requestedReportTemplate} from '../whatsapp-template-runtime.mjs';
-import {DIRECTOR_REPORT_TITLES} from '../director-report-bundle.mjs';
-import {WHATSAPP_WORKFLOW_POLICY,isWhatsAppReportsOnlyRecipient,workflowWhatsAppRecipientLogins,workflowReminderSlot} from '../whatsapp-workflow-policy.mjs';
-import {applyHierarchyDeliveryRule,applyUserReportScheduleOverride,defaultHierarchyReportScheduleSettings,reportsDueForDesignation} from '../hierarchy-report-flow.mjs';
-import {ticketReportWindow,ticketReportDue} from '../ticket-consolidated-report.mjs';
-import {sendMetaWhatsAppTemplate,sendMetaWhatsAppText,sendMetaWhatsAppDocument,setWhatsAppDeliveryPolicyReader,metaWhatsAppTemplateStatuses,submitMetaWhatsAppTemplates} from '../meta-whatsapp.mjs';
+import {defaultWhatsAppReportSettings,normalizeWhatsAppReportSettings,EVENT_OPTIONS,PURPOSE_OPTIONS,WORKFLOW_ROLE_OPTIONS,whatsappSettingsValidationError,whatsappPurposeEnabled} from '../shared/notifications/whatsapp-report-settings.mjs';
+import {META_WORKFLOW_TEMPLATES,reportTemplateChoices,validateCustomTemplate,previewReportTemplate,isSingleReportPurpose,SINGLE_REPORT_TEMPLATE_PURPOSES,hierarchyReportMessagePurpose} from '../shared/notifications/whatsapp-template-catalog.mjs';
+import {candidateReportTemplate,effectiveReportTemplate,reportTemplateFallback,requestedReportTemplate} from '../server/services/notifications/whatsapp-template-runtime.mjs';
+import {DIRECTOR_REPORT_TITLES} from '../shared/reports/director-report-bundle.mjs';
+import {WHATSAPP_WORKFLOW_POLICY,isWhatsAppReportsOnlyRecipient,workflowWhatsAppRecipientLogins,workflowReminderSlot} from '../server/domain/notifications/whatsapp-workflow-policy.mjs';
+import {applyHierarchyDeliveryRule,applyUserReportScheduleOverride,defaultHierarchyReportScheduleSettings,reportsDueForDesignation} from '../shared/reports/hierarchy-report-flow.mjs';
+import {ticketReportWindow,ticketReportDue} from '../server/domain/notifications/ticket-consolidated-report.mjs';
+import {sendMetaWhatsAppTemplate,sendMetaWhatsAppText,sendMetaWhatsAppDocument,setWhatsAppDeliveryPolicyReader,metaWhatsAppTemplateStatuses,submitMetaWhatsAppTemplates} from '../server/services/notifications/meta-whatsapp.mjs';
 
 const defaultAlertRoles=['productionSupervisor','maintenanceSupervisor','misSupervisor'];
 

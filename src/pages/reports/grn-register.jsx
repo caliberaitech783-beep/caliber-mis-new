@@ -2,9 +2,9 @@ import SmartSelect from '../../components/ui/smart-select.jsx';
 import React, {useEffect, useMemo, useState} from 'react';
 import {FileBarChart, RefreshCw} from 'lucide-react';
 import DateInput from '../../utils/ui/date-input.mjs';
-import {indiaDateTimeInputValue} from '../../../report-date-range.mjs';
-import {purchaseOrderRange} from '../../../purchase-order-report.mjs';
-import {formatDisplayDate} from '../../../date-time-format.mjs';
+import {indiaDateTimeInputValue} from '../../../shared/reports/report-date-range.mjs';
+import {purchaseOrderRange} from '../../../shared/accounts/purchase-order-report.mjs';
+import {formatDisplayDate} from '../../../shared/core/date-time-format.mjs';
 import '../../styles/stock-statement.css';
 import '../../styles/purchase-order-report.css';
 

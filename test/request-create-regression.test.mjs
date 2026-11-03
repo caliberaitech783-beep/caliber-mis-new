@@ -1,15 +1,15 @@
-import * as siteAccess from '../region-scope.mjs';
-import {requestShiftLabel} from '../request-shift.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
+import {requestShiftLabel} from '../shared/requests/request-shift.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { activeRequestConflictMessage, findActiveRequestConflict } from "../request-conflict.mjs";
-import {isIdleVehicleRequest} from '../request-idle.mjs';
-import { submitMaintenanceRequest } from "../request-submit.mjs";
-import { parseRequestTimelineTimestamp, validateRequestTimelineChange } from "../request-timeline.mjs";
+import { activeRequestConflictMessage, findActiveRequestConflict } from "../shared/requests/request-conflict.mjs";
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
+import { submitMaintenanceRequest } from "../shared/requests/request-submit.mjs";
+import { parseRequestTimelineTimestamp, validateRequestTimelineChange } from "../shared/requests/request-timeline.mjs";
 
 const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const request = { ref: "REQ-100", door: "D36-Z0164", chassis: "CH-100", site: "Sasti OB", complaint: "Engine noise", meterType: "HMR" };
 const saved = { ...request, status: "Open", requesterLogin: "production" };
 const deferred = () => {

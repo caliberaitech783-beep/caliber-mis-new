@@ -2,10 +2,10 @@ import VlbBatchDeletion,{DeletedVlbBatches} from '../../components/logbooks/vlb-
 import VlbBatchCardDetails from '../../components/logbooks/vlb-batch-card-details.jsx';
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import React,{useEffect,useRef,useState} from 'react';
-import {canonicalSiteName} from '../../../site-location.mjs';
-import {displaySiteName} from '../../../region-scope.mjs';
-import {bookShiftCode,systemBookDate} from '../../../trip-card-rules.mjs';
-import {vlbRecordSource} from '../../../vlb-batch-format.mjs';
+import {canonicalSiteName} from '../../../shared/masters/site-location.mjs';
+import {displaySiteName} from '../../../shared/masters/region-scope.mjs';
+import {bookShiftCode,systemBookDate} from '../../../shared/scanning/trip-card-rules.mjs';
+import {vlbRecordSource} from '../../../shared/logbooks/vlb-batch-format.mjs';
 import VlbBatchReport from '../../components/logbooks/vlb-batch-report.jsx';
 import VlbBatchGovernance from '../../components/logbooks/vlb-batch-governance.jsx';
 import VlbReopenDialog from '../../components/logbooks/vlb-reopen-dialog.jsx';

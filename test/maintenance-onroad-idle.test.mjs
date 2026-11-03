@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
-import {isIdleVehicleRequest} from '../request-idle.mjs';
-import {liveEquipmentRoadStatus,liveEquipmentRoadStatuses} from '../dashboard-equipment-metrics.mjs';
-import {matchesBreakdownMovement} from '../dashboard-breakdown-movement.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
+import {liveEquipmentRoadStatus,liveEquipmentRoadStatuses} from '../shared/core/dashboard-equipment-metrics.mjs';
+import {matchesBreakdownMovement} from '../shared/core/dashboard-breakdown-movement.mjs';
 import {availabilityRequestsForDate} from '../src/utils/dashboard/dashboard-availability.mjs';
 import {visibleInMaintenanceHistory} from '../src/utils/requests/maintenance-history.mjs';
 import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
-import {requestDeletable} from '../request-deletion.mjs';
-import {dashboardFleetSnapshot} from '../dashboard-fleet-snapshot.mjs';
+import {requestDeletable} from '../shared/requests/request-deletion.mjs';
+import {dashboardFleetSnapshot} from '../shared/core/dashboard-fleet-snapshot.mjs';
 import {buildDailyBdBalance} from '../src/utils/dashboard/daily-bd-balance.mjs';
 import {requestWriteOutcomeConfirmed} from '../src/services/requests/request-write-recovery.mjs';
 
@@ -53,7 +53,7 @@ test('missing old idle timestamps do not prevent vehicle visibility or invent a 
 });
 
 test('closure records maintenance time and migration backs up previous fields without using migration time',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(server,/SET closed_at=\$7,closed_by=\$4[^\n]*status='Closed'/);
   assert.match(server,/idle_maintenance_closed_v1_backup/);
   assert.match(server,/closed_at=CASE WHEN ideal_requested_at>=GREATEST\(started_at,accepted_at\)/);

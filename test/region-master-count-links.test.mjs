@@ -3,8 +3,8 @@ import test from "node:test";
 import {readFileSync} from "node:fs";
 import React from "react";
 import {transformWithOxc} from "vite";
-import {liveEquipmentMetrics, liveEquipmentRoadStatus} from "../dashboard-equipment-metrics.mjs";
-import {recordBelongsToSite} from "../site-location.mjs";
+import {liveEquipmentMetrics, liveEquipmentRoadStatus} from "../shared/core/dashboard-equipment-metrics.mjs";
+import {recordBelongsToSite} from "../shared/masters/site-location.mjs";
 
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const component = source.slice(source.indexOf("function RegionMasterPage("), source.indexOf("Generic = function GenericWithMasters"));

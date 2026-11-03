@@ -2,8 +2,8 @@ import {dashboardMisQueue, misQueueDate} from '../src/utils/dashboard/dashboard-
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {validateClosingMeterReadings} from '../request-workflow.mjs';
-import {requestsVisibleToMisWorkspace} from '../mis-request-visibility.mjs';
+import {validateClosingMeterReadings} from '../shared/requests/request-workflow.mjs';
+import {requestsVisibleToMisWorkspace} from '../shared/core/mis-request-visibility.mjs';
 import {visibleInMisRequests} from '../src/utils/ui/mis-history.mjs';
 import {requestEventDate} from '../src/utils/dashboard/dashboard-request-data.mjs';
 const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
@@ -20,7 +20,7 @@ test('closing counters cannot decrease or conflict with their named field', () =
 });
 
 test('meter type and both named counters are loaded inside the locked transaction', () => {
-  const server = readFileSync(new URL('../server.mjs', import.meta.url),'utf8');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url),'utf8');
   const projection = server.match(/const requestTimelineProjection=`([^`]+)`/)[1];
   for (const field of ['meterType','openingMeterReadings','closingMeterReadings']) assert.ok(projection.includes(`AS "${field}"`));
   assert.equal((server.match(/validateClosingMeterReadings\(before,/g)||[]).length,2);

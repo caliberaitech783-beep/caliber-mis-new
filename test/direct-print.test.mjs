@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {generateKeyPairSync,createVerify} from 'node:crypto';
 import {X509Certificate} from 'node:crypto';
-import {normalizePem,printHelperSigning,signPrintRequest,PRINT_HELPER_MAX_REQUEST_LENGTH,resolvePrintHelperSigning,certificateSummary,generatePrintHelperSigning} from '../print-helper-signing.mjs';
+import {normalizePem,printHelperSigning,signPrintRequest,PRINT_HELPER_MAX_REQUEST_LENGTH,resolvePrintHelperSigning,certificateSummary,generatePrintHelperSigning} from '../server/services/core/print-helper-signing.mjs';
 import {directPrintPaper,directPrintOptions,directPrintData,blobToBase64,rememberedPrinter,rememberPrinter,printHelperAvailable,printHelperExpected,printHelperLastFailure,launchPrintHelper,probePrintHelper} from '../src/services/reports/direct-print.mjs';
 import {PRINT_PAGE_SIZES} from '../src/services/reports/smart-print.mjs';
 
 const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const server=read('../server.mjs'),main=read('../src/app/App.jsx'),client=read('../src/services/reports/direct-print.mjs');
+const server=read('../server/app.mjs'),main=read('../src/app/App.jsx'),client=read('../src/services/reports/direct-print.mjs');
 const {privateKey,publicKey}=generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs8',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}});
 
 test('the chosen Smart Print page becomes the printer paper size',()=>{

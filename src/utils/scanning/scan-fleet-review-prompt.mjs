@@ -1,4 +1,4 @@
-import {scanFleetSignature} from '../../../scan-fleet-assignment.mjs';
+import {scanFleetSignature} from '../../../shared/scanning/scan-fleet-assignment.mjs';
 
 // Corrections change the signature; the prompt belongs to the whole card.
 export const fleetReviewKey=card=>card.id;

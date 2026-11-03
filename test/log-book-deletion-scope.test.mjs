@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
 import express from 'express';
 import {PGlite} from '@electric-sql/pglite';
-import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
-import {SCAN_SCHEMA,checkScanCard} from '../bulk-card-scanning.mjs';
-import {SCAN_BACKUP_SCHEMA} from '../scan-backup.mjs';
-import {VLB_BATCH_SCHEMA} from '../vlb-batches.mjs';
-import {registerLogBookDeletion} from '../log-book-deletion.mjs';
+import {LOG_BOOK_SCHEMA} from '../server/routes/logbooks/log-book.mjs';
+import {SCAN_SCHEMA,checkScanCard} from '../server/routes/scanning/bulk-card-scanning.mjs';
+import {SCAN_BACKUP_SCHEMA} from '../server/routes/scanning/scan-backup.mjs';
+import {VLB_BATCH_SCHEMA} from '../server/routes/logbooks/vlb-batches.mjs';
+import {registerLogBookDeletion} from '../server/domain/logbooks/log-book-deletion.mjs';
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations
 const sha=value=>createHash('sha256').update(value).digest('hex');
 

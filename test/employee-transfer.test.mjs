@@ -1,11 +1,11 @@
-import {CDIR_DELETION_SCHEMA} from '../cdir-deletion.mjs';
+import {CDIR_DELETION_SCHEMA} from '../server/routes/people/cdir-deletion.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
 import {PGlite} from '@electric-sql/pglite';
 import {readFileSync} from 'node:fs';
-import {EMPLOYEE_TRANSFER_SCHEMA,ET_STATUS,employeeTransferAccess,registerEmployeeTransfers} from '../employee-transfer.mjs';
-import {CDIR_MASTERS} from '../cdir-masters.mjs';
+import {EMPLOYEE_TRANSFER_SCHEMA,ET_STATUS,employeeTransferAccess,registerEmployeeTransfers} from '../server/routes/people/employee-transfer.mjs';
+import {CDIR_MASTERS} from '../shared/people/cdir-masters.mjs';
 
 test('employee transfer authorization excludes general users and non-Project Managers',()=>{
   assert.equal(employeeTransferAccess({assignedRole:'HR User'}).canSubmit,true);
@@ -71,5 +71,5 @@ test('transfer UI provides form, inboxes, record details and exportable history 
  const ui=readFileSync(new URL('../src/pages/people/employee-transfer.jsx',import.meta.url),'utf8');const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  for(const text of ['Employee ID','Where to transfer','Outgoing','Incoming','History','ReportSection','Approval history','effectiveDate','employee-transfer-access'])assert.ok(ui.includes(text),text);
  assert.ok(main.includes('data-workspace="employee-transfer"'));assert.ok(main.includes('renderedActive === "Employee Transfer"'));
- const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');assert.ok(server.includes('${EMPLOYEE_TRANSFER_SCHEMA}'));assert.ok(server.includes('registerEmployeeTransfers(app,'));
+ const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');assert.ok(server.includes('${EMPLOYEE_TRANSFER_SCHEMA}'));assert.ok(server.includes('registerEmployeeTransfers(app,'));
 });

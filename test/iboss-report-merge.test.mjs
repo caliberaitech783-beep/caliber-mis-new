@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {MERGE_CHAINS,MAX_MERGE_STEPS,mergeChain,resolveSelection,mergeStatements,buildMergedReport,buildTrail} from '../iboss-report-merge.mjs';
+import {MERGE_CHAINS,MAX_MERGE_STEPS,mergeChain,resolveSelection,mergeStatements,buildMergedReport,buildTrail} from '../shared/accounts/iboss-report-merge.mjs';
 
-import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS} from '../iboss-accounts.mjs';
+import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS} from '../shared/accounts/iboss-accounts.mjs';
 
 const range={from:'2026-04-01',to:'2026-09-30'};
 
@@ -103,7 +103,7 @@ test('Report Merge remains an Accounts page tab alongside Dashboard, protected b
  const accounts=fs.readFileSync(new URL('../src/pages/accounts/iboss-accounts.jsx',import.meta.url),'utf8');
  assert.ok(accounts.includes("SECTIONS=[['dashboard','Dashboard'],['masters','Masters'],['transactions','Transactions'],['merge','Report Merge'],['chat','Chat Bot']]"));
  assert.ok(accounts.includes(`section==='merge'?<div role="tabpanel" id="accounts-panel-merge" aria-labelledby="accounts-tab-merge"><IbossReportMerge token={token} ReportSection={ReportSection} embedded initialChain={mergeContext?.chain||''} initialRange={mergeContext?.range}/>`));
- const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  assert.ok(server.includes("app.get('/api/reports/iboss-accounts-merge/:chain',requireSession"));
  assert.ok(server.includes("app.get('/api/reports/iboss-accounts-merge/:chain/trail',requireSession"));
  assert.ok(server.includes("if(!await accountsMergeAllowed(req))"));

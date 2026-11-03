@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
-import {canAutoSaveScanCard} from '../scan-auto-save.mjs';
+import {canAutoSaveScanCard} from '../shared/scanning/scan-auto-save.mjs';
 import {SCAN_UPLOAD_MAX_WIDTH,SCAN_UPLOAD_MAX_HEIGHT} from '../src/services/scanning/scan-upload-image.mjs';
 
 const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');

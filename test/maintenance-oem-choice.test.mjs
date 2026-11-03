@@ -8,7 +8,7 @@ test('unsaved responsibility can be switched; saved responsibility stays locked 
   assert.ok(ui.includes('disabled={Boolean(request.oemResponsibility) && !canEdit}'));
   assert.ok(ui.includes('setSelected(value)'));
   assert.ok(ui.includes('type="hidden" name="oemResponsibility" value={selected}'));
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.ok(server.includes('SELECT site,complaint,oem_responsibility AS "oemResponsibility"'));
   assert.ok(server.includes('before.oemResponsibility&&before.oemResponsibility!==oemResponsibility'));
   assert.ok(server.includes('eligible.rows[0].oemResponsibility&&eligible.rows[0].oemResponsibility!==oemResponsibility'));
@@ -34,7 +34,7 @@ test('selection is exclusive, stays in the edit form and does not open daily upd
 });
 
 test('edit saves responsibility atomically without changing request status', () => {
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const route=source.slice(source.indexOf("app.patch('/api/requests/:reference',"),source.indexOf("app.patch('/api/requests/:reference/close',"));
   assert.ok(route.includes("!['OEM','NON OEM'].includes(oemResponsibility)"));
   assert.ok(route.includes("accepting&&!['OEM','NON OEM'].includes(oemResponsibility)"));
@@ -44,7 +44,7 @@ test('edit saves responsibility atomically without changing request status', () 
 });
 
 test('server persists responsibility with the guarded daily update and exposes it to dashboards', () => {
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(source,/ADD COLUMN IF NOT EXISTS oem_responsibility/);
   assert.match(source,/oem_responsibility AS "oemResponsibility"/);
   const route=source.slice(source.indexOf("app.post('/api/requests/:reference/daily-remarks'"),source.indexOf("app.patch('/api/requests/:reference/arrival-flag'"));

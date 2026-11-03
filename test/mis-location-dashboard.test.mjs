@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import {assignedUserSiteName} from "../site-location.mjs";
+import {assignedUserSiteName} from "../shared/masters/site-location.mjs";
 
 test("MIS users and managers use location-scoped requests, TAT, and partitioned first-trip KPIs",()=>{
   const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
-  const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
+  const server=fs.readFileSync(new URL("../server/app.mjs",import.meta.url),"utf8");
   const manager=source.slice(source.indexOf("function ManagerDashboard"),source.indexOf("function Dashboard"));
   assert.match(server,/if\(req\.session\.role==='normal'\)\{[\s\S]*scopedSite=userSiteScope\(operationalUser\)/);
   assert.equal(assignedUserSiteName({site:" ",location:"",currentLocation:"Sasti OB"}),"Sasti OB");

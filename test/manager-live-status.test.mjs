@@ -1,15 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {isIdleVehicleRequest} from '../request-idle.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
-import { fleetAssetRequestDetails, liveEquipmentMetrics, liveEquipmentRoadStatus, liveEquipmentRoadStatuses } from "../dashboard-equipment-metrics.mjs";
-import { requestWithEquipmentMasterDetails } from "../request-equipment.mjs";
-import { recordBelongsToSite } from "../site-location.mjs";
-import { managerRoleSelection } from "../admin-access.mjs";
+import { fleetAssetRequestDetails, liveEquipmentMetrics, liveEquipmentRoadStatus, liveEquipmentRoadStatuses } from "../shared/core/dashboard-equipment-metrics.mjs";
+import { requestWithEquipmentMasterDetails } from "../shared/requests/request-equipment.mjs";
+import { recordBelongsToSite } from "../shared/masters/site-location.mjs";
+import { managerRoleSelection } from "../shared/auth/admin-access.mjs";
 import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
-import { isProductionFirstTripPending } from "../info-pulse-data.mjs";
+import { isProductionFirstTripPending } from "../shared/notifications/info-pulse-data.mjs";
 import {isNetworkFailure, isTransientStatus} from "../src/services/ui/api-transient-retry.mjs";
 import {requestWriteConnectionMessage, requestWriteOutcomeConfirmed} from "../src/services/requests/request-write-recovery.mjs";
 
@@ -371,7 +371,7 @@ test("request refresh integration keeps session isolation, fresh data validation
   assert.match(source, /loadSequence === requestLoadSequence\.current/);
   assert.match(source, /watchRequestRefresh\(loadRequests, \{ win: window, doc: document, initial: true \}\)/);
   assert.match(source, /requestsVisibleToMisWorkspace/);
-  const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const route = server.slice(server.indexOf("app.get('/api/requests'"), server.indexOf("app.post('/api/requests'"));
   assert.match(route, /res\.set\('Cache-Control','no-store'\)/);
   assert.match(route, /requestsVisibleToSession/);

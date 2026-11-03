@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {activeOpenCases, openCasesBySite} from "../dashboard-open-cases.mjs";
+import {activeOpenCases, openCasesBySite} from "../shared/core/dashboard-open-cases.mjs";
 
 test("groups active dashboard cases by site for drilldown", () => {
   const requests = [

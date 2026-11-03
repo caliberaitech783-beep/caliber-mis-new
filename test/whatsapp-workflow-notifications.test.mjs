@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {defaultWhatsAppReportSettings} from '../whatsapp-report-settings.mjs';
+import {defaultWhatsAppReportSettings} from '../shared/notifications/whatsapp-report-settings.mjs';
 
-const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 
 test('server WhatsApp delivery is enabled through the shared runtime switch',()=>{
   assert.equal(defaultWhatsAppReportSettings().enabled,true);

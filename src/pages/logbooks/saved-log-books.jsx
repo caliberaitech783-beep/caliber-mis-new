@@ -1,7 +1,7 @@
 import '../../styles/log-book-readability.css';
-import {compactLogBookLabel,tripSerialNumber} from '../../../log-book-labels.mjs';
-import {meterCorrectionReport} from '../../../scan-meter-history.mjs';
-import {machineSummary} from '../../../trip-card-rules.mjs';
+import {compactLogBookLabel,tripSerialNumber} from '../../../shared/logbooks/log-book-labels.mjs';
+import {meterCorrectionReport} from '../../../shared/scanning/scan-meter-history.mjs';
+import {machineSummary} from '../../../shared/scanning/trip-card-rules.mjs';
 import '../../styles/meter-correction-report.css';
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import PulseTripVerification from '../../components/ui/pulse-trip-verification.jsx';

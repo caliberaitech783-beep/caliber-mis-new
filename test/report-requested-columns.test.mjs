@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildDepartmentReports} from '../department-reports.mjs';
-import {pendingPdfRows,REMOVED_REPORT_TITLES} from '../report-pending-export.mjs';
-import {HIERARCHY_REPORT_TITLES} from '../hierarchy-report-catalogue.mjs';
-import {transferReportTimingColumns} from '../transfer-report-timing.mjs';
+import {buildDepartmentReports} from '../shared/reports/department-reports.mjs';
+import {pendingPdfRows,REMOVED_REPORT_TITLES} from '../shared/reports/report-pending-export.mjs';
+import {HIERARCHY_REPORT_TITLES} from '../shared/reports/hierarchy-report-catalogue.mjs';
+import {transferReportTimingColumns} from '../shared/people/transfer-report-timing.mjs';
 test('transfer timing uses actual submission and destination acceptance, not date-only import values',()=>{
  const tat=transferReportTimingColumns.find(c=>c.key==='transferTat');
  assert.equal(tat.value({submittedAt:'2026-10-09T01:00:00Z',destinationAcceptedAt:'2026-10-09T03:00:00Z'}),'2h 0m');

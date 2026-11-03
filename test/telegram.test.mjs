@@ -1,10 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { telegramConfiguration, telegramPurposeEnabled, telegramPlainText, sendTelegramText, sendTelegramDocument, telegramStatus, telegramWebhookSecret, newTelegramLinkToken, parseTelegramUpdate, ensureTelegramWebhook } from "../telegram.mjs";
-import { normalizeWhatsAppReportSettings } from "../whatsapp-report-settings.mjs";
+import { telegramConfiguration, telegramPurposeEnabled, telegramPlainText, sendTelegramText, sendTelegramDocument, telegramStatus, telegramWebhookSecret, newTelegramLinkToken, parseTelegramUpdate, ensureTelegramWebhook } from "../server/services/notifications/telegram.mjs";
+import { normalizeWhatsAppReportSettings } from "../shared/notifications/whatsapp-report-settings.mjs";
 
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const env = { TELEGRAM_BOT_TOKEN: "123:secret-token", TELEGRAM_DEFAULT_CHAT_ID: "-5550689740" };
 
@@ -185,7 +185,7 @@ test("Telegram keeps full messaging and is saved on the user's profile record", 
 });
 
 test("Telegram can be required at login, with exempt users", async () => {
-  const { normalizeTelegramRequirement, telegramRequiredFor } = await import("../telegram.mjs");
+  const { normalizeTelegramRequirement, telegramRequiredFor } = await import("../server/services/notifications/telegram.mjs");
   assert.deepEqual(normalizeTelegramRequirement(), { enabled: false, exemptLogins: [] });
   assert.deepEqual(normalizeTelegramRequirement({ enabled: true, exemptLogins: [" Director ", "director", "", "oem1"] }), { enabled: true, exemptLogins: ["director", "oem1"] });
   const rule = { enabled: true, exemptLogins: ["director"] };

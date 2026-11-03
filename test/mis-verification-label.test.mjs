@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {MIS_VERIFICATION_MENU,normalizeRequestMenuLabel,normalizeUserAccessLabels,resolveMobileAccess} from '../mobile-access.mjs';
+import {MIS_VERIFICATION_MENU,normalizeRequestMenuLabel,normalizeUserAccessLabels,resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('the MIS request submenu no longer uses the label rejected by the production edge',()=>{

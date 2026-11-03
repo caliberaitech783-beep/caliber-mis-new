@@ -40,7 +40,7 @@ test('report ZIP dialog fills the viewport with scrollable content and pinned co
 
 test('reports and schedule configuration are exposed to every signed-in profile with server-side scope',()=>{
   const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(source,/section === "reports"/);
   assert.match(source,/<FileBarChart \/> Reports/);
   assert.match(source,/accessibleReportGroups/);

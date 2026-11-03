@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {canReadDashboardEquipment,currentDashboardUserCandidate,dashboardEquipmentScope,dashboardEquipmentScopeIsUsable,dashboardSessionFromProfile,scopeDashboardEquipmentRecords} from '../dashboard-equipment-access.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {recordsForSite} from '../site-location.mjs';
+import {canReadDashboardEquipment,currentDashboardUserCandidate,dashboardEquipmentScope,dashboardEquipmentScopeIsUsable,dashboardSessionFromProfile,scopeDashboardEquipmentRecords} from '../server/domain/core/dashboard-equipment-access.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {recordsForSite} from '../shared/masters/site-location.mjs';
 
 const equipment=[
   {id:1,equipmentName:'EX-1',currentLocation:'SASTI II'},
@@ -158,7 +158,7 @@ test('empty operational and Manager scopes are configuration errors, not empty f
 });
 
 test('dashboard equipment API is authenticated, uncached, scoped, and always returns a records array',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const start=server.indexOf("app.get('/api/dashboard/equipment'");
   const end=server.indexOf("app.get('/api/masters'",start);
   assert.ok(start>=0&&end>start,'dashboard equipment route should exist before the master API');
@@ -181,7 +181,7 @@ test('dashboard equipment API is authenticated, uncached, scoped, and always ret
 });
 
 test('dashboard equipment authorization is rebuilt from current user and privilege records',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const start=server.indexOf('async function currentDashboardAuthorization');
   const end=server.indexOf('function ticketProjection',start);
   assert.ok(start>=0&&end>start,'live dashboard authorization helper should exist');

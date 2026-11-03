@@ -4,8 +4,8 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {formatDisplayDateTime} from '../date-time-format.mjs';
-import {employeeTransferAccess,employeeTransferSiteAllowed} from '../employee-transfer.mjs';
+import {formatDisplayDateTime} from '../shared/core/date-time-format.mjs';
+import {employeeTransferAccess,employeeTransferSiteAllowed} from '../server/routes/people/employee-transfer.mjs';
 
 test('deletion register renders scoped decisions and exports snapshot/history through shared controls',async()=>{
  const source=readFileSync(new URL('../src/pages/admin/cdir-deletion.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
@@ -22,7 +22,7 @@ test('deletion register renders scoped decisions and exports snapshot/history th
 });
 
 test('deletion notification targets require ownership and current role/site authorization',async()=>{
- const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');const route=source.slice(source.indexOf("app.get('/api/notifications/:id/target'"),source.indexOf("app.patch('/api/notifications/read'"));let handler,owned=true;
+ const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');const route=source.slice(source.indexOf("app.get('/api/notifications/:id/target'"),source.indexOf("app.patch('/api/notifications/read'"));let handler,owned=true;
  let user={managerSites:'Majri OC'};const record={site:'Majri OC',requestNo:'CD-DEL-1',record:{name:'STAFF'}};
  const pool={query:async(sql)=>sql.includes('FROM crm_notifications')?{rows:owned?[{reference:'CD-DEL-1'}]:[]}:{rows:[{id:1,record_data:record}]}};
  new Function('app','requireSession','pool','currentUserRecord','employeeTransferAccess','employeeTransferSiteAllowed',route)({get:(path,...handlers)=>{handler=handlers.at(-1);}},()=>{},pool,async()=>user,employeeTransferAccess,employeeTransferSiteAllowed);

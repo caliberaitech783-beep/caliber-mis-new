@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {PC_BACKUP_KEY_PREFIX,createPcBackupKey,matchPcBackupKey,normalizePcBackupKeys,publicPcBackupKeys,hashPcBackupKey,createAttemptLimiter,cleanPcBackupLabel} from '../pc-backup-keys.mjs';
-import {auditRouteDetails} from '../audit-trail.mjs';
+import {PC_BACKUP_KEY_PREFIX,createPcBackupKey,matchPcBackupKey,normalizePcBackupKeys,publicPcBackupKeys,hashPcBackupKey,createAttemptLimiter,cleanPcBackupLabel} from '../server/services/storage/pc-backup-keys.mjs';
+import {auditRouteDetails} from '../server/domain/core/audit-trail.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const client=readFileSync(new URL('../src/pages/admin/backup-administration.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const script=readFileSync(new URL('../public/pc-backup/Caliber-Pulse-Backup-Setup.ps1',import.meta.url),'utf8');
 

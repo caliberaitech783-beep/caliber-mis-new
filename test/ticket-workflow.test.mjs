@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import {managerUserRole,ticketReference,ticketSiteSlug,validTicketMediaDataUrl} from "../ticket-workflow.mjs";
+import {managerUserRole,ticketReference,ticketSiteSlug,validTicketMediaDataUrl} from "../server/domain/requests/ticket-workflow.mjs";
 
 test("ticket references use site and DDMMYY with a generated sequence", () => {
   const reference = ticketReference({site: "Majri OB", date: new Date(2026, 7, 21), number: 42});
@@ -25,7 +25,7 @@ test("ticket media accepts supported bounded data URLs", () => {
 
 test("ticket UI and API enforce scoped lists, admin resolution, and notifications", () => {
   const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   assert.match(source, /function TicketPage/);
   assert.match(source, /const canCreate = Boolean\(session\?\.token\)/);
   assert.match(source, /function TicketCreateForm/);

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {formatTimelineDuration,parseRequestTimelineTimestamp} from "../../../request-timeline.mjs";
+import {formatTimelineDuration,parseRequestTimelineTimestamp} from "../../../shared/requests/request-timeline.mjs";
 import {DailyUpdatesPanel} from "../ui/daily-updates-list.jsx";
-import {stageTimingSteps} from "../../../stage-timing-report.mjs";
+import {stageTimingSteps} from "../../../shared/reports/stage-timing-report.mjs";
 import "../../styles/request-timeline.css";
 
 const clock = new Intl.DateTimeFormat("en-IN", {timeZone:"Asia/Kolkata", day:"2-digit", month:"short", year:"2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:true});

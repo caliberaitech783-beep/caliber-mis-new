@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import express from 'express';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const between=(start,end,from=0)=>{const i=server.indexOf(start,from);assert.ok(i>=0,start);const j=server.indexOf(end,i+start.length);assert.ok(j>i,end);return server.slice(i,j);};
 const evaluate=(source,deps)=>new Function(...Object.keys(deps),source)(...Object.values(deps));
 const sendDataUrlMedia=evaluate(`${between('function sendDataUrlMedia(','const connectionString=')};return sendDataUrlMedia;`,{});

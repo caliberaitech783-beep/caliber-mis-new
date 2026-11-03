@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {equipmentDoorNumber,requestsWithDoorNumbers} from '../equipment-door.mjs';
-import {requestEquipmentDetails} from '../request-equipment.mjs';
+import {equipmentDoorNumber,requestsWithDoorNumbers} from '../shared/masters/equipment-door.mjs';
+import {requestEquipmentDetails} from '../shared/requests/request-equipment.mjs';
 import {equipmentMachineLabel} from '../src/utils/dashboard/dashboard-drilldown-model.mjs';
-import {fleetAssetRequestDetails} from '../dashboard-equipment-metrics.mjs';
+import {fleetAssetRequestDetails} from '../shared/core/dashboard-equipment-metrics.mjs';
 import {readFileSync} from 'node:fs';
 
 const tanker={door:'',reg:'MP66ZD0582',equipmentName:'WT22 - MP66ZD0582',chassisNo:'MAT569006P3J27912',site:'Jayant OB'};

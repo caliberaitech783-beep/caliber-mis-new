@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {buildPoGrnReconciliation,reconciliationMatches} from '../po-grn-reconciliation.mjs';
+import {buildPoGrnReconciliation,reconciliationMatches} from '../shared/accounts/po-grn-reconciliation.mjs';
 const range={from:'2026-09-01',to:'2026-09-30'};
 const po=(extra={})=>({PO_ID:1,ITEM_CODE:'01',SPECIFICATION_CODE:2,ORDERED_QTY:10,PO_STATUS:'ACTIVE',DUE_DATE:'2026-09-20',VENDOR_CODE:3,...extra});
 const grn=(extra={})=>({GRN_ID:1,LINE_ID:1,GRN_NO:'G1',PO_ID:1,ITEM_CODE:'01',SPECIFICATION_CODE:2,GRN_DATE:'2026-09-21',RECEIVED_QTY:3,ACCEPTED_QTY:2,REJECTED_QTY:1,GRN_STATUS:'ACTIVE',VENDOR_CODE:3,...extra});
@@ -29,7 +29,7 @@ test('includes earlier receipts for selected POs, but does not classify older un
  assert.equal(result.rows[0].received,3);assert.equal(result.unmatched.length,0);
 });
 test('merged report requires report access and opens through Admin IBOSS',()=>{
- const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(server,/app\.get\('\/api\/reports\/po-grn-reconciliation',requireSession/);
  assert.match(server,/accessAllows\(permissions\.reportAccess,'PO-GRN Reconciliation'\)/);

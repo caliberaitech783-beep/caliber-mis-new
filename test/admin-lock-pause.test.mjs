@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
-import * as policy from '../admin-lock-policy.mjs';
-import {assignedUserRoles,hasAccountRole} from '../account-role-access.mjs';
+import * as policy from '../server/domain/auth/admin-lock-policy.mjs';
+import {assignedUserRoles,hasAccountRole} from '../shared/auth/account-role-access.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const extract=(start,end)=>{
   const from=server.indexOf(start),to=server.indexOf(end,from+start.length);
   assert.ok(from>=0&&to>from,`Missing source boundary: ${start}`);

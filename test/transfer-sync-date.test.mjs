@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { transferSyncDate } from "../transfer-sync-date.mjs";
+import { transferSyncDate } from "../server/domain/people/transfer-sync-date.mjs";
 
 test("one-time sync dates are strict and do not change the full-history default", () => {
   for (const value of [undefined, null, ""]) assert.equal(transferSyncDate(value), null);
@@ -11,8 +11,8 @@ test("one-time sync dates are strict and do not change the full-history default"
 });
 
 test("scoped sync binds the Oracle date and preserves older PostgreSQL history", () => {
-  const oracle = fs.readFileSync(new URL("../oracle-db.mjs", import.meta.url), "utf8");
-  const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+  const oracle = fs.readFileSync(new URL("../server/services/core/oracle-db.mjs", import.meta.url), "utf8");
+  const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
   const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(oracle, /equipmenttransferdate >= TO_DATE\(:from_date, 'YYYY-MM-DD'\)/);
   assert.match(oracle, /\{ from_date: fromDate \}/);

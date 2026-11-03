@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {PRODUCTION_FIRST_TRIP_ROLLOUT_IST, PRODUCTION_FIRST_TRIP_ROLLOUT_LABEL, isProductionFirstTripPending, isProductionFirstTripRequired, productionFirstTripCutoffMs} from '../info-pulse-data.mjs';
+import {PRODUCTION_FIRST_TRIP_ROLLOUT_IST, PRODUCTION_FIRST_TRIP_ROLLOUT_LABEL, isProductionFirstTripPending, isProductionFirstTripRequired, productionFirstTripCutoffMs} from '../shared/notifications/info-pulse-data.mjs';
 
 const istLabel = (ms) => new Date(ms + 330 * 60_000).toISOString().slice(0, 19);
 
 test('production first trip API stays open after MIS verification', () => {
-  const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   const route = server.slice(server.indexOf("app.patch('/api/requests/:reference/production-first-trip'"), server.indexOf("app.patch('/api/requests/:reference/verify'"));
   assert.equal(istLabel(productionFirstTripCutoffMs()), '2026-09-22T00:00:00');
   assert.match(route, /isProductionFirstTripRequired\(request\)/);

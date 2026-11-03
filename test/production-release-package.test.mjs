@@ -52,3 +52,30 @@ test('Azure deploys the complete validated workspace instead of the reduced stag
  assert.match(workflow,/package:\s*\.\s*(?:#.*)?$/m);
  assert.doesNotMatch(workflow,/package:\s*\$\{\{\s*runner\.temp\s*\}\}\/mis-release\.zip/);
 });
+
+
+test('relocated backend and shared dependencies survive release staging',async t=>{
+ const temp=await mkdtemp(path.join(os.tmpdir(),'mis-relocated-release-'));
+ t.after(()=>rm(temp,{recursive:true,force:true}));
+ const root=path.join(temp,'source'),destination=path.join(temp,'release');
+ const runtime={
+  'server.mjs':"import './server/app.mjs';",
+  'server/app.mjs':"import {limit} from '../shared/logbooks/limits.mjs';",
+  'server/services/scanning/reader.mjs':'export const reader=true;',
+  'shared/logbooks/limits.mjs':'export const limit=8;',
+  'dist/index.html':'<main>UI</main>',
+  'node_modules/example/index.js':'export default true;',
+  'ocr-model-cache/model.bin':'model',
+  'DEPLOYMENT_SHA':'a'.repeat(40)
+ };
+ for(const [file,value] of Object.entries(runtime)){
+  await mkdir(path.dirname(path.join(root,file)),{recursive:true});
+  await writeFile(path.join(root,file),value);
+ }
+ const trackedFiles=Object.keys(runtime).filter(file=>file==='server.mjs'||file.startsWith('server/')||file.startsWith('shared/'));
+ await stageProductionRelease({root,destination,trackedFiles});
+ for(const file of Object.keys(runtime))assert.equal(await readFile(path.join(destination,file),'utf8'),runtime[file],file);
+ assert.equal(isRuntimeSource('shared/../secret.mjs'),false);
+ assert.equal(isRuntimeSource('server/.env'),false);
+ assert.equal(isRuntimeSource('docs/archive.md'),false);
+});

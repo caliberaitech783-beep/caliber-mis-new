@@ -1,12 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from 'node:fs';
-import {isIdleVehicleRequest} from '../request-idle.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
 import {
   activeRequestConflictMessage,
   findActiveRequestConflict,
   isActiveMaintenanceRequest,
-} from "../request-conflict.mjs";
+} from "../shared/requests/request-conflict.mjs";
 
 test('closed pending idle blocks by door or chassis and takes priority over active linked cases', () => {
   const idle={ref:'REQ-IDLE',door:'E94',chassis:'CH94',status:'Closed',closedAt:'2026-10-09',vehicleIdle:true};
@@ -19,7 +19,7 @@ test('closed pending idle blocks by door or chassis and takes priority over acti
 });
 
 test('transaction guard rejects pending idle even with linked-ticket override, before writing', async () => {
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const code=source.slice(source.indexOf('async function createRequestWithVehicleLock('),source.indexOf("app.get('/api/requests/conflict'"));
   for(const existingReason of ['','same','different']){
     const queries=[];

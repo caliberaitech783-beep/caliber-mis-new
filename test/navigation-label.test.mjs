@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import {MOBILE_NAVIGATION_ITEMS, navigationLabel} from "../navigation-visibility.mjs";
-import {ADMIN_SUBMENU_OPTIONS} from "../admin-access.mjs";
+import {MOBILE_NAVIGATION_ITEMS, navigationLabel} from "../shared/auth/navigation-visibility.mjs";
+import {ADMIN_SUBMENU_OPTIONS} from "../shared/auth/admin-access.mjs";
 
 test("the daily site-wise menu is displayed in plural", () => {
   assert.equal(navigationLabel("Daily site-wise report"), "Daily site-wise reports");

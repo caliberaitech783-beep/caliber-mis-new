@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { visibleInProductionHistory } from "../src/utils/ui/production-history.mjs";
 import { visibleInMaintenanceHistory } from "../src/utils/requests/maintenance-history.mjs";
 import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
-import { requestsVisibleToMisWorkspace } from "../mis-request-visibility.mjs";
+import { requestsVisibleToMisWorkspace } from "../shared/core/mis-request-visibility.mjs";
 
 const historyVisible = [visibleInProductionHistory, visibleInMaintenanceHistory];
 

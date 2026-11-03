@@ -2,7 +2,7 @@
 
 # Caliber MIS New / Pulse-II — project instructions
 
-Read `docs/CLAUDE-CODE-WORKFLOW.md` and `docs/IMPLEMENTATION-HANDOFF.md` before changing this project. They provide setup, deployment, architecture, and user decisions. They are dated context, not a substitute for inspecting current code, tests, and the latest user request.
+Read `README.md` and `docs/development.md` before changing this project. Operational details are consolidated in `docs/operations.md`; dated notes in `docs/archive.md` are reference only. Current code, tests and user instructions take priority.
 
 ## Project
 - Repository: https://github.com/caliberaitech783-beep/caliber-mis-new
@@ -10,7 +10,7 @@ Read `docs/CLAUDE-CODE-WORKFLOW.md` and `docs/IMPLEMENTATION-HANDOFF.md` before 
 - Reference website: https://pulse-ll.cmll.in (the separate original application).
 - This repository has no authorized deployment target. Do not deploy to the original application.
 - Actual UI entry: `index.html` -> `src/main.jsx` -> `src/app/App.jsx`. See `docs/frontend-architecture.md` for the current folder layout. Some older README/workflow notes describe obsolete entry points and deployment arrangements.
-- React/Vite UI, Express backend (`server.mjs`), PostgreSQL, scan/OCR integrations.
+- React/Vite UI, Express backend (`server/app.mjs`, launched by `server.mjs`), PostgreSQL, scan/OCR integrations.
 - Work from the repository root, not its `test` directory.
 
 ## Start every task
@@ -38,10 +38,10 @@ Use a separate clone when another coding tool is using this checkout. Use `codex
 - Use targeted tests during implementation, then the checks required by the current CI workflow.
 - Database tests must use a disposable local/test database, never production.
 
-## Release rules
-- Stage explicit intended files, not `git add .` in a dirty checkout.
-- Only deploy when authorized. A `main` push is a production action.
-- Use the checked-in GitHub Actions release workflow. Deploy the complete validated workspace; a dist-only package is insufficient for the server.
-- Verify the intended release run, `/api/health`, and `/app-version.txt`. Compare their commit identity with the deployed commit, accounting for squash merges or subsequent releases.
-- Report separately what is local, committed, pushed, and verified live. A successful build alone is not a deployment.
-- Update the handoff when an implementation changes a durable product rule or release procedure.
+## Repository and release rules
+- Keep changes confined to caliber-mis-new; never modify caliber-mis.
+- Preserve existing uncommitted work. Stage only intended files.
+- Commit and push only when requested; use the identity requested in the session.
+- This repository has validation CI only and no configured deployment target. Do not enable archived workflows or deploy to the original application.
+- Report local, committed, pushed and live verification separately.
+- Update existing development or operations guides when durable behavior changes; avoid separate per-task Markdown reports.

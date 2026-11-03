@@ -12,8 +12,8 @@ import {
   signedCount,
   summarizeInOutReport,
   vehicleListLabel,
-} from '../in-out-report.mjs';
-import {DIRECTOR_REPORT_TITLES,buildDirectorReportTables} from '../director-report-bundle.mjs';
+} from '../shared/reports/in-out-report.mjs';
+import {DIRECTOR_REPORT_TITLES,buildDirectorReportTables} from '../shared/reports/director-report-bundle.mjs';
 
 const requests=[
   {ref:'REQ-1',equipment:'EX-1',site:'Sasti OC',status:'Open',start:'2026-09-01 08:00'},

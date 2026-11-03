@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {buildDirectorReportTables,buildDirectorWhatsAppMessage,buildXlsxWorkbookBuffer,directorReportDue,directorReportWindow} from '../director-report-bundle.mjs';
+import {buildDirectorReportTables,buildDirectorWhatsAppMessage,buildXlsxWorkbookBuffer,directorReportDue,directorReportWindow} from '../shared/reports/director-report-bundle.mjs';
 
 test('Director report window runs daily at 7 PM India time',()=>{
   const window=directorReportWindow(new Date('2026-09-01T13:35:00Z'));
@@ -83,7 +83,7 @@ test('director lifecycle reports distinguish idle, manager approval and MIS veri
 });
 
 test('Director report API and all-user schedule popup are wired into server and reports UI',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const css=readFileSync(new URL('../src/styles/style.css',import.meta.url),'utf8');
   const schedulePolish=readFileSync(new URL('../src/styles/report-schedule-polish.css',import.meta.url),'utf8');

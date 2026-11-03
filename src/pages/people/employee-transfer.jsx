@@ -1,13 +1,13 @@
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import React,{useEffect,useState} from 'react';
 import {ArrowRightLeft,BookUser,Users,Search,RefreshCw,Send,X} from 'lucide-react';
-import {formatDisplayDate,formatDisplayDateTime} from '../../../date-time-format.mjs';
+import {formatDisplayDate,formatDisplayDateTime} from '../../../shared/core/date-time-format.mjs';
 import DateInput from '../../utils/ui/date-input.mjs';
 import '../../styles/employee-transfer.css';
 import CaliberDirectoryPage from './caliber-directory-page.jsx';
 import CdirDeletion from '../admin/cdir-deletion.jsx';
 import EmployeeTenureReport from '../reports/employee-tenure-report.jsx';
-import {CDIR_MASTER_FIELDS,CDIR_MASTERS} from '../../../cdir-masters.mjs';
+import {CDIR_MASTER_FIELDS,CDIR_MASTERS} from '../../../shared/people/cdir-masters.mjs';
 const detailLabels=Object.fromEntries([...CDIR_MASTER_FIELDS[CDIR_MASTERS.employee],...CDIR_MASTER_FIELDS[CDIR_MASTERS.contact]].map(([key,label])=>[key,label]));
 
 export function CdirModule({token,ReportSection,initialView='directory',onViewChange}){

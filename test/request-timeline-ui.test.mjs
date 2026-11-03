@@ -1,17 +1,17 @@
 import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
-import {isIdleVehicleRequest} from '../request-idle.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
-import {formatTimelineDuration, parseRequestTimelineTimestamp, requestTimelineEvents, requestTimelineDurations, buildRequestTimelineChanges} from "../request-timeline.mjs";
-import * as equipment from "../request-equipment.mjs";
+import {formatTimelineDuration, parseRequestTimelineTimestamp, requestTimelineEvents, requestTimelineDurations, buildRequestTimelineChanges} from "../shared/requests/request-timeline.mjs";
+import * as equipment from "../shared/requests/request-equipment.mjs";
 import * as dailyUpdatesOrder from "../src/utils/ui/daily-updates-order.mjs";
-import { formatDisplayDateTime } from "../date-time-format.mjs";
+import { formatDisplayDateTime } from "../shared/core/date-time-format.mjs";
 import { renderToStaticMarkup } from "react-dom/server";
 import DateInput from '../src/utils/ui/date-input.mjs';
-import { stageTimingSteps } from "../stage-timing-report.mjs";
+import { stageTimingSteps } from "../shared/reports/stage-timing-report.mjs";
 
 const source = readFileSync(new URL("../src/components/requests/request-timeline.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace(/export (?:default )?function /g, "function ");
 const code = (await transformWithOxc(source, "request-timeline.jsx", {jsx: {runtime: "classic"}})).code;

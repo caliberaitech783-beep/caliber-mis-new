@@ -1,7 +1,7 @@
 import '../../styles/log-book-readability.css';
-import {compactLogBookLabel} from '../../../log-book-labels.mjs';
+import {compactLogBookLabel} from '../../../shared/logbooks/log-book-labels.mjs';
 import React,{useEffect,useMemo,useState} from 'react';
-import {OPERATIONAL_START} from '../../../operational-start.mjs';
+import {OPERATIONAL_START} from '../../../shared/logbooks/operational-start.mjs';
 import '../../styles/manpower-reports.css';
 
 const views=[['manpower','Manpower by Category'],['employee','Shift Performance'],['ot','OT & Multiple Duties']];

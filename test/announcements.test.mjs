@@ -10,9 +10,9 @@ import {
   inboxDismissPath,
   inboxItems,
   normalizeAnnouncement,
-} from '../announcement.mjs';
+} from '../server/domain/core/announcement.mjs';
 
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const styles = readFileSync(new URL('../src/styles/user-sessions.css', import.meta.url), 'utf8');
 const routeOf = (start) => server.slice(server.indexOf(start), server.indexOf('\napp.', server.indexOf(start) + start.length));
@@ -101,7 +101,7 @@ test('administrators compose announcements from the User Sessions page and can r
 });
 
 test('announcements may carry one validated image served separately from the poll', async () => {
-  const { announcementImageError, announcementImageBinary, announcementValidationError: validate } = await import('../announcement.mjs');
+  const { announcementImageError, announcementImageBinary, announcementValidationError: validate } = await import('../server/domain/core/announcement.mjs');
   const png = 'data:image/png;base64,iVBORw0KGgo=';
   assert.equal(announcementImageError(''), '');
   assert.equal(announcementImageError(png), '');
@@ -112,7 +112,7 @@ test('announcements may carry one validated image served separately from the pol
   const binary = announcementImageBinary(png);
   assert.equal(binary.contentType, 'image/png');
   assert.deepEqual([...binary.bytes.subarray(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
-  const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8');
   assert.match(server, /ADD COLUMN IF NOT EXISTS image_data TEXT NOT NULL DEFAULT ''/);
   assert.match(server, /app\.get\('\/api\/announcements\/:announcementId\/image',requireSession/);
   assert.match(server, /\(a\.image_data<>''\) AS "hasImage"/);

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {readFileSync} from 'node:fs';
-import {notificationText, notificationParts, notificationSiteOptions, filterNotificationsBySite, notificationCategory, notificationCategoryOptions, filterNotificationsByCategory} from '../notification-text.mjs';
-import {createNotificationFeed} from '../notification-feed.mjs';
+import {notificationText, notificationParts, notificationSiteOptions, filterNotificationsBySite, notificationCategory, notificationCategoryOptions, filterNotificationsByCategory} from '../shared/notifications/notification-text.mjs';
+import {createNotificationFeed} from '../server/domain/notifications/notification-feed.mjs';
 import {createNotificationTracker, createNotificationSound} from '../src/services/notifications/notification-alerts.mjs';
 
 test('legacy opened/closed messages put site and one door before retained details', () => {
@@ -195,7 +195,7 @@ test('UI wires all toasts to exact-entry navigation and sounds outside state upd
   assert.match(source,/const fresh = track\(next\)/);
   assert.match(source,/let delay = 1000/);
   assert.match(source,/if \(controller.signal.aborted\) return/);
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(server,/AFTER INSERT ON crm_notifications/);
   assert.match(server,/pg_notify\('bdms_notifications',NEW.recipient_login\)/);
   assert.match(server,/app.get\('\/api\/notifications',requireSession/);

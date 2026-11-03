@@ -4,9 +4,9 @@ import express from 'express';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {createCanvas} from '@napi-rs/canvas';
-import {registerBulkCardScanning} from '../bulk-card-scanning.mjs';
-import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
-import {canAutoSaveScanCard} from '../scan-auto-save.mjs';
+import {registerBulkCardScanning} from '../server/routes/scanning/bulk-card-scanning.mjs';
+import {LOG_BOOK_SCHEMA} from '../server/routes/logbooks/log-book.mjs';
+import {canAutoSaveScanCard} from '../shared/scanning/scan-auto-save.mjs';
 
 async function fixture(t,options={}){
  const db=new PGlite(),calls=[];

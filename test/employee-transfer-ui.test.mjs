@@ -5,9 +5,9 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 import DateInput from '../src/utils/ui/date-input.mjs';
-import {formatDisplayDate,formatDisplayDateTime} from '../date-time-format.mjs';
-import {CDIR_MASTER_FIELDS,CDIR_MASTERS} from '../cdir-masters.mjs';
-import {employeeTransferAccess,employeeTransferVisible} from '../employee-transfer.mjs';
+import {formatDisplayDate,formatDisplayDateTime} from '../shared/core/date-time-format.mjs';
+import {CDIR_MASTER_FIELDS,CDIR_MASTERS} from '../shared/people/cdir-masters.mjs';
+import {employeeTransferAccess,employeeTransferVisible} from '../server/routes/people/employee-transfer.mjs';
 
 const source=readFileSync(new URL('../src/pages/people/employee-transfer.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function');
 const {code}=await transformWithOxc(source,'employee-transfer.jsx',{jsx:{runtime:'classic'}});
@@ -24,7 +24,7 @@ test('rendered transfer form autopopulates details and passes each register/hist
 });
 
 test('employee notification target checks ownership and current PM scope before returning employee data',async()=>{
- const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');const route=server.slice(server.indexOf("app.get('/api/notifications/:id/target'"),server.indexOf("app.patch('/api/notifications/read'"));let handler;
+ const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');const route=server.slice(server.indexOf("app.get('/api/notifications/:id/target'"),server.indexOf("app.patch('/api/notifications/read'"));let handler;
  let owned=true;let user={managerSites:'Majri OC'};const employee={source:'Majri OC',destination:'Jayant OC',transferNo:'ET-1'};
  const pool={query:async(sql)=>sql.includes('FROM crm_notifications')?{rows:owned?[{reference:'ET-1'}]:[]}:{rows:[{id:1,record_data:employee}]}};
  new Function('app','requireSession','pool','currentUserRecord','employeeTransferAccess','employeeTransferVisible',route)({get:(path,...handlers)=>{handler=handlers.at(-1);}},()=>{},pool,async()=>user,employeeTransferAccess,employeeTransferVisible);

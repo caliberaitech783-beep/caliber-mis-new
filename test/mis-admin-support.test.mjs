@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {isMisAdministrator,MIS_ADMIN_PAGES} from '../mis-admin-access.mjs';
-import {misPageAllowed,misRequestAllowed} from '../mis-application-access.mjs';
-import {canViewUserSessions} from '../user-session-access.mjs';
-import {userSiteScope} from '../region-scope.mjs';
-import {siteAllowed} from '../log-book-access.mjs';
+import {isMisAdministrator,MIS_ADMIN_PAGES} from '../shared/auth/mis-admin-access.mjs';
+import {misPageAllowed,misRequestAllowed} from '../shared/auth/mis-application-access.mjs';
+import {canViewUserSessions} from '../shared/auth/user-session-access.mjs';
+import {userSiteScope} from '../shared/masters/region-scope.mjs';
+import {siteAllowed} from '../shared/logbooks/log-book-access.mjs';
 const user={role:'super',login:'site-user',permissions:{separateMisCredentials:true,adminLevel:'Admin',misDesktopAccess:['Vehicle Log Book']}};
 const admin={...user,login:'admin',permissions:{...user.permissions,misDesktopAccess:['Users & employees']}};
 test('generic MIS Admin labels do not grant administrative authority',()=>{
@@ -25,7 +25,7 @@ test('MIS administration APIs fail closed for users and retain only bounded admi
  assert.equal(allowed(user,'/api/mis-ticket-sites'),true);assert.equal(allowed(user,'/api/mis-ticket-sites','POST'),false);
 });
 test('MIS ticket access checks ownership for entries, media and notifications despite super session role',async()=>{
- const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const start=server.indexOf('async function ticketVisibleToSession('),end=server.indexOf('\n}',start)+2;
  const visible=new Function('isMisAdministrator',server.slice(start,end)+';return ticketVisibleToSession')(isMisAdministrator);
  assert.equal(await visible({creatorLogin:'site-user'},user),true);
@@ -41,7 +41,7 @@ test('MIS ticket access checks ownership for entries, media and notifications de
  assert.match(list,/lower\(creator_login\)=\$/);
 });
 test('MIS ticket creation enforces the assigned site and uses MIS notifications without Pulse fan-out',async()=>{
- const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const start=source.indexOf("app.post('/api/tickets',"),end=source.indexOf("app.get('/api/tickets/resolution-notices'",start);
  let handler;const inserts=[],queries=[],notifications=[];
  const ticket={reference:'TEST',creatorLogin:user.login,site:'Assigned',category:'MIS',message:'Help'};

@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { buildOrganisationChart, buildReportingLines, chartDesignationKey, chartPerson, organisationDetail, peopleAtSite, personSites, CHART_DESIGNATIONS, ORGANISATION_PAGES, ORGANISATION_PAGE_NAMES } from "../src/utils/people/organisation-chart.mjs";
-import { flowDesignationForUser } from "../hierarchy-report-flow.mjs";
-import { resolveMobileAccess } from "../mobile-access.mjs";
-import { masterAccessAllows } from "../admin-access.mjs";
+import { flowDesignationForUser } from "../shared/reports/hierarchy-report-flow.mjs";
+import { resolveMobileAccess } from "../shared/auth/mobile-access.mjs";
+import { masterAccessAllows } from "../shared/auth/admin-access.mjs";
 
 const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const view = readFileSync(new URL("../src/pages/people/organisation-chart.jsx", import.meta.url), "utf8");

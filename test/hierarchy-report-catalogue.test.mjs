@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {HIERARCHY_REPORT_GROUPS,HIERARCHY_REPORT_TITLES,HIERARCHY_REPORT_CODES,hierarchyReportEquivalent,normalizeHierarchyReportAccess,hierarchyAccessAllowsReport} from '../hierarchy-report-catalogue.mjs';
-import {DEPARTMENT_REPORT_TITLES} from '../department-reports.mjs';
-import {DIRECTOR_REPORT_TITLES} from '../director-report-bundle.mjs';
-import {IN_OUT_REPORT_TITLE} from '../in-out-report.mjs';
-import {REMOVED_REPORT_TITLES} from '../report-pending-export.mjs';
+import {HIERARCHY_REPORT_GROUPS,HIERARCHY_REPORT_TITLES,HIERARCHY_REPORT_CODES,hierarchyReportEquivalent,normalizeHierarchyReportAccess,hierarchyAccessAllowsReport} from '../shared/reports/hierarchy-report-catalogue.mjs';
+import {DEPARTMENT_REPORT_TITLES} from '../shared/reports/department-reports.mjs';
+import {DIRECTOR_REPORT_TITLES} from '../shared/reports/director-report-bundle.mjs';
+import {IN_OUT_REPORT_TITLE} from '../shared/reports/in-out-report.mjs';
+import {REMOVED_REPORT_TITLES} from '../shared/reports/report-pending-export.mjs';
 
 test('hierarchy report groups carry the Reports menu headings in menu order',()=>{
   assert.deepEqual(HIERARCHY_REPORT_GROUPS.map(group=>[group.group,group.viewKey]),[['General Report','C'],['Production Report','P'],['Maintenance Report','M'],['MIS Report','S']]);
@@ -39,7 +39,7 @@ test('older hierarchy ticks and scheduled titles map onto their catalogue equiva
 
 test('the hierarchy master and server use the shared catalogue',()=>{
   const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(source,/from "\.(?:\.\.?\/)+(?:[\w-]+\/)*hierarchy-report-catalogue\.mjs"/);
   assert.match(source,/const hierarchyReportGroups = HIERARCHY_REPORT_GROUPS;/);
   assert.match(source,/const hierarchyReportCodes = HIERARCHY_REPORT_CODES;/);

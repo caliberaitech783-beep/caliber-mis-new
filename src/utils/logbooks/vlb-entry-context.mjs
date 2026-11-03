@@ -1,5 +1,5 @@
-import {canonicalSiteName} from '../../../site-location.mjs';
-import {bookShiftCode,normalizeCardShift,CARD_SHIFTS} from '../../../trip-card-rules.mjs';
+import {canonicalSiteName} from '../../../shared/masters/site-location.mjs';
+import {bookShiftCode,normalizeCardShift,CARD_SHIFTS} from '../../../shared/scanning/trip-card-rules.mjs';
 export function vlbEntryContext(batch){return {bookDate:batch.report_date,location:batch.site,cardShift:normalizeCardShift(batch.shift)};}
 export function vlbEntryFields(batch,options){
  const context=vlbEntryContext(batch);

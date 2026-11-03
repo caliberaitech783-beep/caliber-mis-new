@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { backupDiagnostic, deliveryDiagnostic, diagnosticState, formatBytes, runDiagnostic, runDiagnostics } from "../system-diagnostics.mjs";
+import { backupDiagnostic, deliveryDiagnostic, diagnosticState, formatBytes, runDiagnostic, runDiagnostics } from "../server/domain/core/system-diagnostics.mjs";
 
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("each check reports ok, warn, fail or off and never hangs", async () => {

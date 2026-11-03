@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { dashboardMisQueue, misQueueDate } from '../src/utils/dashboard/dashboard-mis-queue.mjs';
 import { visibleInMisRequests } from '../src/utils/ui/mis-history.mjs';
-import { requestsVisibleToDashboard } from '../mis-request-visibility.mjs';
+import { requestsVisibleToDashboard } from '../shared/core/mis-request-visibility.mjs';
 
 test('pending MIS records match the workspace even when five are excluded from dashboard history', () => {
   const rows = Array.from({length: 2917}, (_, i) => ({

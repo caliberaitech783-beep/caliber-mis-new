@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 test('announcement history is authenticated, paginated and independent of acknowledgements and popup expiry',()=>{
   const route=server.slice(server.indexOf("app.get('/api/announcements/history'"),server.indexOf("app.get('/api/announcements/pending'"));

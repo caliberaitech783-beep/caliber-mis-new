@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {buildDirectorReportTables} from '../director-report-bundle.mjs';
-import {buildDepartmentReports} from '../department-reports.mjs';
+import {buildDirectorReportTables} from '../shared/reports/director-report-bundle.mjs';
+import {buildDepartmentReports} from '../shared/reports/department-reports.mjs';
 
 const client = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8');
 const request = Object.freeze({
   ref: 'REQ-time-audit', status: 'Closed', site: 'Sasti OB',
   start: '2026-09-07 10:00:00', closedAt: '2026-09-07 11:00:00',

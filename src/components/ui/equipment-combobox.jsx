@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { findRequestEquipment, requestEquipmentDetails, requestEquipmentOptionLabel, requestEquipmentSearchOptions } from "../../../request-equipment.mjs";
+import { findRequestEquipment, requestEquipmentDetails, requestEquipmentOptionLabel, requestEquipmentSearchOptions } from "../../../shared/requests/request-equipment.mjs";
 import "../../styles/equipment-combobox.css";
 
 export default function EquipmentCombobox({ records = [], value = "", onSelect, disabled = false, loading = false, group = "" }) {

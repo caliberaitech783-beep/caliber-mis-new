@@ -1,7 +1,7 @@
-import {suggestedCaliberId} from '../../../employee-identity.mjs';
+import {suggestedCaliberId} from '../../../shared/people/employee-identity.mjs';
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import React,{useEffect,useState,useRef} from 'react';
-import {EMPLOYEE_FIELDS} from '../../../employee-master-fields.mjs';
+import {EMPLOYEE_FIELDS} from '../../../shared/people/employee-master-fields.mjs';
 import '../../styles/employee-master.css';
 const labelGroups={Identity:['caliberId','caliberCode','employeeCode','name','employeeShortName','gender','dateOfBirth','fatherName','spouseName','maritalStatus','bloodGroup'],Employment:['departmentName','designationName','employeeGrade','currentDepartmentName','currentDesignationName','dateOfAppointment','dateOfJoining','shiftName','staffType','employeeType','locationName','currentLocation','currentStaffType','status','companyName','skills','workCentre','resignationStatus','resignationAcceptenceDate'],Contact:['presentAddress','presentCity','presentState','presentPhoneNo','permanentAddress','permanentCity','permanentState','officeMobileNo','officeEmailId','personalMobileNo','personalEmailId']};
 export default function EmployeeMaster({session,ExportMenu,PrintButton,parseCsv}){

@@ -1,9 +1,9 @@
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import React, {useEffect, useMemo, useState} from 'react';
 import {ArrowRightLeft, CheckCircle2, Clock, MapPin, Plus, RefreshCw, Search, Send, ShieldCheck, Truck, X} from 'lucide-react';
-import {formatDisplayDate, formatDisplayDateTime} from '../../../date-time-format.mjs';
-import {canonicalSiteName} from '../../../site-location.mjs';
-import {VEHICLE_TRANSFER_STATUS, VEHICLE_TRANSFER_VIEW, vehicleTransferProgress, vehicleTransferStatus, vehicleTransferViewRecords} from '../../../vehicle-transfer-workflow.mjs';
+import {formatDisplayDate, formatDisplayDateTime} from '../../../shared/core/date-time-format.mjs';
+import {canonicalSiteName} from '../../../shared/masters/site-location.mjs';
+import {VEHICLE_TRANSFER_STATUS, VEHICLE_TRANSFER_VIEW, vehicleTransferProgress, vehicleTransferStatus, vehicleTransferViewRecords} from '../../../shared/people/vehicle-transfer-workflow.mjs';
 import SearchableSelect from '../../components/ui/searchable-select.jsx';
 import '../../styles/vehicle-transfer-workflow.css';
 import DateInput from "../../utils/ui/date-input.mjs";

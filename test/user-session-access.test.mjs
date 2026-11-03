@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {canViewUserSessions,isSessionViewOnlyUser,requireUserSessionView} from '../user-session-access.mjs';
+import {canViewUserSessions,isSessionViewOnlyUser,requireUserSessionView} from '../shared/auth/user-session-access.mjs';
 test('only exact authenticated login receives the additional read permission',()=>{
   for(const login of ['MAHAKDUDANI','mahakdudani',' MahakDudani '])assert.equal(canViewUserSessions({login,role:'super',permissions:{adminLevel:'Manager'}}),true);
   for(const session of [null,{}, {login:'other',name:'MAHAKDUDANI'},{login:'mahakdudani2'},{role:'normal',permissions:{adminLevel:'Admin'}}])assert.equal(canViewUserSessions(session),false);
@@ -13,7 +13,7 @@ test('only exact authenticated login receives the additional read permission',()
   requireUserSessionView({session:{login:'other'}},{status(code){status=code;return this;},json(){}},()=>assert.fail());assert.equal(status,403);
 });
 test('only read routes receive the exception and management controls are hidden',()=>{
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(server,/registerLoginHistoryRoutes\(app,\{pool,requireSuper:requireSession,requireAdministrator:requireUserSessionView/);
   for(const route of ["app.post('/api/user-sessions/:sessionId/messages',requireSuper,requireAdministrator", "app.delete('/api/user-sessions/:sessionId',requireSuper,requireAdministrator", "app.post('/api/user-sessions/:sessionId/assistance',requireSuper,requireAdministrator", "app.delete('/api/user-login-history',requireSuper,requireAdministrator", "app.post('/api/announcements',requireSuper,requireAdministrator"])assert.ok(server.includes(route));

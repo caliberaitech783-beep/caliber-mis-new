@@ -1,5 +1,5 @@
 import {frontendSourceUrl} from './helpers/frontend-source.mjs';
-import {compactLogBookLabel} from '../log-book-labels.mjs';
+import {compactLogBookLabel} from '../shared/logbooks/log-book-labels.mjs';
 import {scanReportCardStatus,CARD_STATUS_LEGEND} from '../src/utils/scanning/scan-report-card-status.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,7 +7,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 import * as operations from '../src/utils/reports/operations-report-model.mjs';
-import {scanBatchReport,scanBatchReportTables} from '../scan-batch-report.mjs';
+import {scanBatchReport,scanBatchReportTables} from '../shared/scanning/scan-batch-report.mjs';
 
 const ReportSection=()=>null;
 const nodes=(tree,type)=>{const found=[];const visit=node=>{if(Array.isArray(node))return node.forEach(visit);if(!React.isValidElement(node))return;if(node.type===type)found.push(node);visit(node.props.children)};visit(tree);return found};

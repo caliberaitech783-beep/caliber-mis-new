@@ -8,9 +8,9 @@ import {
   serverErrorHandler,
   TRANSIENT_DATABASE_MESSAGE,
   UNEXPECTED_ERROR_MESSAGE,
-} from '../server-error-response.mjs';
+} from '../server/domain/core/server-error-response.mjs';
 
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8');
 
 function fakeResponse() {
   const res = { headers: {}, statusCode: 0, body: undefined, headersSent: false };

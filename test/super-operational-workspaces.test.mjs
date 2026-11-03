@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("Super User header exposes every operational workspace", () => {
   assert.match(source, /const operationalWorkspaceNav = \[[\s\S]*Production workspace[\s\S]*Maintenance workspace[\s\S]*MIS workspace/);

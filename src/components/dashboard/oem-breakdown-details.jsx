@@ -1,13 +1,13 @@
 import SmartSelect from '../ui/smart-select.jsx';
 import React, { useState } from "react";
 import { Search, ListFilter, Eye, EyeOff } from "lucide-react";
-import { matchesSmartSearch } from "../../../smart-search.mjs";
+import { matchesSmartSearch } from "../../../shared/core/smart-search.mjs";
 import DashboardRecordBrowser from "./dashboard-record-browser.jsx";
 import { equipmentCategoryLabel } from "../../utils/dashboard/dashboard-drilldown-model.mjs";
 import { groupOemRecordsBySite, oemDetailReportRows, oemEquipmentLabel } from "../../utils/dashboard/oem-dashboard-filters.mjs";
 import {ProtectedAudio} from "../ui/protected-media.jsx";
 import { dailyUpdatesExportText } from "../../utils/ui/daily-updates-order.mjs";
-import { breakdownMeterColumns } from "../../../breakdown-meter-columns.mjs";
+import { breakdownMeterColumns } from "../../../shared/requests/breakdown-meter-columns.mjs";
 import "../../styles/oem-breakdown-details.css";
 import { orderOemDetailColumns } from "../../utils/dashboard/oem-detail-columns.mjs";
 import { pulseDelayReason } from "../../utils/ui/info-pulse-reasons.mjs";

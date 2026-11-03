@@ -1,15 +1,15 @@
-import * as siteAccess from '../region-scope.mjs';
-import {requestShiftLabel} from '../request-shift.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
+import {requestShiftLabel} from '../shared/requests/request-shift.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {isIdleVehicleRequest} from '../request-idle.mjs';
+import {isIdleVehicleRequest} from '../shared/requests/request-idle.mjs';
 import { readFileSync } from 'node:fs';
 import React from 'react';
 import { transformWithOxc } from 'vite';
-import * as equipment from '../request-equipment.mjs';
-import { recordsForSite } from '../site-location.mjs';
+import * as equipment from '../shared/requests/request-equipment.mjs';
+import { recordsForSite } from '../shared/masters/site-location.mjs';
 import { indiaWorkflowDateTimeParts } from '../src/utils/ui/workflow-clock.mjs';
-import { submitMaintenanceRequest } from '../request-submit.mjs';
+import { submitMaintenanceRequest } from '../shared/requests/request-submit.mjs';
 import DateInput from '../src/utils/ui/date-input.mjs';
 
 const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');

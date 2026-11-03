@@ -1,6 +1,6 @@
 import React, {useEffect,useState} from 'react';
 import {DailyUpdatesPanel} from '../ui/daily-updates-list.jsx';
-import {formatDisplayDateTime} from '../../../date-time-format.mjs';
+import {formatDisplayDateTime} from '../../../shared/core/date-time-format.mjs';
 import '../../styles/breakdown-reason-history.css';
 
 export default function BreakdownReasonHistory({reference,reason,token,Dialog}) {

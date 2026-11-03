@@ -1,6 +1,6 @@
 import {requestDateKey} from './dashboard-request-data.mjs';
-import {isIdleVehicleRequest} from '../../../request-idle.mjs';
-import {parseRequestTimelineTimestamp} from '../../../request-timeline.mjs';
+import {isIdleVehicleRequest} from '../../../shared/requests/request-idle.mjs';
+import {parseRequestTimelineTimestamp} from '../../../shared/requests/request-timeline.mjs';
 import {recordedBreakdownRangeLength} from './dashboard-breakdown-forecast.mjs';
 
 export const DAILY_BD_METRICS = [

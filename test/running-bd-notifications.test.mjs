@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 import test from 'node:test';
-const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const start=source.indexOf("    }else if(status==='Running BD'){");
 const branch=source.slice(start+"    }else if(status==='Running BD'){".length,source.indexOf("    }else if(status==='Closed'){",start));
 async function notify(failLookup=false){

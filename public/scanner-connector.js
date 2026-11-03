@@ -1,6 +1,6 @@
 import {compressScannerPage} from './scanner-compression.mjs';
 import {scanImageExtension} from './scan-image-type.mjs';
-import {chooseConnectedScanner,organizationScanners,scannerConnectionMessage} from './scanner-selection.mjs';
+import {chooseConnectedScanner,organizationScanners,scannerConnectionMessage} from './shared/scanning/scanner-selection.mjs';
 import {transferScannerPages} from './scanner-transfer.mjs';
 import {captureTiming,scanTimingLabel} from './scan-timing.mjs';
 import {readConnectorResponse,waitForScannerService} from './scanner-response.mjs';

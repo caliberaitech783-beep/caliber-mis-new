@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import * as scope from '../region-scope.mjs';
-import {recordsForSite,canonicalSiteName} from '../site-location.mjs';
-import {resolveMobileAccess} from '../mobile-access.mjs';
-import {createFeedCache} from '../request-feed-cache.mjs';
-import {dashboardEquipmentScope,scopeDashboardEquipmentRecords} from '../dashboard-equipment-access.mjs';
-import {hierarchyRecipientReportScope} from '../hierarchy-report-scope.mjs';
-import {infoPulseRequestScope,scopeInfoPulseRequests} from '../info-pulse-scope.mjs';
-import {isWorkflowWhatsAppRecipient} from '../whatsapp-workflow-policy.mjs';
+import * as scope from '../shared/masters/region-scope.mjs';
+import {recordsForSite,canonicalSiteName} from '../shared/masters/site-location.mjs';
+import {resolveMobileAccess} from '../shared/auth/mobile-access.mjs';
+import {createFeedCache} from '../server/domain/requests/request-feed-cache.mjs';
+import {dashboardEquipmentScope,scopeDashboardEquipmentRecords} from '../server/domain/core/dashboard-equipment-access.mjs';
+import {hierarchyRecipientReportScope} from '../server/domain/reports/hierarchy-report-scope.mjs';
+import {infoPulseRequestScope,scopeInfoPulseRequests} from '../server/domain/notifications/info-pulse-scope.mjs';
+import {isWorkflowWhatsAppRecipient} from '../server/domain/notifications/whatsapp-workflow-policy.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const evaluate=(source,deps)=>new Function(...Object.keys(deps),source)(...Object.values(deps));
 const user={userType:'Mobile User',userGroup:'General User',site:'SASTI II | Jayant OC',managerRegion:'All',managerSites:'Majri OC'};
 const rows=[{ref:'S',site:'Sasti OC'},{ref:'J',site:'Jayant OC'},{ref:'M',site:'Majri OC'},{ref:'X',site:''}];

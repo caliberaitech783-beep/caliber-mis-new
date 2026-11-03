@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
-import {legacyEtcRepairPlan,legacyEtcRepairReason} from '../legacy-etc-repair.mjs';
+import {legacyEtcRepairPlan,legacyEtcRepairReason} from '../server/domain/requests/legacy-etc-repair.mjs';
 
 const iso = value => value?.toISOString();
 
@@ -31,7 +31,7 @@ test('does not alter valid, missing or malformed ETC values', () => {
 });
 
 test('startup cleanup is one-time, row-locked and writes request timeline audit records', () => {
-  const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8');
   assert.match(server, /legacy_etc_backdates_repaired_v1/);
   assert.match(server, /expected_completion_at IS NOT NULL AND expected_completion_at<=started_at[\s\S]*FOR UPDATE/);
   assert.match(server, /legacyEtcRepairPlan\(row\.started_at,row\.expected_completion_at\)/);

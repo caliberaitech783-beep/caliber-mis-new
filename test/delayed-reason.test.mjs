@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
-import {DELAYED_REASON_DEFAULTS,DELAYED_REASON_DEFAULT_REPAIR_TYPES,DELAYED_REASONS_BY_REPAIR_TYPE,approvedDelayedReason,delayedReasonRequired,delayedReasonsForRepairType} from '../delayed-reason.mjs';
+import {DELAYED_REASON_DEFAULTS,DELAYED_REASON_DEFAULT_REPAIR_TYPES,DELAYED_REASONS_BY_REPAIR_TYPE,approvedDelayedReason,delayedReasonRequired,delayedReasonsForRepairType} from '../shared/requests/delayed-reason.mjs';
 
 test('the requests table only displays the delayed reason; only approved reasons are accepted',()=>{
   const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.doesNotMatch(client,/function DelayedReasonForm|Add custom reason|Select delayed reason<\/button>|setDelaying|delayed-reason-compact/);
   assert.match(client,/<td>\{row\.delayedReason \|\| "—"\}<\/td>/);
   assert.equal(DELAYED_REASON_DEFAULTS.length,20);
@@ -62,7 +62,7 @@ test('breakdown types stored in the Delayed Reason master drive the picker and t
   assert.deepEqual(delayedReasonsForRepairType('Breakdown',edited),['Approval - CMLL']);
   assert.deepEqual(delayedReasonsForRepairType('Accidental',edited),['Approval - CMLL','Superstructure - Repair']);
   const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(client,/\["repairTypes", "Breakdown types \(comma separated, or All\)"\]/);
   assert.match(client,/const etcDelayed = etcChanged && expectedCompletionAt\.slice\(0,16\) > initialEtc;/);
   assert.match(client,/etcDelayed && <label className="full">Delayed reason \*<SmartSelect name="delayedReason" required/);
@@ -109,7 +109,7 @@ test('the Delayed reason column only appears once ETC has passed and the close f
   assert.equal(delayedReasonRequired(etc,new Date('2026-09-06T09:59+05:30'),0),false);
   assert.equal(delayedReasonRequired(etc,new Date('2026-09-06T10:00+05:30'),0),true);
   const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   assert.match(client,/\{workflowHeader\("delayedReason", "Delayed reason"\)\}/);
   assert.doesNotMatch(client.slice(client.indexOf('function CloseRequestForm'),client.indexOf('function VerifyRequestForm')),/name="delayedReason"/);
   assert.doesNotMatch(client,/delayedReasonNeeded/);
@@ -122,8 +122,8 @@ test('the Delayed reason column only appears once ETC has passed and the close f
 
 test('Delayed Reason master, close form, and server validation are connected',()=>{
   const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const access=fs.readFileSync(new URL('../admin-access.mjs',import.meta.url),'utf8');
+  const server=fs.readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
+  const access=fs.readFileSync(new URL('../shared/auth/admin-access.mjs',import.meta.url),'utf8');
   assert.match(access,/"Region master",\s*"Shift Master",\s*"Delayed Reason",\s*"Vehicle transfers"/);
   assert.match(client,/\["Region master", Building2, "region"\],\s*\["Shift Master", Clock, "shift"\],\s*\["Delayed Reason", Clock, "delayed"\],\s*\["Vehicle transfers", ArrowRightLeft, "transfers"\]/);
   assert.match(client,/useMasterRecords\("Delayed Reason"\)/);

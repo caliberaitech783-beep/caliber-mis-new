@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {withScannedDoor} from '../src/utils/scanning/scan-door-field.mjs';
-import {extractCard} from '../scan-extraction.mjs';
-import {formatScannedDoor} from '../scan-door-text.mjs';
+import {extractCard} from '../server/domain/scanning/scan-extraction.mjs';
+import {formatScannedDoor} from '../shared/scanning/scan-door-text.mjs';
 
 test('literal door survives missing or different equipment-master labels',()=>{
  const hints={provider:'gemini',handwrittenFields:{door:'S 114'},text:''};

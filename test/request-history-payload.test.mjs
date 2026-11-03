@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {PGlite} from '@electric-sql/pglite';
-import {REQUEST_HISTORY_MEDIA_FIELDS,requestHistorySnapshotSql,requestHistoryTimelineSql} from '../request-history-payload.mjs';
-import {retryDatabaseRead} from '../database-read-retry.mjs';
-import {measureRequestHistoryPayload} from '../request-history-diagnostics.mjs';
+import {REQUEST_HISTORY_MEDIA_FIELDS,requestHistorySnapshotSql,requestHistoryTimelineSql} from '../server/domain/requests/request-history-payload.mjs';
+import {retryDatabaseRead} from '../server/domain/storage/database-read-retry.mjs';
+import {measureRequestHistoryPayload} from '../server/domain/requests/request-history-diagnostics.mjs';
 
 test('history stays on demand and legacy media never enters timeline responses',async()=>{
   const db=new PGlite();
@@ -19,7 +19,7 @@ test('history stays on demand and legacy media never enters timeline responses',
     assert.equal(measured.historyRequests,1);
     assert.ok(Number(measured.historyBytesRemovedFromFeed)>3*1024*1024);
     assert.equal(released,true);
-    const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+    const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
     const projection=source.match(/const requestProjection=`([^`]+)`/)[1];
     assert.doesNotMatch(projection,/workflow_history|workflowHistory/);
     const {rows}=await db.query(`SELECT ${requestHistoryTimelineSql} AS history,${requestHistorySnapshotSql} AS snapshot FROM maintenance_requests`);

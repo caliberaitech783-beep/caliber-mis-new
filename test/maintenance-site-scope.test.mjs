@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { recordsForSite } from '../site-location.mjs';
+import { recordsForSite } from '../shared/masters/site-location.mjs';
 
 test('maintenance request lists include only the assigned site across statuses', () => {
   const requests = [
@@ -14,7 +14,7 @@ test('maintenance request lists include only the assigned site across statuses',
 });
 
 test('API includes Maintenance User in assigned-site scope and UI filters before building lists', () => {
-  const server = readFileSync(new URL('../server.mjs', import.meta.url),'utf8');
+  const server = readFileSync(new URL('../server/app.mjs', import.meta.url),'utf8');
   const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url),'utf8');
   assert.match(server, /if\(req.session.role==='normal'\)\{[\s\S]*scopedSite=userSiteScope\(operationalUser\)/);
   assert.match(source, /!embedded&&isMaintenance\?recordsForSite\(requests,assignedLocation\):misWorkspaceRequests/);

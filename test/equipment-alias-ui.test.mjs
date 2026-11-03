@@ -5,9 +5,9 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {aliasForSelection} from '../equipment-alias-rules.mjs';
-import {formatDisplayDateTime} from '../date-time-format.mjs';
-import {canonicalSiteName} from '../site-location.mjs';
+import {aliasForSelection} from '../shared/masters/equipment-alias-rules.mjs';
+import {formatDisplayDateTime} from '../shared/core/date-time-format.mjs';
+import {canonicalSiteName} from '../shared/masters/site-location.mjs';
 import {searchSiteDoors,doorLabel} from '../src/utils/ui/door-search.mjs';
 import {nextMismatchPair,mismatchPairCount} from '../src/utils/scanning/scan-alias-mismatch.mjs';
 

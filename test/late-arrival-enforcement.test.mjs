@@ -1,14 +1,14 @@
-import {maintenanceMetersRequired,requireMaintenanceMeters} from '../maintenance-meter-required.mjs';
-import * as siteAccess from '../region-scope.mjs';
+import {maintenanceMetersRequired,requireMaintenanceMeters} from '../shared/requests/maintenance-meter-required.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
-import * as timeline from '../request-timeline.mjs';
-import {validMeterReadings,validateClosingMeterReadings} from '../request-workflow.mjs';
-import {approvedDelayedReason} from '../delayed-reason.mjs';
+import * as timeline from '../shared/requests/request-timeline.mjs';
+import {validMeterReadings,validateClosingMeterReadings} from '../shared/requests/request-workflow.mjs';
+import {approvedDelayedReason} from '../shared/requests/delayed-reason.mjs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const authSource=server.slice(server.indexOf('async function requireSession('),server.indexOf('async function requireSuper('));
 const guardSource=server.slice(server.indexOf('const arrivalDelaySql='),server.indexOf("app.post('/api/requests/:reference/daily-remarks'"));
 const notificationSource=server.slice(server.indexOf('async function addTicketNotificationsBestEffort('),server.indexOf('let consolidatedReportRunning='));

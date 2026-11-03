@@ -5,7 +5,7 @@ import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
 import {createDashboardRequestLoader} from "../src/utils/dashboard/dashboard-request-data.mjs";
-import {formatDisplayDateTime} from "../date-time-format.mjs";
+import {formatDisplayDateTime} from "../shared/core/date-time-format.mjs";
 
 const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const noticeSource = source.slice(source.indexOf("function ConnectionRecoveryNotice("), source.indexOf("function ManagerDashboard("));

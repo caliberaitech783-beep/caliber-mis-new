@@ -1,7 +1,7 @@
 import SmartSelect from '../../components/ui/smart-select.jsx';
 import React, {useEffect, useState} from 'react';
-import {canViewBdAgeingReport} from '../../../bd-ageing-report.mjs';
-import {formatDisplayDateTime} from '../../../date-time-format.mjs';
+import {canViewBdAgeingReport} from '../../../shared/reports/bd-ageing-report.mjs';
+import {formatDisplayDateTime} from '../../../shared/core/date-time-format.mjs';
 import {bdAgeingView} from '../../utils/ui/bd-ageing-filters.mjs';
 import '../../styles/bd-ageing-report.css';
 

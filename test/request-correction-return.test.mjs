@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import * as policy from '../request-correction-policy.mjs';
-import * as returns from '../request-correction-return.mjs';
-import {validateRequestTimelineChange} from '../request-timeline.mjs';
+import * as policy from '../shared/requests/request-correction-policy.mjs';
+import * as returns from '../server/domain/requests/request-correction-return.mjs';
+import {validateRequestTimelineChange} from '../shared/requests/request-timeline.mjs';
 
 const STATUS=policy.REQUEST_CORRECTION_STATUS;
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8').replaceAll('\r\n','\n');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8').replaceAll('\r\n','\n');
 const returned={id:7,status:STATUS.RETURNED,requestedByLogin:' Owner ',correctionType:'onRoad'};
 test('only the original requester gains edit and delete on returned cases',()=>{
   assert.equal(policy.canManagePendingCorrection(returned,{login:'owner'}),true);

@@ -7,7 +7,7 @@ const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.j
 const compactCss = readFileSync(new URL("../src/styles/maintenance-mobile-compact.css", import.meta.url), "utf8");
 const tableCss = readFileSync(new URL("../src/styles/table-actions.css", import.meta.url), "utf8");
 const phoneCss = readFileSync(new URL("../src/styles/mobile-phone-optimization.css", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("phone workspaces expose direct Columns, Actions, search/status and refresh controls", () => {
   assert.match(shared, /className="mobile-columns-trigger"[^>]*>[\s\S]*<span>Columns<\/span>/);

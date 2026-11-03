@@ -12,7 +12,7 @@ import {
   serializeTableView,
 } from "../src/utils/reports/saved-reports.mjs";
 
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const routeOf = (start) => server.slice(server.indexOf(start), server.indexOf("\napp.", server.indexOf(start) + start.length));

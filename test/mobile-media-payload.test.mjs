@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const media = readFileSync(new URL("../src/components/ui/protected-media.jsx", import.meta.url), "utf8");
 const pulse = readFileSync(new URL("../src/components/ui/info-pulse-content.jsx", import.meta.url), "utf8");

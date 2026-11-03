@@ -1,7 +1,7 @@
 import {
   MIS_ALL_PERMISSIONS,
   misProfilePermissions,
-} from "../../../mis-permissions.mjs";
+} from "../../../shared/auth/mis-permissions.mjs";
 export const sites = [
   "Dhoptala OC (2nd)",
   "Dudhichua East OC",

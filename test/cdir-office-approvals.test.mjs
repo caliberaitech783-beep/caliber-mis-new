@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import {PGlite} from '@electric-sql/pglite';
 import {readFileSync} from 'node:fs';
-import {CDIR_MASTERS} from '../cdir-masters.mjs';
-import {CDIR_DELETION_SCHEMA,registerCdirDeletions,cdirDirectAdministrator,deletionProtectedMaster} from '../cdir-deletion.mjs';
-import {EMPLOYEE_TRANSFER_SCHEMA,registerEmployeeTransfers,employeeTransferAccess,employeeTransferSiteAllowed} from '../employee-transfer.mjs';
-import {officeApprovalKey,cdirApprovalRecipients} from '../cdir-approval-routing.mjs';
-import {resolveMobileAccess,normalizeMobileUserRole} from '../mobile-access.mjs';
-import {cdirViewerContext} from '../cdir-access.mjs';
-import {canEditCdirEmployee} from '../cdir-employee-edit.mjs';
+import {CDIR_MASTERS} from '../shared/people/cdir-masters.mjs';
+import {CDIR_DELETION_SCHEMA,registerCdirDeletions,cdirDirectAdministrator,deletionProtectedMaster} from '../server/routes/people/cdir-deletion.mjs';
+import {EMPLOYEE_TRANSFER_SCHEMA,registerEmployeeTransfers,employeeTransferAccess,employeeTransferSiteAllowed} from '../server/routes/people/employee-transfer.mjs';
+import {officeApprovalKey,cdirApprovalRecipients} from '../server/domain/people/cdir-approval-routing.mjs';
+import {resolveMobileAccess,normalizeMobileUserRole} from '../shared/auth/mobile-access.mjs';
+import {cdirViewerContext} from '../server/domain/people/cdir-access.mjs';
+import {canEditCdirEmployee} from '../server/routes/people/cdir-employee-edit.mjs';
 
 const profiles={
  hr:{login:'hr',userRoles:'HR User',site:'Nagpur'},
@@ -96,7 +96,7 @@ test('real HTTP office/site approvals and employee/contact deletion retain histo
 });
 
 test('all nonadmin single and bulk master deletions are intercepted before direct delete',()=>{
- const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
  const route=source.slice(source.indexOf("app.delete('/api/masters/:master/:id'"));
  assert.ok(route.indexOf('return requestCdirDeletion(req,res,next)')<route.indexOf('DELETE FROM master_records'));
  assert.ok(source.includes("if(deletionProtectedMaster(master)&&!cdirDirectAdministrator(req.session))return res.status(403)"));

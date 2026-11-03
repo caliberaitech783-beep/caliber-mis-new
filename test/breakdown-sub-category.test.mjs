@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {BREAKDOWN_SUB_CATEGORY_DEFAULTS,BREAKDOWN_SUB_CATEGORY_FIELD,BREAKDOWN_SUB_CATEGORY_MASTER,BREAKDOWN_SUB_CATEGORY_OTHERS,breakdownSubCategoryNames} from '../breakdown-sub-category.mjs';
-import {ADMIN_MASTER_OPTIONS,masterAccessAllows} from '../admin-access.mjs';
+import {BREAKDOWN_SUB_CATEGORY_DEFAULTS,BREAKDOWN_SUB_CATEGORY_FIELD,BREAKDOWN_SUB_CATEGORY_MASTER,BREAKDOWN_SUB_CATEGORY_OTHERS,breakdownSubCategoryNames} from '../server/domain/requests/breakdown-sub-category.mjs';
+import {ADMIN_MASTER_OPTIONS,masterAccessAllows} from '../shared/auth/admin-access.mjs';
 
 const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const server=read('../server.mjs'),client=read('../src/app/App.jsx');
+const server=read('../server/app.mjs'),client=read('../src/app/App.jsx');
 
 test('the Breakdown Sub-Category master carries the owner\'s 33 sub-categories',()=>{
   assert.equal(BREAKDOWN_SUB_CATEGORY_MASTER,'Breakdown Sub-Category');

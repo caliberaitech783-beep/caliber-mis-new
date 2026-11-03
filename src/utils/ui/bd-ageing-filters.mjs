@@ -1,5 +1,5 @@
-import {REGION_DATA,displaySiteName} from '../../../region-scope.mjs';
-import {canonicalSiteName} from '../../../site-location.mjs';
+import {REGION_DATA,displaySiteName} from '../../../shared/masters/region-scope.mjs';
+import {canonicalSiteName} from '../../../shared/masters/site-location.mjs';
 
 export function bdAgeingView(groups = [], {ageing = 'all',region = 'all',site = 'all'} = {}) {
   const allRows = groups.flatMap(group => group.rows.map(row => ({...row,ageingGroup:group.label,ageingId:group.id,

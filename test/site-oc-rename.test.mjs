@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
-import {canonicalSiteName,recordBelongsToSite} from '../site-location.mjs';
-import {REGION_DATA,displaySiteName,normalizeOperationalSiteFields,normalizeUserSiteFields,reportScopeIncludesSite,userSiteScope} from '../region-scope.mjs';
+import {canonicalSiteName,recordBelongsToSite} from '../shared/masters/site-location.mjs';
+import {REGION_DATA,displaySiteName,normalizeOperationalSiteFields,normalizeUserSiteFields,reportScopeIncludesSite,userSiteScope} from '../shared/masters/region-scope.mjs';
 import {drilldownView} from '../src/utils/dashboard/dashboard-drilldown-model.mjs';
 
 test('every renamed OC site preserves OB identity, scope, and legacy filter selection',()=>{
@@ -32,7 +32,7 @@ test('location-only rename preserves unrelated values and supports lists and cus
 });
 
 test('one-time rename migrates location fields without rewriting IDs, remarks or credentials',async()=>{
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const start=source.indexOf('    const {rows:ocSiteNames}');
   const code=source.slice(start,source.indexOf('    // Keep a recoverable copy',start));
   const user={login:'operator',site:'Majri OB',passwordHash:'unchanged',remarks:'OB note'};

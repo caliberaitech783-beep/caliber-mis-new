@@ -1,22 +1,22 @@
-import * as siteAccess from '../region-scope.mjs';
+import * as siteAccess from '../shared/masters/region-scope.mjs';
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 import vm from "node:vm";
-import {createFeedCache} from '../request-feed-cache.mjs';
+import {createFeedCache} from '../server/domain/requests/request-feed-cache.mjs';
 import {
   GENERAL_USER_ROLE, GENERAL_USER_MENU_OPTIONS, MOBILE_USER_ROLES,
   generalUserCanAccessMenu, generalUserMenuSelection, normalizeMobileUserRole, resolveMobileAccess,
-} from "../mobile-access.mjs";
-import {ADMIN_SUBMENU_OPTIONS} from "../admin-access.mjs";
-import {canReadDashboardEquipment,dashboardEquipmentScope,scopeDashboardEquipmentRecords} from "../dashboard-equipment-access.mjs";
+} from "../shared/auth/mobile-access.mjs";
+import {ADMIN_SUBMENU_OPTIONS} from "../shared/auth/admin-access.mjs";
+import {canReadDashboardEquipment,dashboardEquipmentScope,scopeDashboardEquipmentRecords} from "../server/domain/core/dashboard-equipment-access.mjs";
 
 const user = {userType:"Mobile User",userGroup:GENERAL_USER_ROLE,site:"Sasti OB"};
 const sessionFor = (overrides={}) => {
   const profile=resolveMobileAccess({user:{...user,...overrides}});
   return {...profile,role:profile.sessionRole};
 };
-const server=readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
+const server=readFileSync(new URL("../server/app.mjs",import.meta.url),"utf8");
 const client=readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
 const middlewareSource=server.slice(server.indexOf("async function requireSession("),server.indexOf("async function requireSuper("));
 async function authorize(session,path,{method="GET",query={}}={}){

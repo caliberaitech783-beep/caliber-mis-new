@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import {PGlite} from '@electric-sql/pglite';
 import {randomUUID} from 'node:crypto';
-import {registerVlbBatches} from '../vlb-batches.mjs';
-import {syncVlbBatchRecord} from '../vlb-batch-policy.mjs';
+import {registerVlbBatches} from '../server/routes/logbooks/vlb-batches.mjs';
+import {syncVlbBatchRecord} from '../server/domain/logbooks/vlb-batch-policy.mjs';
 import {vlbEntryContext,vlbEntryFields,sameVlbEntryContext} from '../src/utils/logbooks/vlb-entry-context.mjs';
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations
@@ -20,7 +20,7 @@ test('manual and scan entry keep the site and batch popup on one row and auto-fe
  const source=fs.readFileSync(new URL('../src/pages/logbooks/vlb-create-batch.jsx',import.meta.url),'utf8');
  const compiled=source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function');
  const {code}=await transformWithOxc(compiled,'vlb-create-batch.jsx',{jsx:{runtime:'classic'}});
- const openVlbEntryBatches=new Function('React','canonicalSiteName',code+';return openVlbEntryBatches')(React,(await import('../site-location.mjs')).canonicalSiteName);
+ const openVlbEntryBatches=new Function('React','canonicalSiteName',code+';return openVlbEntryBatches')(React,(await import('../shared/masters/site-location.mjs')).canonicalSiteName);
  const open={id:'open',site:'Jayant OB',closed_at:null},closed={id:'closed',site:'Jayant OC',closed_at:'2026-12-31T10:00:00Z'},other={id:'other',site:'Sasti OC',closed_at:null};
  assert.deepEqual(openVlbEntryBatches([closed,other,open],'Jayant OC').map(batch=>batch.id),['open']);
  assert.match(source,/entryMatching\.length!==1/,'auto-fetch waits for exactly one open batch');

@@ -2,7 +2,7 @@ import baseTest from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 
-const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
 const workflowPath=new URL('../.github/workflows/azure-hosting_coalmine-fleet-azure-783.yml',import.meta.url);
 const workflow=existsSync(workflowPath)?readFileSync(workflowPath,'utf8'):'';
 const test=(name,run)=>baseTest(name,{skip:!workflow&&!name.startsWith('staging can')&&!name.startsWith('health exposes')?'Pulse production workflow does not apply to the independent MIS repository':false},run);

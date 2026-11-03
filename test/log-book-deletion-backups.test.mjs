@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {inspectDeletionBackup,removeDeletionBackups} from '../src/services/logbooks/log-book-deletion-backups.mjs';
 import {sha256} from '../src/services/scanning/scan-backup-files.mjs';
-import {createScanBlobStorage} from '../scan-blob-storage.mjs';
+import {createScanBlobStorage} from '../server/services/scanning/scan-blob-storage.mjs';
 
 test('SSD preview is read-only; removal needs verified OTP, checks fingerprints and preserves unlisted files',async()=>{
  const card=randomUUID(),backup=randomUUID(),image=new TextEncoder().encode('source image'),imageHash=await sha256(image);

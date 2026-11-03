@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {matchesSmartSearch} from '../smart-search.mjs';
+import {matchesSmartSearch} from '../shared/core/smart-search.mjs';
 
 test('dashboard icon searches cards rather than opening fleet records', () => {
   const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');

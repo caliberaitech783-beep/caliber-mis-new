@@ -1,4 +1,4 @@
-import { indiaDateTimeEpoch } from "../../../report-date-range.mjs";
+import { indiaDateTimeEpoch } from "../../../shared/reports/report-date-range.mjs";
 import { requestStatusLabel } from "../requests/request-status.mjs";
 
 // Availability is a fleet snapshot at the end of the selected IST day, not

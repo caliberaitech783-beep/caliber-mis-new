@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {reportPdfHeading} from '../report-refinements.mjs';
+import {reportPdfHeading} from '../shared/reports/report-refinements.mjs';
 import {printColumnOptions} from '../src/services/reports/smart-print.mjs';
 import {breakdownTrendExport, dailyBdBalanceExport, fleetSectionExport, requestLifecycleExport, throughputSectionExport} from '../src/utils/dashboard/dashboard-section-export.mjs';
 

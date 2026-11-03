@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {identifyCardMachine,normalizeScanEquipmentRows,scanEquipmentMatchIssues,compactScanEquipmentReferences} from '../scan-machine-rules.mjs';
-import {extractCard} from '../scan-extraction.mjs';
-import {aFields,reconcile} from '../gemini-hybrid.mjs';
-import {completeScanTripDetails} from '../scan-trip-completion.mjs';
+import {identifyCardMachine,normalizeScanEquipmentRows,scanEquipmentMatchIssues,compactScanEquipmentReferences} from '../shared/scanning/scan-machine-rules.mjs';
+import {extractCard} from '../server/domain/scanning/scan-extraction.mjs';
+import {aFields,reconcile} from '../server/services/scanning/gemini-hybrid.mjs';
+import {completeScanTripDetails} from '../shared/scanning/scan-trip-completion.mjs';
 
 const site='Jayant OC';
 const assets=['VPC012','TPC012','SPC012','LPC012','D012','G012','PL012','H012'].map((door,i)=>({id:String(i+1),door,kind:'equipment',site}));

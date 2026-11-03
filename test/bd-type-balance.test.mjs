@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { breakdownTypeShare, normalizedBreakdownType } from "../dashboard-breakdown-movement.mjs";
+import { breakdownTypeShare, normalizedBreakdownType } from "../shared/core/dashboard-breakdown-movement.mjs";
 import { movementRequestRows } from "../src/utils/dashboard/dashboard-card-actions.mjs";
 
 test("BD type mix uses open balance, including carryover and excluding closed and idle", () => {

@@ -1,15 +1,15 @@
-import {CDIR_DELETION_SCHEMA} from '../cdir-deletion.mjs';
+import {CDIR_DELETION_SCHEMA} from '../server/routes/people/cdir-deletion.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {PGlite} from '@electric-sql/pglite';
-import {applySchemaMigration} from '../schema-migration.mjs';
+import {applySchemaMigration} from '../server/services/storage/schema-migration.mjs';
 import {readFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
 import pg from 'pg';
-import {archiveSchemaSql} from '../request-archive.mjs';
-import {repairLegacySessionDefaults} from '../auth-session-schema.mjs';
-import {initializeLoginHistory} from '../user-login-history.mjs';
-import {EMPLOYEE_TRANSFER_SCHEMA} from '../employee-transfer.mjs';
+import {archiveSchemaSql} from '../server/services/requests/request-archive.mjs';
+import {repairLegacySessionDefaults} from '../server/domain/auth/auth-session-schema.mjs';
+import {initializeLoginHistory} from '../server/routes/people/user-login-history.mjs';
+import {EMPLOYEE_TRANSFER_SCHEMA} from '../server/routes/people/employee-transfer.mjs';
 
 test('unchanged slot restarts skip DDL; schema changes apply once and failed migrations roll back',async()=>{
   const db=new PGlite();
@@ -48,7 +48,7 @@ test('unchanged slot restarts skip DDL; schema changes apply once and failed mig
 
 test('production schema and session repairs install atomically on a fresh database',async()=>{
   const db=new PGlite();
-  const source=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const sql=source.match(/await applySchemaMigration\(pool,`([\s\S]*?)`,\[repairLegacySessionDefaults,initializeLoginHistory\]\)/)[1].replace('${archiveSchemaSql}',()=>archiveSchemaSql).replace('${EMPLOYEE_TRANSFER_SCHEMA}',()=>EMPLOYEE_TRANSFER_SCHEMA).replace('${CDIR_DELETION_SCHEMA}',()=>CDIR_DELETION_SCHEMA);
   const client={query:(sql,args)=>{
     if(sql==='SELECT pg_advisory_xact_lock(783,1)')return Promise.resolve({rows:[]});

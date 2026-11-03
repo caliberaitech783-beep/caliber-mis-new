@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {createFeedCache} from '../request-feed-cache.mjs';
+import {createFeedCache} from '../server/domain/requests/request-feed-cache.mjs';
 
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 
 function clock(start = 1000) {
   let value = start;

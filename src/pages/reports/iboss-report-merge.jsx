@@ -1,9 +1,9 @@
 import React,{useEffect,useMemo,useState} from 'react';
 import {Combine,RefreshCw,Lock,Link2,CheckSquare} from 'lucide-react';
-import {MERGE_CHAINS,MAX_MERGE_STEPS,resolveSelection} from '../../../iboss-report-merge.mjs';
-import {purchaseOrderRange} from '../../../purchase-order-report.mjs';
-import {indiaDateTimeInputValue} from '../../../report-date-range.mjs';
-import {formatDisplayDate} from '../../../date-time-format.mjs';
+import {MERGE_CHAINS,MAX_MERGE_STEPS,resolveSelection} from '../../../shared/accounts/iboss-report-merge.mjs';
+import {purchaseOrderRange} from '../../../shared/accounts/purchase-order-report.mjs';
+import {indiaDateTimeInputValue} from '../../../shared/reports/report-date-range.mjs';
+import {formatDisplayDate} from '../../../shared/core/date-time-format.mjs';
 import DateInput from '../../utils/ui/date-input.mjs';
 import '../../styles/stock-statement.css';
 import '../../styles/iboss-accounts.css';

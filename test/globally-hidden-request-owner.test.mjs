@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("global request exclusion feeds request APIs, Info Pulse, and director reports", () => {
   assert.match(server, /import \{requestsVisibleGlobally,requestsVisibleToSession\} from '(?:\.\.?\/)+(?:[\w-]+\/)*mis-request-visibility\.mjs'/);

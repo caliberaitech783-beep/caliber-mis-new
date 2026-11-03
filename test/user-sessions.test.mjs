@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const remoteAssistance = readFileSync(new URL("../src/components/notifications/remote-assistance.jsx", import.meta.url), "utf8");
 

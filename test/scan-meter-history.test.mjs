@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {recordMeterCorrection,meterCorrectionReport} from '../scan-meter-history.mjs';
-import {scanBatchReport,scanBatchExportTables} from '../scan-batch-report.mjs';
-import {buildXlsxSheetsWorkbook} from '../report-xlsx.mjs';
-import {buildTableExportPdf} from '../table-export-pdf.mjs';
+import {recordMeterCorrection,meterCorrectionReport} from '../shared/scanning/scan-meter-history.mjs';
+import {scanBatchReport,scanBatchExportTables} from '../shared/scanning/scan-batch-report.mjs';
+import {buildXlsxSheetsWorkbook} from '../shared/reports/report-xlsx.mjs';
+import {buildTableExportPdf} from '../server/services/reports/table-export-pdf.mjs';
 
 const bad={shiftHours:8,openingHmr:100,closingHmr:109,openingKmr:1000,closingKmr:1251};
 const fixed={...bad,closingHmr:107,closingKmr:1200};

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import { managerRoleSelection } from "../admin-access.mjs";
+import { managerRoleSelection } from "../shared/auth/admin-access.mjs";
 
-const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = fs.readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const slice = (text, start, end) => text.slice(text.indexOf(start), text.indexOf(end, text.indexOf(start)));
 

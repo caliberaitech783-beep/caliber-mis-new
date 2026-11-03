@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assetBookKind} from '../equipment-kind.mjs';
-import {validateTripEquipment} from '../trip-equipment-validation.mjs';
-import {normalizeScanEquipmentRows,scanEquipmentMatchIssues,selectTripEquipment,siteEquipmentOptions} from '../scan-machine-rules.mjs';
+import {assetBookKind} from '../shared/masters/equipment-kind.mjs';
+import {validateTripEquipment} from '../shared/scanning/trip-equipment-validation.mjs';
+import {normalizeScanEquipmentRows,scanEquipmentMatchIssues,selectTripEquipment,siteEquipmentOptions} from '../shared/scanning/scan-machine-rules.mjs';
 import {scanFieldIssues} from '../src/utils/scanning/scan-field-review.mjs';
 const raw=[
  {id:'1802',equipmentName:'T11 - MH34BZ2638',category:'VEHICLE',currentLocation:'Dhoptala OC (2nd)'},

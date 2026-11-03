@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 test("mobile request forms allow optional chassis and retain search, duplicate blocking, and stored audio", async () => {
   const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-  const server = await readFile(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = await readFile(new URL("../server/app.mjs", import.meta.url), "utf8");
 
   assert.match(source, /<EquipmentCombobox/);
   const combobox = await readFile(new URL("../src/components/ui/equipment-combobox.jsx", import.meta.url), "utf8");

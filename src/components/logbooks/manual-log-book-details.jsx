@@ -1,7 +1,7 @@
-import {compactLogBookLabel} from '../../../log-book-labels.mjs';
+import {compactLogBookLabel} from '../../../shared/logbooks/log-book-labels.mjs';
 import React,{useRef} from 'react';
 import {Plus,Trash2,Upload,Download,Eye} from 'lucide-react';
-import {blankJob,blankBreakdown,padManualRows,jobDurationHours,MANUAL_ROW_LIMIT} from '../../../manual-log-book-details.mjs';
+import {blankJob,blankBreakdown,padManualRows,jobDurationHours,MANUAL_ROW_LIMIT} from '../../../shared/logbooks/manual-log-book-details.mjs';
 
 import {continueManualRemark} from '../../utils/logbooks/log-book-enter-navigation.mjs';
 

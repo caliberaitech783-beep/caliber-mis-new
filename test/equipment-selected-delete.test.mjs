@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("Equipment Master reviews and deletes every row matching the current filters", () => {
   const equipment = client.slice(client.indexOf("function Equipment("), client.indexOf("function Breakdown("));

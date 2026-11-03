@@ -1,3 +1,4 @@
+import {repositorySourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -14,7 +15,7 @@ const files=[
 
 test('all user-facing server report formatters use the project date-time standard',async()=>{
   for(const file of files){
-    const source=await readFile(new URL(`../${file}`,import.meta.url),'utf8');
+    const source=await readFile(repositorySourceUrl(file),'utf8');
     assert.match(source,/formatDisplayDateTime/,`${file} must use the shared date-time formatter`);
     assert.doesNotMatch(source,/month\s*:\s*['"](?:short|long)['"]/,`${file} must not display month-name dates`);
     assert.doesNotMatch(source,/timeStyle\s*:/,`${file} must not omit seconds through a timeStyle shortcut`);

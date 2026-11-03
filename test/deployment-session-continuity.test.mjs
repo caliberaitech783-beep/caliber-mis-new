@@ -45,6 +45,14 @@ test("source fallback is deterministic and ignores the generated version module"
 
   await writeFile(path.join(cwd, "src", "main.jsx"), "export default 'second';");
   assert.notEqual(await resolveAppVersion({ env: {}, cwd, gitHead: "" }), first);
+  const second = await resolveAppVersion({ env: {}, cwd, gitHead: "" });
+  await mkdir(path.join(cwd, "shared", "rules"), { recursive: true });
+  await writeFile(path.join(cwd, "shared", "rules", "validation.mjs"), "export const limit = 8;");
+  const withShared = await resolveAppVersion({ env: {}, cwd, gitHead: "" });
+  assert.notEqual(withShared, second, "shared browser dependencies participate in the source identity");
+  await writeFile(path.join(cwd, "shared", "rules", "validation.mjs"), "export const limit = 9;");
+  assert.notEqual(await resolveAppVersion({ env: {}, cwd, gitHead: "" }), withShared);
+
 });
 
 test("building injects the stable version directly without rewriting the source module", async (t) => {
@@ -75,7 +83,7 @@ test("building injects the stable version directly without rewriting the source 
 });
 
 test("a UI version change preserves active sessions while password changes still revoke their user", async () => {
-  const server = await readFile(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = await readFile(new URL("../server/app.mjs", import.meta.url), "utf8");
   const versionStart = server.indexOf("SELECT value FROM app_metadata WHERE key='ui_version' FOR UPDATE");
   const versionEnd = server.indexOf("const {rows:repairSeed}", versionStart);
   assert.ok(versionStart >= 0 && versionEnd > versionStart, "expected the UI version migration block");
@@ -88,7 +96,7 @@ test("a UI version change preserves active sessions while password changes still
 });
 
 test("user and privilege changes revoke only the affected accounts", async () => {
-  const server = await readFile(new URL("../server.mjs", import.meta.url), "utf8");
+  const server = await readFile(new URL("../server/app.mjs", import.meta.url), "utf8");
   const revoker = server.slice(server.indexOf("async function revokeAuthorizationSessions"), server.indexOf("function maskedSecret"));
   const masterRoutes = server.slice(server.indexOf("app.post('/api/masters/:master'"), server.indexOf("app.use(express.static"));
   const postRoute = masterRoutes.slice(0, masterRoutes.indexOf("app.post('/api/masters/:master/:id/password'"));

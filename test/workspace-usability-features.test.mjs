@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 const ui = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const css = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
 const mobileCss = readFileSync(new URL("../src/styles/mobile-compat.css", import.meta.url), "utf8");
-const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
+const server = readFileSync(new URL("../server/app.mjs", import.meta.url), "utf8");
 
 test("operational tables expose search, filters, sorting, and the MIS idle queue", () => {
   assert.match(ui, /table-search-toolbar/);

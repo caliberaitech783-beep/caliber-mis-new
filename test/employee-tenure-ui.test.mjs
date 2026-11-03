@@ -5,7 +5,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 import {TENURE_MONTHS, buildEmployeeTenureReport} from '../src/utils/people/employee-tenure.mjs';
-import {formatDisplayDate} from '../date-time-format.mjs';
+import {formatDisplayDate} from '../shared/core/date-time-format.mjs';
 import DateInput from '../src/utils/ui/date-input.mjs';
 
 const source=readFileSync(new URL('../src/pages/reports/employee-tenure-report.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');

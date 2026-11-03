@@ -1,12 +1,12 @@
 import {recordCountLabel} from '../../utils/accounts/iboss-record-count.mjs';
 import {createAccountPageLoader} from '../../services/accounts/iboss-account-loader.mjs';
 import React,{useEffect,useMemo,useState,useRef} from 'react';
-import {accountPrivileges} from '../../../account-role-access.mjs';
+import {accountPrivileges} from '../../../shared/auth/account-role-access.mjs';
 import {BookUser,Contact,Wallet,Landmark,Network,Settings,BookOpen,Percent,ArrowLeft,RefreshCw} from 'lucide-react';
-import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS} from '../../../iboss-accounts.mjs';
-import {purchaseOrderRange} from '../../../purchase-order-report.mjs';
-import {indiaDateTimeInputValue} from '../../../report-date-range.mjs';
-import {formatDisplayDate} from '../../../date-time-format.mjs';
+import {ACCOUNT_VIEWS,ACCOUNT_SECTIONS} from '../../../shared/accounts/iboss-accounts.mjs';
+import {purchaseOrderRange} from '../../../shared/accounts/purchase-order-report.mjs';
+import {indiaDateTimeInputValue} from '../../../shared/reports/report-date-range.mjs';
+import {formatDisplayDate} from '../../../shared/core/date-time-format.mjs';
 import DateInput from '../../utils/ui/date-input.mjs';
 import '../../styles/stock-statement.css';
 import '../../styles/iboss-accounts.css';
@@ -14,7 +14,7 @@ import IbossDashboard from '../dashboard/iboss-dashboard.jsx';
 import IbossChat from '../../components/accounts/iboss-chat.jsx';
 import IbossReportMerge from '../reports/iboss-report-merge.jsx';
 import DrillPanel from '../../components/accounts/iboss-drill-panel.jsx';
-import {accountDrill,ACCOUNT_DRILLS} from '../../../iboss-drill.mjs';
+import {accountDrill,ACCOUNT_DRILLS} from '../../../shared/accounts/iboss-drill.mjs';
 const SECTIONS=[['dashboard','Dashboard'],['masters','Masters'],['transactions','Transactions'],['merge','Report Merge'],['chat','Chat Bot']];
 const icons=[BookUser,Contact,Wallet,Landmark,Settings,Network,BookOpen,Percent];
 export default function IbossAccounts({token,ReportSection,initialSection='dashboard',permissions={}}) {

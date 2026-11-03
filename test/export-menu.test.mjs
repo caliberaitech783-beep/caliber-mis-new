@@ -4,7 +4,7 @@ import test from 'node:test';
 
 test('all master and user report exports offer PDF, Excel, and print',()=>{
   const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
-  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
+  const server=readFileSync(new URL('../server/app.mjs',import.meta.url),'utf8');
   const styles=readFileSync(new URL('../src/styles/sortable-table.css',import.meta.url),'utf8');
 
   assert.match(source,/function ExportMenu\(/);

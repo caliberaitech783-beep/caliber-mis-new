@@ -5,7 +5,7 @@ import React from 'react';
 import { transformWithOxc } from 'vite';
 
 const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
-const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const server = readFileSync(new URL('../server/app.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const styles = readFileSync(new URL('../src/styles/style.css', import.meta.url), 'utf8');
 const loginStart = source.indexOf('function Login(');
 const loginSource = source.slice(loginStart, source.indexOf('\nfunction ', loginStart + 1));
