@@ -1,0 +1,169 @@
+name: Release Pulse-II to production - caliber-mis-783
+
+# Production is released only from a release tag (release-YYYY-MM-DD-N) or a
+# manual run, and only after approval in the GitHub "production" environment
+# (required reviewer: the owner). Merges to main release the TEST platform
+# through main_caliber-mis-test.yml instead.
+# Procedure: docs/release-safety-plan-2026-11-02.md, section 6.
+# Environment and identity set-up: docs/test-platform-setup.md, section 1.
+on:
+  push:
+    tags:
+      - 'release-*'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this release is started by hand instead of from a release tag (kept with the run)'
+        required: true
+        type: string
+
+# Finish an active release safely; GitHub replaces superseded pending runs.
+# The test platform uses its own group (caliber-mis-test-release), so a test
+# release never cancels or blocks a production release.
+concurrency:
+  group: caliber-mis-783-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # The job waits here until the owner approves it in the production
+    # environment. GitHub also refuses refs outside the environment's
+    # deployment policy (release-* tags and main).
+    environment:
+      name: production
+      url: https://pulse-ll.cmll.in
+    services:
+      startup-postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: release_check
+          POSTGRES_PASSWORD: release_check
+          POSTGRES_DB: caliber_mis
+        ports: ['54320:5432']
+        options: >-
+          --health-cmd "pg_isready -U release_check -d caliber_mis"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # If the environment lost its required-reviewer rule, this job started
+      # without anyone's approval. Stop before anything is built or deployed.
+      - name: Confirm the production environment still requires a reviewer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          reviewers=$(gh api "repos/${GITHUB_REPOSITORY}/environments/production" --jq '[.protection_rules[]? | select(.type == "required_reviewers")] | length')
+          if [ "${reviewers:-0}" -lt 1 ]; then
+            echo "::error::The production environment has no required reviewer, so this run was not approved by anyone. Set the rule (docs/test-platform-setup.md, section 1) and start the release again."
+            exit 1
+          fi
+          echo "Production releases require approval by ${reviewers} reviewer rule(s)."
+
+      # A release tag may be annotated, so the commit is read from the checkout
+      # rather than from GITHUB_SHA. Only commits on main, which the test
+      # platform has already served, may go live.
+      - name: Resolve the release commit and confirm it is on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REASON: ${{ inputs.reason }}
+        run: |
+          RELEASE_COMMIT="$(git rev-parse 'HEAD^{commit}')"
+          if ! [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::The checked-out release commit could not be resolved."
+            exit 1
+          fi
+          status="$(gh api "repos/${GITHUB_REPOSITORY}/compare/main...${RELEASE_COMMIT}" --jq .status)"
+          case "$status" in
+            identical|behind) ;;
+            *)
+              echo "::error::Commit ${RELEASE_COMMIT} is not on main (compare status: ${status:-unknown}). Only commits released to the test platform from main may go live."
+              exit 1;;
+          esac
+          echo "RELEASE_COMMIT=${RELEASE_COMMIT}" >> "$GITHUB_ENV"
+          echo "Releasing ${RELEASE_COMMIT} from ${GITHUB_REF_NAME} (${GITHUB_EVENT_NAME})${RELEASE_REASON:+: $RELEASE_REASON}"
+
+      - name: Set up Node.js and npm download cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: npm
+
+      - name: Restore pinned handwriting model cache
+        uses: actions/cache@v4
+        with:
+          path: ocr-model-cache
+          key: trocr-${{ runner.os }}-node22-${{ hashFiles('handwritten-card-ocr.mjs', 'package-lock.json') }}
+
+      - name: Install exact locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Verify pinned handwriting model
+        run: npm run ocr:prepare
+
+      - name: Build complete UI
+        env:
+          # The UI version is the released commit even when the tag is annotated.
+          APP_VERSION_SOURCE: ${{ env.RELEASE_COMMIT }}
+        run: npm run build
+
+      - name: Run full test suite
+        env:
+          DELETION_TEST_DATABASE_URL: postgres://release_check:release_check@127.0.0.1:54320/caliber_mis
+        run: npm test
+
+      - name: Verify built release identity
+        run: |
+          EXPECTED_COMMIT="$RELEASE_COMMIT" node scripts/verify-ui-release.mjs
+          printf '%s\n' "$RELEASE_COMMIT" > DEPLOYMENT_SHA
+
+      - name: Verify complete deployment runtime
+        env:
+          RELEASE_CHECK_DATABASE_URL: postgres://release_check:release_check@127.0.0.1:54320/caliber_mis
+        run: |
+          node --check server.mjs
+          node scripts/verify-server-start.mjs
+          node --input-type=module -e "await import('./local-card-ocr.mjs'); await import('./report-xlsx.mjs')"
+          node --input-type=module -e "const {env}=await import('@huggingface/transformers'); env.allowRemoteModels=false; const {loadHandwritingModel}=await import('./handwritten-card-ocr.mjs'); const model=await loadHandwritingModel(); await model.dispose(); console.log('Pinned OCR model verified offline.')"
+
+      # Keep the complete workspace format that Azure already runs.
+      # Build and deployment share one runner, avoiding the large artifact transfer.
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_248B6AEDDDF04A74B67402B5BD0DC3EB }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6B5963E6143745DD89CD80664168F76E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6D6C9CBBB0A24F138D5B5B2F35480688 }}
+
+      - name: Configure central Gemini extraction for VLB and ELB
+        env:
+          GEMINI_API_KEY: ${{ secrets.MIS_GEMINI_API_KEY }}
+        run: python3 scripts/configure-gemini-azure.py
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'caliber-mis-783'
+          slot-name: 'Production'
+          # Deploy the complete validated workspace. The reduced ZIP package
+          # left Azure without a startable application and returned HTTP 503.
+          package: .
+
+      - name: Verify Pulse-II release health
+        env:
+          EXPECTED_COMMIT: ${{ env.RELEASE_COMMIT }}
+          RELEASE_CHECK_BASE_URL: https://pulse-ll.cmll.in
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent --max-time 20 "https://pulse-ll.cmll.in/api/health?gemini-release=${EXPECTED_COMMIT}" -o health.json && node -e "const h=require('./health.json');if(h.commit!==process.env.EXPECTED_COMMIT)process.exit(1)" && node scripts/verify-ui-release.mjs --live; then
+              echo "Pulse-II is serving the Gemini release."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Pulse-II release health could not be verified."
+          exit 1
