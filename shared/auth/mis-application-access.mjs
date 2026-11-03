@@ -15,6 +15,7 @@ export function misRequestAllowed(session,req){
  if(!session?.permissions?.separateMisCredentials)return true;
  const route=req.path||'',read=['GET','HEAD'].includes(req.method);
  const allowed=page=>misPageAllowed(session,page);
+ if(route==='/api/gemini-settings')return isMisAdministrator(session)&&(read||req.method==='POST');
  if(route==='/api/capacity-master')return allowed('Capacity master')&&(read||req.method==='POST');
  if(route==='/api/mis-ticket-sites')return read;
  if(route==='/api/mis-admin/backup')return isMisAdministrator(session)&&req.method==='POST';

@@ -1,3 +1,4 @@
+import {registerGeminiScanSettings} from './routes/scanning/gemini-scan-settings.mjs';
 import {operationalScanSql} from '../shared/logbooks/operational-start.mjs';
 import {registerClientErrorReports} from './routes/core/client-error-report.mjs';
 import {scanDuplicateFlags} from './services/scanning/scan-duplicates.mjs';
@@ -7849,7 +7850,8 @@ app.get('/api/mis-admin/status',requireSession,requireMisAdministrator,async(req
 app.post('/api/mis-admin/backup',requireSession,requireMisAdministrator,async(req,res,next)=>{
  try{const {filePath,...result}=await createStoredBackup({triggerType:'MIS manual backup',actor:req.session});req.audit={eventType:'Administration',module:'MIS Full Backup',action:'Create database recovery backup',targetReference:result.fileName};res.status(201).json(result);}catch(error){next(error)}
 });
-const groqScanSettings=registerGroqScanSettings(app,{store:integrationSecrets,requireSession,requireAdministrator});
+const geminiScanSettings=registerGeminiScanSettings(app,{store:integrationSecrets,requireSession,requireAdministrator:requireMisAdministrator});
+const groqScanSettings=registerGroqScanSettings(app,{store:integrationSecrets,requireSession,requireAdministrator,getActiveGeminiConfig:geminiScanSettings.getConfig});
 const savedOracleConfig=async()=>await integrationSecrets.read('oracle')||(process.env.NEXUS_ERP_ORACLE_CONFIG?JSON.parse(process.env.NEXUS_ERP_ORACLE_CONFIG):null);
 // After every Pulse snapshot: retire aliases Pulse now carries as real doors, suspend aliases a real door now shadows (Telegram to the approver and the MIS managers).
 const aliasAlertLogins=async()=>[...new Set([(await readAliasApprover(pool)).login,...await misManagerLogins(pool)])];
@@ -7886,7 +7888,7 @@ if(scanImageStorage)void scanImageStorage.check().then(()=>{scanBlobReady=true;c
 const scanArchiveSettings=scanArchiveConfig();
 const scanBackup=registerScanBackup(app,{pool,requireSession,requireAdministrator,imageStorage:scanImageStorage,getSiteScope:logBookScope});
 registerClientErrorReports(app,{pool,requireSession,requireAdministrator,serverCommit:()=>deploymentSha});
-const bulkScanning=registerBulkCardScanning(app,{refreshPulseFleet:actor=>pulseMasterSync.sync('Equipment master',actor),readPulseFleet:actor=>pulseMasterSync.readEquipmentMasters(actor),imageStorage:scanImageStorage,getSiteScope:async()=>({sites:null,label:'All sites'}),pool,requireSession,requireAdministrator,getGroqConfig:groqScanSettings.getConfig,readHours:logBooks.readHours,localDrafts:process.env.MIS_LOCAL_SCANNER_DATABASE==='true',archiveTarget:scanArchiveSettings?.target||null,archiveSavedBatch:scanArchiveSettings?createLocalCardArchive(scanArchiveSettings.root,{target:scanArchiveSettings.target}):null});
+const bulkScanning=registerBulkCardScanning(app,{refreshPulseFleet:actor=>pulseMasterSync.sync('Equipment master',actor),readPulseFleet:actor=>pulseMasterSync.readEquipmentMasters(actor),imageStorage:scanImageStorage,getSiteScope:async()=>({sites:null,label:'All sites'}),pool,requireSession,requireAdministrator,getGroqConfig:groqScanSettings.getConfig,getGeminiConfig:geminiScanSettings.getConfig,readHours:logBooks.readHours,localDrafts:process.env.MIS_LOCAL_SCANNER_DATABASE==='true',archiveTarget:scanArchiveSettings?.target||null,archiveSavedBatch:scanArchiveSettings?createLocalCardArchive(scanArchiveSettings.root,{target:scanArchiveSettings.target}):null});
 const localScanner=registerLocalDocumentScanning(app,{imageStorage:scanImageStorage,pool,requireSession,requireAdministrator,bulkScanning,enabled:process.env.LOCAL_SCAN_ENABLED==='true',inbox:process.env.LOCAL_SCAN_INBOX,outputRoot:process.env.LOCAL_SCAN_OUTPUT_ROOT});
 app.post('/api/master-sync/connections',requireSession,requireAdministrator,async(req,res)=>{req.audit=false;try{
  if(req.body.oracle){const c=req.body.oracle;if(typeof c.user!=='string'||typeof c.password!=='string'||!c.user||!c.password||!/^[-\w.]+:\d+\/[-\w.]+$/.test(c.connectString||''))return res.status(400).json({error:'Enter a valid Oracle user, password and host:port/service.'});const oracle=(await import('oracledb')).default;const connection=await oracle.getConnection({user:c.user,password:c.password,connectString:c.connectString,connectTimeout:15,transportConnectTimeout:10});try{connection.callTimeout=15000;await connection.execute('SELECT 1 FROM DUAL')}finally{await connection.close()}await integrationSecrets.write('oracle',{user:c.user,password:c.password,connectString:c.connectString});}

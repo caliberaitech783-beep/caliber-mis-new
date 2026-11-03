@@ -46,7 +46,7 @@ async function setup(t){
  };
  const preview=async(b,operation='delete',user='alice')=>call('vlb-batch-deletions/preview','POST',{batchId:b.id,operation,reason:'Correct testing batch'},user);
  const send=async p=>call('vlb-batch-deletions/'+p.id+'/otp','POST',{approval:p.approval,deleteReplacement:true});
- const confirm=async(p,patch={})=>call('vlb-batch-deletions/'+p.id+'/confirm','POST',{approval:p.approval,deleteReplacement:true,otp,...patch});
+ const confirm=async(p,patch={})=>call('vlb-batch-deletions/'+p.id+'/confirm','POST',{approval:p.approval,deleteReplacement:true,otp,...(p.otpRequired===false?{confirmPermanent:true}:{}),...patch});
  const execute=async(b,operation='delete')=>{const p=await preview(b,operation);assert.equal(p.status,200,JSON.stringify(p.data));const s=await send(p.data);assert.equal(s.status,200,JSON.stringify(s.data));const r=await confirm(p.data);assert.equal(r.status,200,JSON.stringify(r.data));return r};
  return {db,pool,call,create,add,preview,send,confirm,execute,recovery,removed,otp:()=>otp,failSend:(on=true)=>sendFail=on};
 }
@@ -189,3 +189,13 @@ test('PostgreSQL serializes concurrent restores and consumes one approval only',
  assert.equal((await h.db.query('SELECT count(*)::int AS n FROM mis_vlb_batches WHERE deleted_at IS NULL')).rows[0].n,1);
  assert.equal((await h.db.query('SELECT count(*)::int AS n FROM mis_scan_cards')).rows[0].n,1);
 });
+
+ test('permanent deletion needs typed approval and explicit final confirmation, without WhatsApp delivery',async t=>{
+ const h=await setup(t),b=await h.create();await h.add(b);h.failSend();
+ const p=await h.preview(b,'erase');assert.equal(p.status,200);assert.equal(p.data.otpRequired,false);
+ assert.equal((await h.confirm(p.data,{confirmPermanent:false})).status,400);
+ assert.equal((await h.confirm(p.data,{approval:'incorrect'})).status,400);
+ assert.equal((await h.db.query('SELECT id FROM mis_vlb_batches WHERE id=$1 AND purged_at IS NULL',[b.id])).rows.length,1);
+ assert.equal((await h.confirm(p.data)).status,200);
+ assert.equal((await h.confirm(p.data)).status,409);
+ });

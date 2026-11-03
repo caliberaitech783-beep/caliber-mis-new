@@ -12,6 +12,10 @@ These rules supersede conflicting inherited sections below.
 - Machine summary compares each full equipment identity and its trip count. Users may add summary rows. If a missing summary was derived from trip details, compare it with the original card and confirm it before logging. Correction prompts do not repeat for every error.
 - Filled headers/readings count as card data even with no trip table. Truly empty cards, extraction failures and rejected cards are distinct. Detailed issue counters can overlap; primary status counters count each card once.
 
+### Permanent deletion confirmation
+
+As requested on 3 November 2026, permanent VLB batch deletion (erase, purge and purge-all) does not require WhatsApp OTP. It still requires authorized site access, a reason, an exact item preview, its exact typed approval phrase, and an explicit final permanent-delete confirmation. The server rechecks the manifest and rejects changed, expired or completed previews. This change does not execute any deletion. Recoverable deletion and restoration retain their existing OTP flow.
+
 ### Draft persistence and final logging
 
 Scanning, uploading and correction autosaves retain drafts, including incomplete/invalid cards. The compatibility auto-save endpoint no longer creates log books. Manual VLB entry in a selected batch also saves drafts; authorized site users can resume them. Rejected manual drafts are retained and can be restored before locking.
@@ -23,6 +27,12 @@ Use Save & log batch, Save & lock batch, or Lock VLB in the existing two-stage f
 This device must synchronize pending originals and corrections before logging. Drafts that have not reached the server are only recoverable on the same browser/device; clearing browser storage can remove them. Opening/reloading the application itself still requires its normal network access. Another disconnected user's unreceived edits cannot be discovered by the server.
 
 Closed batches and locked VLB entries require the site PM approval flow to edit. Historical approval trials cannot bypass it. Per-card rejection is reversible; whole-batch deletion retains manual drafts and scans within the existing 240-hour recovery policy. Approved permanent deletion purges the retained manual contents too.
+
+### Gemini OCR settings
+
+Administrators can open `/?page=ocr-settings` (Admin → Gemini OCR settings). Enter a Google Gemini API key and choose Verify, save and enable Gemini. The backend verifies access to the existing `gemini-3.1-flash-lite` model through Google’s model metadata endpoint before saving. Keys are encrypted with the existing integration-secret store, omitted from API responses and audit payloads, and never stored in browser storage. Failed verification retains the previous working settings. Disabling Gemini retains its encrypted key; leaving the key field blank reuses it. New scans read the saved settings without a backend restart. Existing environment/Windows key setup remains a fallback when no settings have been saved.
+
+Key verification confirms model access, not extraction accuracy, available scan quota or billing. A real card scan still needs to be checked after configuration. Local setup URL: `http://127.0.0.1:4174/?page=ocr-settings`; the isolated sample preview does not connect to these settings. No real Gemini key has been supplied or activated during implementation.
 
 ### Master sources and setup
 

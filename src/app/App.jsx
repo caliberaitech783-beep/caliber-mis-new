@@ -1,3 +1,5 @@
+import {createSessionExpiryGuard} from '../services/auth/session-expiry-guard.mjs';
+import GeminiScanSettings from '../pages/scanning/gemini-scan-settings.jsx';
 import SmartSelect from '../components/ui/smart-select.jsx';
 import {isMisAdministrator,MIS_ADMIN_PAGES} from '../../shared/auth/mis-admin-access.mjs';
 import MisAdministration from '../pages/admin/mis-admin.jsx';
@@ -437,6 +439,7 @@ const recordUserActivity = ({module = "Application", action = "Use application",
 if (typeof window !== "undefined" && typeof window.fetch === "function" && !window.__sessionExpiryFetch) {
   const nativeFetch = window.fetch.bind(window);
   window.__sessionExpiryFetch = true;
+  const sessionHasExpired=createSessionExpiryGuard({fetchImpl:nativeFetch,getToken:()=>authToken});
   window.fetch = async (input, init) => {
     const url = typeof input === "string" ? input : input?.url || "";
     let requestInit = init;
@@ -456,8 +459,10 @@ if (typeof window !== "undefined" && typeof window.fetch === "function" && !wind
       onRetry: ({attempt, reason, status}) => console.warn(`Retrying ${url} after a transient ${reason === "status" ? `HTTP ${status}` : "network failure"} (attempt ${attempt + 1}).`),
     });
     if (response.status === 401 && authToken && url.startsWith("/api/") && !url.startsWith("/api/login")) {
-      clearStoredSession();
-      window.location.replace(`/?${SESSION_EXPIRED_PARAM}=1`);
+      if(await sessionHasExpired(input,requestInit,response)){
+        clearStoredSession();
+        window.location.replace(`/?${SESSION_EXPIRED_PARAM}=1`);
+      }
     }
     return response;
   };
@@ -11634,6 +11639,7 @@ function App() {
     .some((role)=>REQUEST_CORRECTION_MANAGER_ROLES.includes(role));
   const adminOnlyPages=new Set([...adminNav.map(([name])=>name),'Admin locks','Full Backup','Database']);
   const canOpenAdminPage = (name) => {
+    if(name==='Gemini OCR settings')return isMisAdministrator(session);
     if(name==='Capacity master')return isMisAdministrator(session)&&canOpenAdminPage('Equipment master');
     if(name==='Batch reopening approvals')return correctionApprovalAccess;
     if(['Full Backup','Database'].includes(name))return isMisAdministrator(session);
@@ -11964,7 +11970,7 @@ function App() {
     requestsLoaded ? <MisDashboard goto={selectMenu} gotoEquipment={gotoEquipment} gotoBreakdownFleet={gotoBreakdownFleet} requests={requests} requestsError={requestsError} requestsUpdatedAt={requestState.updatedAt} onRefreshRequests={loadRequests} theme={theme} session={session} /> : <RequestDataState error={requestsError} retry={loadRequests} />
   ) : renderedActive==='Employee master' ? (<EmployeeMaster session={session} ExportMenu={ExportMenu} PrintButton={PrintButton} parseCsv={parseCsv}/>) : ['Work Order master','Financial Year master','Company master'].includes(renderedActive) ? (
     <ErpMasters key={renderedActive} name={renderedActive} session={session} ExportMenu={ExportMenu} PrintButton={PrintButton} parseCsv={parseCsv}/>
-  ) : renderedActive==='Pulse Master Sync' ? (
+  ) : renderedActive==='Gemini OCR settings' ? (<GeminiScanSettings session={session}/>) : renderedActive==='Pulse Master Sync' ? (
     <><PulseMasterSync session={session}/><PendingInPulse session={session}/></>
   ) : renderedActive==='Deletion' ? (<LogBookDeletion session={session}/>) : renderedActive==='Scan Backup' ? (<ScanCardBackup session={session}/>) : ['Vehicle Log Book Options','Equipment Log Book Options'].includes(renderedActive) ? (<LogBookModeChoice onBatches={()=>selectMenu('Create VLB Batch')} kind={renderedActive==='Vehicle Log Book Options'?'vehicle':'equipment'} canSaved={canOpenAdminPage(renderedActive==='Vehicle Log Book Options'?'Saved VLB':'Saved ELB')} onSaved={()=>selectMenu(renderedActive==='Vehicle Log Book Options'?'Saved VLB':'Saved ELB')} canScan={canOpenAdminPage(renderedActive==='Vehicle Log Book Options'?'Trip Card Bulk Scan':'Job Card Bulk Scan')} onManual={()=>selectMenu(renderedActive==='Vehicle Log Book Options'?'Vehicle Log Book':'Equipment Log Book')} onScan={()=>selectMenu(renderedActive==='Vehicle Log Book Options'?'Trip Card Bulk Scan':'Job Card Bulk Scan')}/>) : ['Trip Card Bulk Scan','Job Card Bulk Scan'].includes(renderedActive) ? (
     <VlbEntryWorkspace key={renderedActive} mode="scan" kind={renderedActive==='Trip Card Bulk Scan'?'vehicle':'equipment'} session={session} ReportSection={ReportSection} onExit={()=>selectMenu(renderedActive==='Trip Card Bulk Scan'?'Vehicle Log Book Options':'Equipment Log Book Options')}><BulkCardScanning ReportSection={ReportSection} key={renderedActive} kind={renderedActive==='Trip Card Bulk Scan'?'vehicle':'equipment'} session={session}/></VlbEntryWorkspace>

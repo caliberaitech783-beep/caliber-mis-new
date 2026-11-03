@@ -117,7 +117,7 @@ export async function checkScanCard(client,kind,card,input=card.draft){
 
  return {errors,warnings,data,number};
 }
-export function registerBulkCardScanning(app,{pool,requireSession,requireAdministrator,getGroqConfig,ocr=localCardOcr({getGroqConfig}),readHours,readPulseFleet=null,refreshPulseFleet=null,archiveSavedBatch=null,archiveTarget=null,imageStorage=null,localDrafts=false,scanConcurrency=geminiEnabled(process.env)?5:1,getSiteScope=async()=>({sites:null}),fingerprintBackfill=!process.env.NODE_TEST_CONTEXT}){
+export function registerBulkCardScanning(app,{pool,requireSession,requireAdministrator,getGroqConfig,getGeminiConfig,ocr=localCardOcr({getGroqConfig,getGeminiConfig}),readHours,readPulseFleet=null,refreshPulseFleet=null,archiveSavedBatch=null,archiveTarget=null,imageStorage=null,localDrafts=false,scanConcurrency=geminiEnabled(process.env)?5:1,getSiteScope=async()=>({sites:null}),fingerprintBackfill=!process.env.NODE_TEST_CONTEXT}){
  if(!Number.isInteger(scanConcurrency)||scanConcurrency<1||scanConcurrency>5)throw Error('Scan concurrency must be between 1 and 5.');
  // Pulse fleet rows carry the saved card aliases of their linked local record, so an aliased written label is not held as "not registered".
  if(readPulseFleet){const readSourceFleet=readPulseFleet;readPulseFleet=async actor=>withEquipmentAliases(pool,await readSourceFleet(actor),{by:'source'});}

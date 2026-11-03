@@ -87,3 +87,8 @@ test("user site assignment is site-first and falls back past whitespace-only fie
   assert.equal(assignedUserSiteName({site: "", location: "\t", currentLocation: " Majri II "}), "Majri II");
   assert.equal(assignedUserSiteName(null), "");
 });
+
+ test('Gauri Pauni OC without the legacy 2nd suffix matches its existing shifts',()=>{
+ assert.equal(canonicalSiteName('Gauri Pauni OC'),canonicalSiteName('Gauri Pauni OC (2nd)'));
+ assert.notEqual(canonicalSiteName('Gauri Pauni OC'),canonicalSiteName('Dhoptala OC (2nd)'));
+ });

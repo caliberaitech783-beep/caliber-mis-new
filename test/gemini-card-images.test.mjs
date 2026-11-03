@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createCanvas,loadImage} from '@napi-rs/canvas';import {DETAIL_VIEW_WEBP_QUALITY,cardDetailViews,summaryDetailViews} from '../server/services/scanning/gemini-card-images.mjs';
+import {createCanvas,loadImage} from '@napi-rs/canvas';import {DETAIL_VIEW_WEBP_QUALITY,cardDetailViews,summaryDetailViews,readingDetailViews} from '../server/services/scanning/gemini-card-images.mjs';
 test('native-pixel detail columns retain header and footer at either card orientation',async()=>{
  const source=createCanvas(100,200),ctx=source.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,100,200);ctx.fillStyle='black';ctx.fillRect(15,5,10,10);ctx.fillRect(75,185,10,10);
  const original=source.toBuffer('image/png'),sets=[];
@@ -25,3 +25,11 @@ test('concurrent encoding preserves every byte of the sequential WebP views',asy
  }
  assert.deepEqual(await cardDetailViews(original),expected);
 });
+
+ test('reading-table bands retain both meter columns and rows at native width for inverted captures',async()=>{
+ const canvas=createCanvas(200,300),ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,200,300);ctx.fillStyle='black';
+ for(const x of [50,130])for(const y of [60,85])ctx.fillRect(x,y,12,8);
+ const upright=await readingDetailViews(canvas.toBuffer('image/png'));const rotated=createCanvas(200,300),r=rotated.getContext('2d');r.translate(200,300);r.rotate(Math.PI);r.drawImage(canvas,0,0);
+ const inverted=await readingDetailViews(rotated.toBuffer('image/png'));
+ for(const view of [upright[0],inverted[1]]){const image=await loadImage(view.image);assert.equal(image.width,200);assert.equal(image.height,126);const out=createCanvas(200,126),c=out.getContext('2d');c.drawImage(image,0,0);for(const x of [55,135])for(const y of [64,89])assert.ok(c.getImageData(x,y,1,1).data[0]<80);}
+ });

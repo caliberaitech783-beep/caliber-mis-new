@@ -10,7 +10,7 @@ import {createGeminiCardReader} from '../server/services/scanning/gemini-card-re
 import {aFields} from '../server/services/scanning/gemini-hybrid.mjs';
 
 const field=value=>({value,status:value===null?'missing':'clear'});
-const response=()=>({documentType:'ELB',fields:{...Object.fromEntries(aFields('equipment').map(key=>[key,field(null)])),site:field('Sasti OC'),machineSummary:[]},trips:{p:false,r:[]}});
+const response=()=>({documentType:'ELB',fields:{...Object.fromEntries(aFields('equipment').map(key=>[key,field(null)])),site:field('Sasti OC'),openingHmr:field('100'),closingHmr:field('101'),machineSummary:[]},trips:{p:false,r:[]}});
 const ok=()=>({ok:true,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(response())}]}}]})});
 async function temporary(t){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'gemini-speed-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return dir;}
 
@@ -23,7 +23,7 @@ test('upload-ready JPEG stays byte-identical, with all six existing detail views
  const oldStart=performance.now(),normalized=await normalizeScanImage(jpeg),oldViews=(await Promise.all([cardDetailViews(normalized),summaryDetailViews(normalized)])).flat(),oldMs=performance.now()-oldStart;
  const newStart=performance.now(),source=await prepareGeminiScanImage(jpeg),views=await allCardDetailViews(source),newMs=performance.now()-newStart;
  assert.equal(source,jpeg,'no re-encoding of the original JPEG');
- assert.deepEqual(views,oldViews,'all detail labels, dimensions, quality and encoded pixels must match');
+ assert.deepEqual(views.slice(0,6),oldViews,'all detail labels, dimensions, quality and encoded pixels must match');
  assert.ok(jpeg.length<normalized.length*.7);
  const beforeBytes=normalized.length+oldViews.reduce((sum,view)=>sum+view.image.length,0),afterBytes=jpeg.length+views.reduce((sum,view)=>sum+view.image.length,0);
  console.log(`Synthetic extraction: original image ${normalized.length} PNG bytes -> ${jpeg.length} JPEG bytes; total images ${beforeBytes} -> ${afterBytes} bytes; preparation ${Math.round(oldMs)} -> ${Math.round(newMs)} ms (local sample only)`);

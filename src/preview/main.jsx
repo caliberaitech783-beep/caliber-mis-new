@@ -1,6 +1,5 @@
 import { createPreviewApi } from "../services/preview/api.mjs";
 import { session } from "../services/preview/fixtures.mjs";
-import "../styles/preview.css";
 if (
   !import.meta.env.DEV ||
   import.meta.env.MODE !== "preview" ||
@@ -19,20 +18,6 @@ window.fetch = createPreviewApi({
 // A separate localhost port and explicit preview session keep real sign-in out of this entry.
 localStorage.removeItem("nerveCenterSession");
 sessionStorage.setItem("nerveCenterSession", JSON.stringify(session));
-const notice = document.getElementById("preview-notice");
-notice.innerHTML =
-  '<strong>LOCAL MOCK · Synthetic data</strong><span>Changes stay in this browser tab. No production authentication, OCR, backup or synchronization.</span><button type="button">Reset demo data</button>';
-notice.querySelector("button").addEventListener("click", () => {
-  sessionStorage.removeItem(key);
-  location.reload();
-});
-const measure = () =>
-  document.documentElement.style.setProperty(
-    "--preview-height",
-    notice.offsetHeight + "px",
-  );
-new ResizeObserver(measure).observe(notice);
-measure();
 // Service credentials are never accepted in the mock environment.
 const disableCredentialForms = () => {
   for (const input of document.querySelectorAll('input[type="password"]')) {

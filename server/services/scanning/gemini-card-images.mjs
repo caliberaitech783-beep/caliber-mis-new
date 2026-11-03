@@ -42,8 +42,16 @@ function columnViews(image){
 }
 export async function summaryDetailViews(bytes){return summaryViews(await checkedImage(bytes));}
 export async function cardDetailViews(bytes){return columnViews(await checkedImage(bytes));}
+function readingViews(image){
+ const {width,height}=image;
+ return Promise.all([['Header and HMR/KMR reading table',0,0],['Header and HMR/KMR reading table',.58,180]].map(([label,y,degrees])=>{
+  const sy=Math.floor(y*height),sh=Math.min(height-sy,Math.ceil(.42*height));
+  return encodeView(image,{label,sy,width,height:sh,degrees});
+ }));
+}
+export async function readingDetailViews(bytes){return readingViews(await checkedImage(bytes));}
 export async function allCardDetailViews(bytes){
- // The six views share one decode of the original card.
- const image=await checkedImage(bytes),[columns,summary]=await Promise.all([columnViews(image),summaryViews(image)]);
- return [...columns,...summary];
+ // Readings stay together with both OPENING/CLOSING columns in either orientation.
+ const image=await checkedImage(bytes),[columns,summary,readings]=await Promise.all([columnViews(image),summaryViews(image),readingViews(image)]);
+ return [...columns,...summary,...readings];
 }

@@ -10,14 +10,14 @@ const user={role:'super',login:'site-user',permissions:{separateMisCredentials:t
 const admin={...user,login:'admin',permissions:{...user.permissions,misDesktopAccess:['Users & employees']}};
 test('generic MIS Admin labels do not grant administrative authority',()=>{
  assert.equal(isMisAdministrator(user),false);assert.equal(isMisAdministrator(admin),true);
- assert.deepEqual(MIS_ADMIN_PAGES,['User Sessions','Print helper','Full Backup','Audit Trail','Database']);
+ assert.deepEqual(MIS_ADMIN_PAGES,['Gemini OCR settings','User Sessions','Print helper','Full Backup','Audit Trail','Database']);
  for(const page of MIS_ADMIN_PAGES){assert.equal(misPageAllowed(user,page),false);assert.equal(misPageAllowed(admin,page),true);}
  assert.equal(canViewUserSessions(user),false);assert.equal(canViewUserSessions(admin),true);
  for(const page of ['Tickets','Telegram Integration'])assert.equal(misPageAllowed(user,page),true);
 });
 test('MIS administration APIs fail closed for users and retain only bounded admin operations',()=>{
  const allowed=(session,path,method='GET')=>misRequestAllowed(session,{path,method});
- for(const path of ['/api/user-sessions','/api/audit-events','/api/backups','/api/mis-admin/status','/api/mis-telegram/settings']){assert.equal(allowed(user,path),false,path);assert.equal(allowed(admin,path),true,path);}
+ for(const path of ['/api/gemini-settings','/api/user-sessions','/api/audit-events','/api/backups','/api/mis-admin/status','/api/mis-telegram/settings']){assert.equal(allowed(user,path),false,path);assert.equal(allowed(admin,path),true,path);}
  assert.equal(allowed(user,'/api/mis-admin/backup','POST'),false);assert.equal(allowed(admin,'/api/mis-admin/backup','POST'),true);
  for(const path of ['/api/backups/import/restore','/api/mis-admin/new-feature','/api/print-helper/setup/unassigned'])assert.equal(allowed(user,path,'POST'),false);
  assert.equal(allowed(admin,'/api/audit-events','DELETE'),false);assert.equal(allowed(admin,'/api/user-login-history','DELETE'),false);

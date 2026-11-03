@@ -115,7 +115,7 @@ test('a new-parser cached malformed name retains original evidence without anoth
  const image=Buffer.from('valid-card-with-bad-name-cell');
  const {createHash}=await import('node:crypto');const imageHash=createHash('sha256').update(image).digest('hex');
  const card=response();card.fields.employeeName={status:'clear',value:''};const raw=JSON.stringify(card);
- await fs.writeFile(path.join(dir,imageHash+'-vehicle-single-v16.json'),JSON.stringify({imageHash,kind:'vehicle',model:MODEL,finishReason:'STOP',raw}));
+ await fs.writeFile(path.join(dir,imageHash+'-vehicle-single-v17.json'),JSON.stringify({imageHash,kind:'vehicle',model:MODEL,finishReason:'STOP',raw}));
  const reader=createGeminiCardReader({cacheDir:dir,getKey:async()=>{throw Error('Cached recovery must not request a key');},prepareViews:async()=>{throw Error('Cached recovery must not read image again');}});
  const result=await reader.recognize(image);
  assert.equal(result.handwrittenFields.employeeCode,'3943');assert.equal(result.handwrittenFields.employeeName,'');
@@ -204,3 +204,16 @@ test('malformed summary rows remain reviewable instead of failing the complete c
  assert.equal(parsed.fields.door.value,'V309');assert.equal(parsed.trips.r.length,2);
  assert.ok(parsed.issues.some(issue=>issue.includes('Summary row')));
 });
+
+ test('missing meter cells trigger one focused retry and retain literal decimals without swapping rows or columns',async t=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'gemini-meters-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));let calls=0;
+ const reader=createGeminiCardReader({cacheDir:dir,getKey:async()=>'synthetic',prepareViews:async()=>[],minIntervalMs:0,sleep:async()=>{},fetchImpl:async(url,options)=>{
+ calls++;const card=response();
+ if(calls===1){for(const key of ['openingKmr','closingKmr','openingHmr','closingHmr'])card.fields[key]=field(null);}
+ else {assert.match(JSON.parse(options.body).contents[0].parts.at(-1).text,/OPENING column separately from CLOSING/);Object.assign(card.fields,{openingHmr:field('8278'),closingHmr:field('8285'),openingKmr:field('161366:5'),closingKmr:field('161478.2')});}
+ return ok(JSON.stringify(card));}});
+ const result=await reader.recognize(Buffer.from('meter-reading-regression'));
+ assert.equal(calls,2);const draft=extractCard(result.text,'vehicle',[],result).draft;
+ assert.deepEqual([draft.openingHmr,draft.closingHmr,draft.openingKmr,draft.closingKmr],['8278','8285','161366.5','161478.2']);
+ await reader.recognize(Buffer.from('meter-reading-regression'));assert.equal(calls,2);
+ });
