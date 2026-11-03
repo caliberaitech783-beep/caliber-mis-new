@@ -1,4 +1,4 @@
-import {meterRuleIssues} from '../../../shared/scanning/trip-card-rules.mjs';
+import {meterRuleIssues,tripChronologyIssues,selectedMasterShift} from '../../../shared/scanning/trip-card-rules.mjs';
 import {normalizeScanEquipmentRows,scanEquipmentMatchIssues} from '../../../shared/scanning/scan-machine-rules.mjs';
 import {isBlankHandoverIssue} from './scan-handover-review.mjs';
 import {scanFieldIssues} from './scan-field-review.mjs';
@@ -26,7 +26,7 @@ export function manualScanIssues(input={},kind='vehicle',raw={},options=null){
    if(i>=0){if(draft.trips[i].equipmentSource==='previous-trip-row'&&/ambiguous or unreadable machine/.test(reason))continue;const key=/unloading/i.test(reason)?'unloadingTime':/loading/i.test(reason)?'loadingTime':'equipmentName';if(isBlankHandoverIssue(draft.trips[i],i,key,raw,reason))continue;issues[`trips.${i}.${key}`]=reason;}
   }
  }
- for(const key of Object.keys(meterRuleIssues(draft,kind)))delete issues[key];
+ Object.assign(issues,meterRuleIssues(draft,kind),kind==='vehicle'?tripChronologyIssues(draft,selectedMasterShift(options?.shifts||[],draft.location,draft.cardShift,draft.bookDate)):{});
  return issues;
 }
 

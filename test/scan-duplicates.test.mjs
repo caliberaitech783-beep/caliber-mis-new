@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -24,7 +25,7 @@ async function harness(t,env={}){
  const authorized=(req,res,next)=>next();
  registerLogBooks(app,{pool,requireSession:session,requireAdministrator:authorized,pulseMasterSync:{status:()=>({connected:true}),readBreakdownRequests:async()=>[]}});
  // The reader is never reached for duplicates; other cards fail to read here, which keeps them live (status error) without a model.
- const scanning=registerBulkCardScanning(app,{pool,requireSession:session,requireAdministrator:authorized,ocr:{recognize:async()=>{throw Error('Not used')}},fingerprintBackfill:false});
+ const scanning=app.use(arrangeScanParent(db));registerBulkCardScanning(app,{pool,requireSession:session,requireAdministrator:authorized,ocr:{recognize:async()=>{throw Error('Not used')}},fingerprintBackfill:false});
  app.use((e,req,res,next)=>res.status(e.status||500).json({error:e.message}));
  const server=app.listen(0,'127.0.0.1');await new Promise(resolve=>server.on('listening',resolve));t.after(()=>{server.closeAllConnections();server.close()});
  const call=async(route,method='GET',body)=>{const r=await fetch(`http://127.0.0.1:${server.address().port}`+route,{method,headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,data:await r.json()}};

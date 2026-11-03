@@ -49,7 +49,8 @@ export function registerVlbBatchDeletions(app,{pool,protect,handle,ensure,sendOt
    if(all.some(s=>!scans.some(x=>x.id===s.id)))fail('A linked upload contains cards outside this batch. Resolve its ownership first.');
   }
   const backups=await exists(c,'mis_scan_backup_items')?(await c.query("SELECT backup_id,card_id,md5(to_jsonb(i)::text) AS fingerprint FROM mis_scan_backup_items i WHERE card_id=ANY($1::uuid[]) OR metadata->>'logbookId'=ANY($2::text[]) ORDER BY backup_id,card_id FOR UPDATE",[scans.map(s=>s.id),ids])).rows:[];
-  return {batch:{id:b.id,name:b.name,site:b.site,date:b.report_date,shift:b.shift,closedAt:b.closed_at,revision:b.closure_revision},records:records.map(r=>({id:r.id,bookNo:r.book_no,revision:r.revision,fingerprint:r.fingerprint})),scans:scans.map(({draft,...s})=>({...s,door:decodeScanRow({draft}).draft?.door||''})),scanBatches:scanBatches.map(s=>({id:s.id,context:s.expected_context})),backups};
+  const drafts=await exists(c,'mis_vlb_manual_drafts')?(await c.query('SELECT id,revision,md5(to_jsonb(d)::text) AS fingerprint FROM mis_vlb_manual_drafts d WHERE batch_id=$1 ORDER BY id FOR UPDATE',[b.id])).rows:[];
+  return {drafts,batch:{id:b.id,name:b.name,site:b.site,date:b.report_date,shift:b.shift,closedAt:b.closed_at,revision:b.closure_revision},records:records.map(r=>({id:r.id,bookNo:r.book_no,revision:r.revision,fingerprint:r.fingerprint})),scans:scans.map(({draft,...s})=>({...s,door:decodeScanRow({draft}).draft?.door||''})),scanBatches:scanBatches.map(s=>({id:s.id,context:s.expected_context})),backups};
  }
  async function plan(c,req,operation,id){
   if(operation==='purge-all'){
@@ -82,6 +83,7 @@ export function registerVlbBatchDeletions(app,{pool,protect,handle,ensure,sendOt
    await c.query('DELETE FROM mis_scan_backup_items WHERE backup_id=$1 AND card_id=$2',[i.backup_id,i.card_id]);
   }
   await c.query('UPDATE mis_log_books SET deleted_at=clock_timestamp(),revision=revision+1 WHERE id=ANY($1::bigint[])',[ids]);
+  if(await exists(c,'mis_vlb_manual_drafts'))await c.query('UPDATE mis_vlb_manual_drafts SET revision=revision+1 WHERE batch_id=$1',[b.id]);
   await c.query('DELETE FROM mis_vlb_batch_scopes WHERE batch_id=$1',[b.id]);
   await c.query("UPDATE mis_vlb_batches SET deleted_at=clock_timestamp(),restore_until=clock_timestamp()+INTERVAL '240 hours',deleted_by=$2,archived_at=clock_timestamp(),closed_at=COALESCE(closed_at,clock_timestamp()),amendment_by=NULL,trial_reopened_until=NULL,closure_revision=closure_revision+1,deleted_counts=$3::jsonb WHERE id=$1",[b.id,actor,JSON.stringify({cards:ids.length,scans:scans.length})]);
   await c.query("UPDATE mis_vlb_reopen_requests SET withdrawn_at=clock_timestamp() WHERE batch_id=$1 AND withdrawn_at IS NULL",[b.id]);
@@ -100,6 +102,7 @@ export function registerVlbBatchDeletions(app,{pool,protect,handle,ensure,sendOt
   if(await exists(c,'mis_scan_batches'))await c.query("UPDATE mis_scan_batches s SET expected_context=i.payload->'expected_context' FROM mis_vlb_batch_recovery_items i WHERE i.batch_id=$1 AND i.kind='scan-batch' AND s.id::text=i.item_key",[b.id]);
   if(await exists(c,'mis_scan_cards'))await c.query("INSERT INTO mis_scan_cards SELECT (jsonb_populate_record(NULL::mis_scan_cards,jsonb_set(payload,'{revision}',to_jsonb((payload->>'revision')::int+1)))).* FROM mis_vlb_batch_recovery_items WHERE batch_id=$1 AND kind='scan'",[b.id]);
   if(await exists(c,'mis_scan_backup_items'))await c.query("INSERT INTO mis_scan_backup_items SELECT (jsonb_populate_record(NULL::mis_scan_backup_items,payload)).* FROM mis_vlb_batch_recovery_items WHERE batch_id=$1 AND kind='backup'",[b.id]);
+  if(await exists(c,'mis_vlb_manual_drafts'))await c.query('UPDATE mis_vlb_manual_drafts SET revision=revision+1 WHERE batch_id=$1',[b.id]);
   await c.query('UPDATE mis_vlb_batches SET deleted_at=NULL,deleted_by=NULL,restore_until=NULL,deleted_counts=NULL,archived_at=NULL,closed_at=clock_timestamp(),amendment_by=NULL,trial_reopened_until=NULL,closure_revision=closure_revision+1 WHERE id=$1',[b.id]);
   await c.query('INSERT INTO mis_vlb_batch_scopes(site,book_date,shift,batch_id) VALUES($1,$2,$3,$4)',[b.site,b.report_date,b.shift,b.id]);
   await c.query('DELETE FROM mis_vlb_batch_recovery_items WHERE batch_id=$1',[b.id]);
@@ -112,6 +115,7 @@ export function registerVlbBatchDeletions(app,{pool,protect,handle,ensure,sendOt
   const ids=items.filter(i=>i.kind==='book').map(i=>String(i.payload.id));
   for(const i of items.filter(i=>['scan','backup'].includes(i.kind))){const key=i.payload.image_blob_key||i.payload.blob_key;if(key)await c.query('INSERT INTO mis_vlb_batch_blob_cleanup(batch_id,blob_key,image_hash) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[b.id,key,i.payload.image_hash]);}
   // Keep FK-compatible tombstone identities; purge the recoverable card contents.
+  if(await exists(c,'mis_vlb_manual_drafts'))await c.query('DELETE FROM mis_vlb_manual_drafts WHERE batch_id=$1',[b.id]);
   await c.query('DELETE FROM mis_vlb_batch_entries WHERE batch_id=$1',[b.id]);
   if(await exists(c,'mis_pulse_trip_verifications'))await c.query('DELETE FROM mis_pulse_trip_verifications WHERE logbook_id=ANY($1::bigint[])',[ids]);
   if(await exists(c,'mis_log_book_deletions'))await c.query("UPDATE mis_log_book_deletions SET snapshot=(SELECT COALESCE(jsonb_agg(CASE WHEN s->>'id'=ANY($1::text[]) THEN jsonb_build_object('id',s->>'id','permanentlyDeleted',true) ELSE s END),'[]'::jsonb) FROM jsonb_array_elements(snapshot) s) WHERE EXISTS(SELECT 1 FROM jsonb_array_elements(snapshot) s WHERE s->>'id'=ANY($1::text[]))",[ids]);

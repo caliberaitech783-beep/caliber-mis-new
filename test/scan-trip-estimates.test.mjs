@@ -3,15 +3,15 @@ import assert from 'node:assert/strict';
 import {estimateMissingTripTimes,previousScanShift,completePreviousShiftMachines,fillScanTripEstimates,tripEstimateNote} from '../shared/scanning/scan-trip-estimates.mjs';
 const draft={bookDate:'2026-12-29',cardShift:'II',assetId:'645',location:'Sasti OC',timeMode:'with',trips:[{equipmentName:'',loadingTime:'',unloadingTime:'08:22'}]};
 const source=(name='VPC28',id=1)=>({id,book_no:'PREV/'+id,data:{bookDate:'2026-12-29',cardShift:'I',trips:[{equipmentName:name,loadingTime:'07:20',unloadingTime:'07:40'}]}});
-test('08:22 unloading fills 08:00 loading and visibly identifies the estimate',()=>{
- const next=estimateMissingTripTimes(draft),row=next.trips[0];assert.equal(row.loadingTime,'08:00');assert.match(tripEstimateNote(row,'loadingTime'),/Estimated.*22 minutes/);assert.equal(draft.trips[0].loadingTime,'');
- assert.deepEqual(estimateMissingTripTimes(next),next);
- assert.equal(tripEstimateNote({...row,loadingTime:'08:02'},'loadingTime'),'');
+test('missing loading and unloading remain blank, including carry-over at midnight',()=>{
+ const next=estimateMissingTripTimes(draft);assert.equal(next.trips[0].loadingTime,'');assert.equal(tripEstimateNote(next.trips[0],'loadingTime'),'');
+ const input={trips:[{loadingTime:'23:50',unloadingTime:''},{loadingTime:'',unloadingTime:'00:10'},{loadingTime:'08:10',unloadingTime:'08:25'}]};assert.deepEqual(estimateMissingTripTimes(input),input);
 });
-test('missing unloading adds 22 minutes, including midnight; complete, empty and invalid times remain literal',()=>{
- const input={trips:[{loadingTime:'23:50',unloadingTime:''},{loadingTime:'',unloadingTime:'00:10'},{loadingTime:'08:10',unloadingTime:'08:25'},{loadingTime:'',unloadingTime:''},{loadingTime:'',unloadingTime:'25:70'}]};
- const rows=estimateMissingTripTimes(input).trips;assert.equal(rows[0].unloadingTime,'00:12');assert.equal(rows[0].timeEstimates.unloadingTime.dayOffset,1);assert.equal(rows[1].loadingTime,'23:48');assert.equal(rows[1].timeEstimates.loadingTime.dayOffset,-1);for(let i=2;i<5;i++)assert.deepEqual(rows[i],input.trips[i]);
- assert.deepEqual(estimateMissingTripTimes({...input,timeMode:'without'}),{...input,timeMode:'without'});
+test('untouched historical estimates are removed only from editable drafts; explicit corrections survive',()=>{
+ const estimate={value:'08:00',anchorField:'unloadingTime',anchorValue:'08:22',minutes:22};
+ const input={trips:[{loadingTime:'08:00',unloadingTime:'08:22',timeEstimates:{loadingTime:estimate}}]};
+ assert.equal(estimateMissingTripTimes(input).trips[0].loadingTime,'');
+ assert.equal(estimateMissingTripTimes({...input,trips:[{...input.trips[0],loadingTime:'08:02'}]}).trips[0].loadingTime,'08:02');
 });
 test('previous shift crosses dates, month and year boundaries correctly',()=>{
  assert.deepEqual(previousScanShift({bookDate:'2026-01-01',cardShift:'I'}),{bookDate:'2025-12-31',cardShift:'III'});
@@ -22,7 +22,7 @@ test('unreadable written times remain blank and unchanged cards do not acquire n
  assert.deepEqual(estimateMissingTripTimes({location:'Sasti OC'}),{location:'Sasti OC'});
  assert.equal(estimateMissingTripTimes(draft,{tripGrid:{rows:[{rowNumber:1,loading:{present:true,value:'',text:'62:19'}}]}}).trips[0].loadingTime,'');
  assert.equal(estimateMissingTripTimes(draft,{gemini:{trips:{r:[[1,'',null,'08:22']]}}}).trips[0].loadingTime,'');
- assert.equal(estimateMissingTripTimes(draft,{gemini:{trips:{r:[[1,'','','08:22']]}}}).trips[0].loadingTime,'08:00');
+ assert.equal(estimateMissingTripTimes(draft,{gemini:{trips:{r:[[1,'','','08:22']]}}}).trips[0].loadingTime,'');
 });
 test('missing machine comes from previous shift terminal trip with provenance; printed machine is retained',()=>{
  const next=completePreviousShiftMachines({...draft,trips:[...draft.trips,{equipmentName:'VPC37',loadingTime:'09:40',unloadingTime:'10:00'}]},[source()]);
@@ -36,7 +36,7 @@ test('conflicting, wrong shift, chained and unmatched prefix sources never suppl
 });
 test('lookup is scoped to vehicle, site, exact date/shift and excludes deleted log books',async()=>{
  const queries=[];const client={query:async(sql,args)=>{queries.push({sql,args});return {rows:[source()]}}};
- const next=await fillScanTripEstimates(client,draft);assert.equal(next.trips[0].loadingTime,'08:00');assert.equal(next.trips[0].equipmentName,'VPC28');assert.deepEqual(queries[0].args,['645','Sasti OC','2026-12-29','I']);assert.match(queries[0].sql,/deleted_at IS NULL/);assert.match(queries[0].sql,/asset_id=\$1 AND site=\$2/);
+ const next=await fillScanTripEstimates(client,draft);assert.equal(next.trips[0].loadingTime,'');assert.equal(next.trips[0].equipmentName,'VPC28');assert.deepEqual(queries[0].args,['645','Sasti OC','2026-12-29','I']);assert.match(queries[0].sql,/deleted_at IS NULL/);assert.match(queries[0].sql,/asset_id=\$1 AND site=\$2/);
  queries.length=0;assert.deepEqual(await fillScanTripEstimates(client,draft,{responseRecoveryIssues:['review']}),draft);assert.equal(queries.length,0);
  await fillScanTripEstimates(client,{...draft,assetId:''});assert.equal(queries.length,0);
 });

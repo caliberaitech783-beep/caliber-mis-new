@@ -48,7 +48,7 @@ test('a missing model prevents production packaging instead of publishing an inc
  await assert.rejects(stageProductionRelease({root,destination,trackedFiles:[]}),/ENOENT/);
 });
 test('Azure deploys the complete validated workspace instead of the reduced staging ZIP',async()=>{
- const workflow=await readFile(new URL('../.github/workflows/main_caliber-mis-783.yml',import.meta.url),'utf8');
+ const workflow=await readFile(new URL('../docs/reference-workflows/main_caliber-mis-783.yml.disabled',import.meta.url),'utf8');
  assert.match(workflow,/package:\s*\.\s*(?:#.*)?$/m);
  assert.doesNotMatch(workflow,/package:\s*\$\{\{\s*runner\.temp\s*\}\}\/mis-release\.zip/);
 });

@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -39,7 +40,7 @@ test('server blocks saving before batch check, checks exact removal revisions an
  let tail=Promise.resolve();const query=(q,a)=>q.includes('pg_advisory_xact_lock')?Promise.resolve({rows:[]}):!a&&q.includes(';')?db.exec(q):db.query(q,a);
  const pool={query,connect:async()=>{const old=tail;let release;tail=new Promise(r=>release=r);await old;return {query,release}}};
  const app=express();app.use(express.json());const auth=(req,res,next)=>{req.session={login:'test-admin'};next()};
- const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});await service.start();await service.stop();
+ app.use(arrangeScanParent(db));const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});await service.start();await service.stop();
  app.use((e,req,res,next)=>res.status(500).json({error:e.message}));const server=app.listen(0);t.after(()=>new Promise(r=>server.close(r)));const root='http://127.0.0.1:'+server.address().port;
  const call=async(path,body)=>{const r=await fetch(root+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return {status:r.status,data:await r.json()}};
  assert.equal((await call('/api/scan-batches',{kind:'vehicle'})).status,400);
@@ -52,7 +53,7 @@ test('server blocks saving before batch check, checks exact removal revisions an
  const visible=await (await fetch(root+'/api/scan-batches/'+batch)).json();assert.deepEqual(visible.cards.map(c=>c.id),[good,bad]);assert.deepEqual(visible.contextGate.mismatches,[]);assert.equal(visible.cards[1].context_mismatch,undefined);
  assert.equal(visible.cards[1].draft.bookDate,context.bookDate);assert.equal(visible.cards[1].draft.bookDateSource,'batch');assert.match(visible.cards[1].checks.warnings.join(' '),/^Batch values applied\. Card shows Date: 2026-12-29; batch 2026-12-30\./);
  const blockedReport=await fetch(root+'/api/scan-batches/'+batch+'/report');assert.equal(blockedReport.status,409,'the selection must still be confirmed once');await blockedReport.body.cancel();
- assert.equal((await call('/api/scan-cards/'+good+'/auto-save',{revision:1})).status,409);
+ assert.equal((await call('/api/scan-cards/'+good+'/auto-save',{revision:1})).data.status,'draft');
  assert.equal((await call(url,{action:'discard',cards:[{id:bad,revision:1}]})).status,409,'there is no mismatch card to remove');
  const removed=await call(url,{action:'discard',cards:[]});assert.equal(removed.status,200);assert.equal(removed.data.removed,0);assert.equal(removed.data.remaining,2);
  const cleanReport=await (await fetch(root+'/api/scan-batches/'+batch+'/report')).json();assert.equal(cleanReport.tables.find(t=>t.name==='Cards').rows.length,0,'unresolved drafts are not written into Excel');
@@ -60,11 +61,11 @@ test('server blocks saving before batch check, checks exact removal revisions an
  const saved=await fetch(root+'/api/scan-cards/'+bad,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:1,action:'save',draft:{...context,bookDate:'2026-12-29',cardShift:'II',location:'Other site'}})});assert.equal(saved.status,200,await saved.text());
  const savedDraft=(await db.query('SELECT draft FROM mis_scan_cards WHERE id=$1',[bad])).rows[0].draft;assert.equal(savedDraft.bookDate,context.bookDate);assert.equal(savedDraft.cardShift,'I');assert.equal(savedDraft.location,'Sasti OC');assert.equal(savedDraft.shiftHours,8);
  let stored=(await db.query('SELECT expected_context FROM mis_scan_batches WHERE id=$1',[batch])).rows[0].expected_context;assert.equal(scanContextGate(stored,[{id:good,status:'review',draft:context,raw_fields:{extractionDraft:context}}]).blocked,false);
- for(const [key,value] of [['bookDate','2026-12-29'],['location','Other site'],['cardShift','Night']]){await db.query('UPDATE mis_scan_cards SET draft=$2::jsonb WHERE id=$1',[good,JSON.stringify({...context,[key]:value})]);const attempt=await call('/api/scan-cards/'+good+'/auto-save',{revision:1});assert.equal(attempt.status,409);assert.doesNotMatch(attempt.data.error,/Date:|Site:|Shift:/,'a wrong '+key+' is corrected to the batch value, never reported as a block');}
+ for(const [key,value] of [['bookDate','2026-12-29'],['location','Other site'],['cardShift','Night']]){await db.query('UPDATE mis_scan_cards SET draft=$2::jsonb WHERE id=$1',[good,JSON.stringify({...context,[key]:value})]);const attempt=await call('/api/scan-cards/'+good+'/auto-save',{revision:1});assert.equal(attempt.status,200);assert.equal(attempt.data.status,'draft');}
  await db.query('UPDATE mis_scan_cards SET draft=$2::jsonb WHERE id=$1',[good,JSON.stringify(context)]);assert.equal((await call(url,{action:'proceed'})).status,200);
  assert.equal((await call(url,{action:'cancel'})).status,200);
  assert.equal((await call(url,{action:'proceed'})).status,409);
- assert.equal((await call('/api/scan-cards/'+good+'/auto-save',{revision:1})).status,409);
+ assert.equal((await call('/api/scan-cards/'+good+'/auto-save',{revision:1})).data.status,'draft');
  assert.equal((await db.query('SELECT count(*) AS n FROM mis_log_books')).rows[0].n,0);
  // Legacy entries used to skip context checks entirely, even after manual edits.
  const legacy=randomUUID(),legacyGood=randomUUID(),legacyWrong=randomUUID();
@@ -72,10 +73,10 @@ test('server blocks saving before batch check, checks exact removal revisions an
  const wrongOriginal={...context,bookDate:'2026-12-29',location:'Jayant OC',cardShift:'II'};
  for(const [id,ordinal,original] of [[legacyGood,1,context],[legacyWrong,2,wrongOriginal]])await db.query("INSERT INTO mis_scan_cards(id,batch_id,ordinal,filename,image,image_hash,draft,raw_fields,status) VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,'review')",[id,legacy,ordinal,'legacy '+ordinal,image,id,JSON.stringify(context),JSON.stringify({extractionDraft:original})]);
  assert.equal((await call('/api/scan-cards/'+legacyGood+'/auto-save',{revision:1})).status,409);
- const legacyApproval=await fetch(root+'/api/scan-cards/'+legacyGood,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:1,action:'approve',checked:true,draft:context})});assert.equal(legacyApproval.status,409);assert.match((await legacyApproval.json()).error,/Scan setup/);
+ const legacyApproval=await fetch(root+'/api/scan-cards/'+legacyGood,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:1,action:'approve',checked:true,draft:context})});assert.equal(legacyApproval.status,409);assert.match((await legacyApproval.json()).error,/batch date, site and shift|Scan setup/);
  assert.equal((await call('/api/scan-batches/'+legacy+'/post',{cards:[{id:legacyGood,revision:1},{id:legacyWrong,revision:1}]})).status,409);
  for(const extension of ['/report','/report.pdf'])assert.equal((await fetch(root+'/api/scan-batches/'+legacy+extension)).status,409);
- const unselected=await(await fetch(root+'/api/scan-batches/'+legacy)).json();assert.match(unselected.cards[0].context_mismatch[0],/Scan setup/);
+ const unselected=await(await fetch(root+'/api/scan-batches/'+legacy)).json();assert.match(unselected.cards[0].context_mismatch[0],/batch date, site and shift|Scan setup/);
  const select='/api/scan-batches/'+legacy+'/context';
  assert.equal((await call(select,{expectedContext:{}})).status,400);
  const chosen=await call(select,{expectedContext:context});assert.equal(chosen.status,200);assert.equal(chosen.data.expectedContext.confirmed,false);
@@ -84,7 +85,7 @@ test('server blocks saving before batch check, checks exact removal revisions an
  const checkedLegacy=await(await fetch(root+'/api/scan-batches/'+legacy)).json();
  assert.deepEqual(checkedLegacy.contextGate.mismatches,[]);
  assert.match(checkedLegacy.cards[1].checks.warnings.join(' '),/Date: 2026-12-29; batch 2026-12-30.*Site: Jayant OC; batch Sasti OC.*Shift: II; batch I/,'all three original differences are noted after the entry fields were matched');
- assert.equal((await call('/api/scan-cards/'+legacyGood+'/auto-save',{revision:1})).status,409,'cards wait until the selection is confirmed');
+ assert.equal((await call('/api/scan-cards/'+legacyGood+'/auto-save',{revision:1})).data.status,'draft');
  assert.equal((await call('/api/scan-batches/'+legacy+'/validate-context',{action:'proceed'})).status,200,'nothing is held back for a handwritten header');
  const removedLegacy=await call('/api/scan-batches/'+legacy+'/validate-context',{action:'discard',cards:[]});assert.equal(removedLegacy.status,200);assert.equal(removedLegacy.data.remaining,2);
  const legacyReport=await(await fetch(root+'/api/scan-batches/'+legacy+'/report')).json();assert.equal(legacyReport.tables.find(table=>table.name==='Cards').rows.length,0,'unposted drafts never enter exports');

@@ -1,5 +1,43 @@
 # Operational guides
 
+## Current VLB rules confirmed on 3 November 2026
+
+These rules supersede conflicting inherited sections below.
+
+- One open batch per canonical location, shared by authorized users at that site. Different sites may operate independently. Names use CMLL/JAYANT OC/02nd Nov 2026/S1/B001; sequences are scoped to site/date/shift. Existing names are not rewritten.
+- The selected batch date, site and shift are authoritative. Wrong or missing handwritten headers take those values. The Mismatch Cards option is removed; actual equipment/employee site problems still need correction.
+- I, II and III represent 8 hours; Day and Night represent 12. Closing minus opening HMR must be between 0 and the shift hours. KMR must be between 0 and 250 km for 8 hours, or 300 km for 12 hours. Equal readings are allowed. Violations block final logging, not preservation of a draft.
+- Numeric C.ID refers to Employee Master employee identity at the selected location, retaining leading zeros and ignoring written letters. Driver name comes from that record. Trip card number has its own numeric field. Form A remains optional.
+- Loading/unloading chronology is anchored to the selected master shift, including midnight. First-row unloading-only and last-row loading-only are valid. The first unloading-only row may omit the prior shift loader and does not count in machine-wise summary; a final loading-only row does count. Missing clock cells are not filled with synthetic 22-minute times. Untouched estimates are removed from editable drafts; posted historical records are not rewritten.
+- Machine summary compares each full equipment identity and its trip count. Users may add summary rows. If a missing summary was derived from trip details, compare it with the original card and confirm it before logging. Correction prompts do not repeat for every error.
+- Filled headers/readings count as card data even with no trip table. Truly empty cards, extraction failures and rejected cards are distinct. Detailed issue counters can overlap; primary status counters count each card once.
+
+### Draft persistence and final logging
+
+Scanning, uploading and correction autosaves retain drafts, including incomplete/invalid cards. The compatibility auto-save endpoint no longer creates log books. Manual VLB entry in a selected batch also saves drafts; authorized site users can resume them. Rejected manual drafts are retained and can be restored before locking.
+
+Uploaded originals remain in IndexedDB until the server acknowledges the complete transfer. Interrupted uploads can be resumed; existing exact/visual duplicate protections avoid repeated cards. Pending uploads are scoped to the user and selected batch. Scan corrections and manual drafts also keep local recovery snapshots and synchronize on reconnect. Stale revisions remain recoverable rather than silently overwriting another user's work.
+
+Use Save & log batch, Save & lock batch, or Lock VLB in the existing two-stage flow to finalize. The server validates all active drafts in one transaction. Invalid/pending cards roll back every new log book, leaving drafts intact. Rejected cards are excluded. Retries do not duplicate records. The same write lock protects finalization and late scanner mutations. VLB locking still leads to ELB entry when the two-stage workflow is enabled.
+
+This device must synchronize pending originals and corrections before logging. Drafts that have not reached the server are only recoverable on the same browser/device; clearing browser storage can remove them. Opening/reloading the application itself still requires its normal network access. Another disconnected user's unreceived edits cannot be discovered by the server.
+
+Closed batches and locked VLB entries require the site PM approval flow to edit. Historical approval trials cannot bypass it. Per-card rejection is reversible; whole-batch deletion retains manual drafts and scans within the existing 240-hour recovery policy. Approved permanent deletion purges the retained manual contents too.
+
+### Master sources and setup
+
+Pulse supplies equipment, regions/sites, shifts, logins, work contracts and companies. Work Contract master snapshots are normalized into Work Order master for the existing contract consumers. Omitted groups retain their previous data and explicit synchronization reports missing source access. Oracle sync cannot overwrite a company/contract group already linked to Pulse. Employee synchronization remains from Oracle and retains stable IDs and unrelated employee details.
+
+Capacity Master now provides Sync capacity from Oracle. It reads the configured OB Trip average table/view in a read-only Oracle transaction, validates every row against the synced site/equipment masters, and imports effective-dated versions atomically. Repeated snapshots are idempotent; a conflict with an approved version is refused rather than silently replacing it.
+
+The actual Oracle table/view and columns are not yet confirmed. Configure ORACLE_CAPACITY_VIEW and ORACLE_CAPACITY_COLUMNS_JSON only after verifying that mapping. JSON keys are location, make, model, capacity, averageDalaFactor, jobType and effectiveFrom; values must be real Oracle column identifiers. The existing encrypted Oracle connection is reused when configured; ORACLE_DB_USER, ORACLE_DB_PASSWORD and ORACLE_DB_CONNECT_STRING remain an environment fallback. Credentials from the supplied Word file were not embedded or activated.
+
+Live Pulse optional-master access, the actual Oracle capacity mapping and live Gemini extraction remain unverified. OCR failures retain the original and allow retry/manual correction; no claim of guaranteed perfect extraction is made.
+
+Local verification: production build, 42 responsive layouts, and a Chromium offline/reload test for manual drafts and retained original upload bytes passed. The Windows-compatible regression run completed with 3,291 passing tests, zero failures and 19 database-dependent skips. It excludes three existing environment-specific checks (python3 executable, symlink privilege, and temporary-file cleanup); database-dependent checks without their configured external database remain skipped. Disposable database/HTTP tests cover shared site access, atomic final logging, locked writes, retry deduplication and Oracle capacity import rollback. No live source or deployment was used.
+
+
+
 ## BACKUP.md
 
 # Caliber Pulse backup and restore guide

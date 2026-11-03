@@ -1,3 +1,4 @@
+import {isUnloadingOnlyTrip} from './trip-card-rules.mjs';
 import {assetBookKind} from '../masters/equipment-kind.mjs';
 import {canonicalSiteName} from '../masters/site-location.mjs';
 const clean=v=>String(v??'').trim(),key=v=>clean(v).toUpperCase().replace(/[ ._-]/g,'');
@@ -31,4 +32,4 @@ export function resolveTripEquipment(row={},assets=[],location='',{anySite=false
  const record=unique[0],label=labels(record).map(parse).find(p=>p&&families[p.prefix]);
  return {equipmentName:label?families[label.prefix]+' '+label.number:clean(labels(record)[0]),equipmentId:String(record.id),originalEquipmentName:clean(row.originalEquipmentName||row.equipmentNotation?.original||original),...(anySite?{equipmentSite:clean(record.currentLocation||record.site||record.location)}:{})};
 }
-export function validateTripEquipment(draft={},assets=[],options={}){const issues={},result={...draft};for(const field of ['trips','scanMachineSummary'])result[field]=(draft[field]||[]).map((row,i)=>{const match=resolveTripEquipment(row,assets,draft.location,options);if(match.error){issues[field+'.'+i+'.equipmentName']=match.error;return row;}return {...row,...match};});return {draft:result,issues};}
+export function validateTripEquipment(draft={},assets=[],options={}){const issues={},result={...draft};for(const field of ['trips','scanMachineSummary'])result[field]=(draft[field]||[]).map((row,i)=>{if(field==='trips'&&i===0&&isUnloadingOnlyTrip(row))return {...row};const match=resolveTripEquipment(row,assets,draft.location,options);if(match.error){issues[field+'.'+i+'.equipmentName']=match.error;return row;}return {...row,...match};});return {draft:result,issues};}

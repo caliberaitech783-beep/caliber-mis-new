@@ -1,3 +1,4 @@
+import {prepareVlbFixture} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
@@ -81,6 +82,7 @@ test('real PostgreSQL queries exclude history and batch-only posting is atomic',
  assert.equal((await call('/api/scan-batches/'+oldScan)).status,400);
  assert.equal((await call('/api/scan-cards/'+oldCard+'/image')).status,400);
  const scans=await call('/api/scan-batches');assert.equal(scans.status,200,JSON.stringify(scans));assert.deepEqual(scans.data.batches.map(r=>r.id),[newScan]);
+ await prepareVlbFixture(db,{bookDate:'2026-11-01',location:'Sasti OC',cardShift:'I'});
  const upload=await call('/api/scan-batches/'+newScan+'/cards','POST',{uploadKey:randomUUID(),filename:'same.png',base64:image.toString('base64')});assert.equal(upload.status,201,JSON.stringify(upload));assert.equal(upload.data.duplicateSkipped,undefined);
  const repeat=await call('/api/scan-batches/'+newScan+'/cards','POST',{uploadKey:randomUUID(),filename:'same.png',base64:image.toString('base64')});assert.equal(repeat.status,200,JSON.stringify(repeat));assert.equal(repeat.data.duplicateSkipped,true);
  const wrappedId=randomUUID();await db.query('INSERT INTO mis_scan_cards(id,batch_id,ordinal,filename,image_hash,draft,status) VALUES($1,$2,3,$3,$4,$5,$6)',[wrappedId,newScan,'unicode.png','different',JSON.stringify(encodeScanJson({bookDate:'2026-10-31',location:'हिंदी'})),'review']);

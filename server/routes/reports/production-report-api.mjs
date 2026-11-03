@@ -1,3 +1,4 @@
+import {readOracleCapacities} from '../../services/masters/oracle-capacity-source.mjs';
 import {buildProductionReport,productionFilters,productionShifts,validateCapacity,assetCapacityPair,pairKey} from '../../../shared/reports/production-report.mjs';
 import {withEquipmentAliases} from '../masters/equipment-aliases.mjs';
 import {siteAllowed,requireLogBookSite} from '../../../shared/logbooks/log-book-access.mjs';
@@ -25,13 +26,27 @@ const masterRows=async client=>(await client.query("SELECT id,master_name,record
 const masterList=(rows,name)=>rows.filter(r=>r.master_name===name).map(r=>({...r.record_data,id:String(r.id)}));
 const capacityAssets=rows=>masterList(rows,'Equipment master').filter(a=>assetBookKind(a)==='vehicle'&&!a.sourceMissing);
 export const capacityRegionLocations=rows=>[...new Map([...REGION_DATA,...masterList(rows,'Region master')].flatMap(region=>displaySiteSelection(region.sites)).map(location=>[canonicalSiteName(location),location])).values()].sort((a,b)=>a.localeCompare(b));
-export function registerProductionReports(app,{pool,protect,ensureBooks}){
+export function registerProductionReports(app,{pool,protect,ensureBooks,readCapacitySource=null,oracleConfig=null}){
  let ready;const ensure=async()=>{await ensureBooks();await(ready??=(pool.query(PRODUCTION_REPORT_SCHEMA).catch(e=>{ready=null;throw e;})));};
  const admin=(req,res,next)=>isMisAdministrator(req.session)?next():res.status(403).json({error:'Capacity approvals require an authorized administrator.'});
  app.get('/api/capacity-master',...protect,admin,async(req,res,next)=>{
   try{await ensure();const rows=await masterRows(pool),locations=capacityRegionLocations(rows),pairs=new Map();for(const a of capacityAssets(rows)){const p=assetCapacityPair(a),assetLocation=String(a.currentLocation||a.site||a.siteName||a.location||'').trim(),location=locations.find(site=>canonicalSiteName(site)===canonicalSiteName(assetLocation));if(location&&p.make&&p.model&&!/^\d+$/.test(p.make)){const k=canonicalSiteName(location)+'|'+pairKey(p);if(!pairs.has(k))pairs.set(k,{...p,location,vehicles:0});pairs.get(k).vehicles++;}}
    res.set('Cache-Control','private, no-store').json({locations,pairs:[...pairs.values()].sort((a,b)=>(a.location+' '+a.make+' '+a.model).localeCompare(b.location+' '+b.make+' '+b.model)),versions:(await pool.query(`SELECT ${versionSelect} FROM mis_capacity_versions ORDER BY location_key,job_type_key,make_key,model_key,effective_from DESC`)).rows});
   }catch(e){next(e);}
+ });
+ app.post('/api/capacity-master/sync-oracle',...protect,admin,async(req,res,next)=>{
+  let client;try{await ensure();const incoming=readCapacitySource?await readCapacitySource():await readOracleCapacities(process.env,typeof oracleConfig==='function'?await oracleConfig():oracleConfig);if(!incoming.length)throw invalid('Oracle returned no capacity rows. Existing capacities are unchanged.',409);
+   client=await pool.connect();await client.query('BEGIN');await client.query("SELECT pg_advisory_xact_lock(hashtext('mis_capacity_versions'))");
+   const rows=await masterRows(client),locations=capacityRegionLocations(rows),assets=capacityAssets(rows);let added=0;
+   for(const v of incoming){
+    if(!locations.some(site=>canonicalSiteName(site)===canonicalSiteName(v.location))||!assets.some(a=>canonicalSiteName(a.currentLocation||a.site||a.location)===canonicalSiteName(v.location)&&pairKey(assetCapacityPair(a))===pairKey(v)))throw invalid('An Oracle capacity row does not match the synced site and equipment make/model masters. No rows were imported.',409);
+    const values=[v.location,v.locationKey,v.jobType,v.jobTypeKey,v.make,v.model,v.makeKey,v.modelKey,v.capacity,v.averageDalaFactor,v.effectiveFrom,'Oracle OB Trip average sync',req.session.login||req.session.name];
+    const existing=(await client.query('SELECT capacity,average_dala_factor FROM mis_capacity_versions WHERE location_key=$1 AND job_type_key=$2 AND make_key=$3 AND model_key=$4 AND effective_from=$5',[v.locationKey,v.jobTypeKey,v.makeKey,v.modelKey,v.effectiveFrom])).rows[0];
+    if(existing){if(Number(existing.capacity)!==v.capacity||Number(existing.average_dala_factor)!==v.averageDalaFactor)throw invalid('Oracle capacity conflicts with an approved version for the same effective date. Review it before replacing approved values.',409);continue;}
+    await client.query('INSERT INTO mis_capacity_versions(location,location_key,job_type,job_type_key,make,model,make_key,model_key,capacity,average_dala_factor,effective_from,reason,created_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)',values);added++;
+   }
+   await client.query('COMMIT');res.json({added,unchanged:incoming.length-added});
+  }catch(e){if(client)await client.query('ROLLBACK').catch(()=>{});next(e)}finally{client?.release()}
  });
  app.post('/api/capacity-master',...protect,admin,async(req,res,next)=>{
   let client;try{

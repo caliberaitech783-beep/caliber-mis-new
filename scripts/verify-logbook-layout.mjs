@@ -12,6 +12,7 @@ assert.ok(start>0&&end>start,'Scan trip fixture must use the current component m
 const tripMarkup=source.slice(start,end);
 const fieldDefinition=source.match(/^const fields=(.+);$/m)[1];
 const fixture=`
+import {isUnloadingOnlyTrip} from './shared/scanning/trip-card-rules.mjs';
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Trash2} from 'lucide-react';

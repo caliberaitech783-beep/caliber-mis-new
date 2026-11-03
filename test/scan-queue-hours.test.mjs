@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -11,7 +12,7 @@ test('actual queue keeps derived shift hours when model tables contain an empty 
  let tail=Promise.resolve();const query=(sql,args)=>sql.includes('pg_advisory_xact_lock')?Promise.resolve({rows:[]}):!args&&sql.includes(';')?db.exec(sql):db.query(sql,args);
  const pool={query,connect:async()=>{const prior=tail;let done;tail=new Promise(resolve=>done=resolve);await prior;return {query,release:done}}};
  const app=express();app.use(express.json());const protect=(req,_res,next)=>{req.session={login:'fixture'};next()};let index=0;
- const shifts=['Day','III'];const service=registerBulkCardScanning(app,{pool,requireSession:protect,requireAdministrator:protect,ocr:{recognize:async()=>({text:'SHIFT [x] '+shifts[index++],handwrittenFields:{shiftHours:''},extraction:{rows:[],summary:[],issues:[]}}),close(){}},getSiteScope:async()=>({sites:null})});await service.start();
+ const shifts=['Day','III'];app.use(arrangeScanParent(db));const service=registerBulkCardScanning(app,{pool,requireSession:protect,requireAdministrator:protect,ocr:{recognize:async()=>({text:'SHIFT [x] '+shifts[index++],handwrittenFields:{shiftHours:''},extraction:{rows:[],summary:[],issues:[]}}),close(){}},getSiteScope:async()=>({sites:null})});await service.start();
  const server=app.listen(0,'127.0.0.1');await new Promise(resolve=>server.once('listening',resolve));
  const base='http://127.0.0.1:'+server.address().port,post=async(path,body)=>{const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json()};
  try{const batch=await post('/api/scan-batches',{kind:'vehicle',expectedContext:{bookDate:'2026-12-30',location:'Sasti OC',cardShift:'Day'}});const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jBEkAAAAASUVORK5CYII=','base64');

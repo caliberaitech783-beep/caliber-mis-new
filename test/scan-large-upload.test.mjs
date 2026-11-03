@@ -8,6 +8,7 @@ import {registerBulkCardScanning} from '../server/routes/scanning/bulk-card-scan
 test('scanner upload accepts multi-megabyte scans and rejects malformed base64 without crashing',async t=>{
  const batchId=randomUUID(),stored=[];
  const query=async(sql,args)=>{
+  if(sql.includes('FROM mis_vlb_batches'))return {rows:[{site:'Sasti OC',report_date:'2026-12-30',shift:'S1',stage:'vlb_open'}]};
   if(sql.startsWith('SELECT * FROM mis_scan_batches'))return {rows:[{id:batchId,kind:'vehicle',expected_context:{bookDate:'2026-12-30',location:'Sasti OC',cardShift:'I'}}]};
   if(sql.startsWith('SELECT id FROM mis_scan_cards WHERE id=$1 AND batch_id=$2'))return {rows:stored.filter(row=>row[0]===args[0]).map(row=>({id:row[0]}))};
   if(sql.startsWith('SELECT count(*) AS n'))return {rows:[{n:stored.length}]};

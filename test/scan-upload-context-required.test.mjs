@@ -14,9 +14,9 @@ test('handwritten dates and shifts that differ from the batch never block it: th
  ];
  const gate=scanContextGate({...expected,confirmed:true},cards);
  assert.equal(gate.blocked,false);assert.deepEqual(gate.mismatches,[]);
- assert.deepEqual(applyScanContext(expected,cards[1].draft),{...expected,bookDateSource:'batch'});
+ assert.deepEqual(applyScanContext(expected,cards[1].draft),{...expected,bookDateSource:'batch',shiftHours:8});
  assert.deepEqual(applyScanContext(expected,cards[2].draft),{...expected,shiftHours:8,shiftId:''});
- assert.deepEqual(applyScanContext(expected,{...expected,bookDate:'',bookDateSource:'scan-unreadable',location:'Sasti OB'}),{...expected,location:'Sasti OB',bookDateSource:'batch'},'an unreadable date takes the batch date; an equivalent site name is kept');
+ assert.deepEqual(applyScanContext(expected,{...expected,bookDate:'',bookDateSource:'scan-unreadable',location:'Sasti OB'}),{...expected,location:'Sasti OB',bookDateSource:'batch',shiftHours:8},'an unreadable date takes the batch date; an equivalent site name is kept');
  assert.equal(scanContextError(scanContextGate(expected,cards)),'Confirm the batch date, site and shift before proceeding.');
  assert.equal(scanContextGate({...expected,confirmed:true},[{status:'reading'}]).blocked,true);
 });

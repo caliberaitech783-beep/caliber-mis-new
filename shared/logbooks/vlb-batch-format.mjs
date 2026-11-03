@@ -16,10 +16,10 @@ export function vlbBatchSelection(input={}){
 }
 export function vlbBatchPrefix(input){
  const {site,date,shift}=vlbBatchSelection(input),[year,month,day]=date.split('-'),n=Number(day);
- const suffix=n>=11&&n<=13?'TH':({1:'ST',2:'ND',3:'RD'}[n%10]||'TH');
+ const suffix=n>=11&&n<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th');
  const siteSegment=displaySiteName(site).toUpperCase().replace(/[\/\\\x00-\x1f\x7f]/g,'-');
- return `CMLL/${siteSegment}/${n}${suffix} -${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][Number(month)-1]}-${year.slice(-2)}/${shift}`;
+ return `CMLL/${siteSegment}/${day}${suffix} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(month)-1]} ${year}/${shift}`;
 }
-export const vlbBatchName=(selection,sequence)=>`${vlbBatchPrefix(selection)}/B${String(sequence).padStart(2,'0')}`;
+export const vlbBatchName=(selection,sequence)=>`${vlbBatchPrefix(selection)}/B${String(sequence).padStart(3,'0')}`;
 export const vlbRecordShift=data=>bookShiftCode(data.bookShiftCode)||bookShiftCode(data.cardShift)||bookShiftCode(data.shiftName);
 export const vlbRecordSource=record=>record.data?.scanCardId?'VLB Scan':'VLB Manual';

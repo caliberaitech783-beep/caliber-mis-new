@@ -7,8 +7,8 @@ import {readFileSync} from 'node:fs';
 // manual run, approved in the GitHub "production" environment. The yaml package
 // is not a dependency, so the workflow files are checked at source level.
 const read=relative=>readFileSync(new URL(relative,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const testWorkflow=read('../.github/workflows/main_caliber-mis-test.yml');
-const productionWorkflow=read('../.github/workflows/main_caliber-mis-783.yml');
+const testWorkflow=read('../docs/reference-workflows/main_caliber-mis-test.yml.disabled');
+const productionWorkflow=read('../docs/reference-workflows/main_caliber-mis-783.yml.disabled');
 const validation=read('../.github/workflows/ci.yml');
 const uiReleaseScript=read('../scripts/verify-ui-release.mjs');
 const geminiScript=read('../scripts/configure-gemini-azure.py');
@@ -30,7 +30,7 @@ const step=(text,name)=>{
   return match[0];
 };
 const deployStep=text=>{const match=/- name: '?Deploy to [^\n]*[\s\S]*?uses: azure\/webapps-deploy@v3[\s\S]*?(?=\n {6}- name:)/.exec(text);assert.ok(match,'deploy step exists');return match[0];};
-const verificationSteps=['npm run ocr:prepare','npm run build','npm test','node --check server.mjs','node scripts/verify-server-start.mjs','node scripts/verify-ui-release.mjs\n','node scripts/verify-ui-release.mjs --live',"await import('./server/services/scanning/local-card-ocr.mjs')","loadHandwritingModel","h.commit!==process.env.EXPECTED_COMMIT",'printf \'%s\\n\'','> DEPLOYMENT_SHA'];
+const verificationSteps=['npm run ocr:prepare','npm run build','npm test','node --check server.mjs','node scripts/verify-server-start.mjs','node scripts/verify-ui-release.mjs\n','node scripts/verify-ui-release.mjs --live',"await import('./local-card-ocr.mjs')","loadHandwritingModel","h.commit!==process.env.EXPECTED_COMMIT",'printf \'%s\\n\'','> DEPLOYMENT_SHA'];
 
 test('a merge to main releases the test platform, never production',()=>{
   const triggers=topLevel(testWorkflow,'on');

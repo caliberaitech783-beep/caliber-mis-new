@@ -6,7 +6,7 @@ export function shiftMeterIssues(draft={},kind='vehicle'){
  for(const meter of ['Hmr',...(kind==='vehicle'?['Kmr']:[])]){
   const a=draft['opening'+meter],b=draft['closing'+meter];
   if(a==null||b==null||String(a).trim()===''||String(b).trim()==='')continue;
-  const opening=Number(a),closing=Number(b),limit=meter==='Hmr'?hours:hours===8?250:350;
+  const opening=Number(a),closing=Number(b),limit=meter==='Hmr'?hours:hours===8?250:300;
   if(!Number.isFinite(opening)||!Number.isFinite(closing)||opening<0||closing<opening)continue;
   const difference=closing-opening;
   if(difference-limit>Number.EPSILON*Math.max(1,Math.abs(opening),Math.abs(closing))*4){
@@ -96,3 +96,28 @@ export function tripClockForShift(value,shift,master){const m=String(normalizeSc
 export function latestWorkOrder(rows,site,date){const eligible=matchingWorkOrders(rows,site,date).filter(r=>!r.workOrderDate||r.workOrderDate<=date);if(!eligible.length)return null;const stamp=r=>r.workOrderDate||r.begin||r.commencementDate||'';eligible.sort((a,b)=>stamp(b).localeCompare(stamp(a)));return eligible.length===1||stamp(eligible[0])!==stamp(eligible[1])?eligible[0]:null;}
 export function interTripGap(trips,index){if(index<1||!trips[index-1]?.unloadingTime||!trips[index]?.loadingTime)return null;const parse=t=>{const m=String(t).match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);return m&&Number(m[1])<24&&Number(m[2])<60&&Number(m[3]||0)<60?Number(m[1])*3600+Number(m[2])*60+Number(m[3]||0):null};const a=parse(trips[index-1].unloadingTime),b=parse(trips[index].loadingTime);return a==null||b==null?null:Math.round(((b-a+86400)%86400)/60*1000)/1000;}
 
+
+// Anchor clock times to the selected shift, so midnight is handled once rather
+// than treating any backwards clock as a next-day journey.
+export function tripChronologyIssues(draft={},master=null){
+ const issues={};if(draft.timeMode==='without')return issues;
+ const rows=draft.trips||[],definition=CARD_SHIFTS[draft.cardShift];
+ const start=String(master?.startTime||master?.start||draft.masterShiftStart||definition?.start||'').slice(0,5);
+ const parse=t=>/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(t||'')?Number(t.slice(0,2))*60+Number(t.slice(3,5)):null;
+ const origin=parse(start),hours=definition?.hours||Number(draft.shiftHours);
+ const position=t=>{const n=parse(t);return n===null?null:origin===null?n:(n-origin+1440)%1440;};
+ let previous=-1;
+ for(const [i,row] of rows.entries()){
+  const load=position(row.loadingTime),unload=position(row.unloadingTime),key=k=>`trips.${i}.${k}`;
+  if(!row.loadingTime&&row.unloadingTime&&i!==0)issues[key('loadingTime')]='Only the first trip may carry unloading from the previous shift.';
+  if(row.loadingTime&&!row.unloadingTime&&i!==rows.length-1)issues[key('unloadingTime')]='Only the last trip may carry loading into the next shift.';
+  for(const [field,value] of [['loadingTime',load],['unloadingTime',unload]]){
+   if(value===null)continue;
+   if(origin!==null&&value>hours*60)issues[key(field)]='Time is outside the selected shift.';
+   if(value<previous)issues[key(field)]='Trip times must follow loading/unloading order within the selected shift.';
+   previous=value;
+  }
+  if(load!==null&&unload!==null&&unload<load)issues[key('unloadingTime')]='Unloading must follow loading within the selected shift.';
+ }
+ return issues;
+}

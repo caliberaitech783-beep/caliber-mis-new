@@ -50,8 +50,8 @@ test('empty batches accept repeated manual and scan cards; every user gets one o
   const current=await call('/'+batch.id);assert.equal(current.data.entry_count,index+1);assert.equal(current.data.closed_at,null,'each save leaves continuous batch open');
  }
  const found=await call('',undefined,'bob');assert.ok(found.data.batches.some(b=>b.id===batch.id&&!b.closed_at),'same batch discoverable by either entry mode');
- assert.equal((await create('Sasti OC')).status,409,'ordinary user must finish the open batch');
- const a=await create('Sasti OC','admin');assert.equal(a.status,201,JSON.stringify(a.data));assert.equal(a.data.closed_at,null);assert.equal(a.data.created_by,'admin');assert.ok(a.data.canClose);assert.equal((await create('Jayant OB','admin','S2')).status,409,'admin cannot create another open batch for the same site');assert.equal((await call('/'+a.data.id+'/close',{},'admin')).status,200);
+ const otherSite=await create('Sasti OC');assert.equal(otherSite.status,201,'a user may work across different sites');await call('/'+otherSite.data.id+'/close',{});
+ const a=await create('Sasti OC','admin','S2');assert.equal(a.status,201,JSON.stringify(a.data));assert.equal(a.data.closed_at,null);assert.equal(a.data.created_by,'admin');assert.ok(a.data.canClose);assert.equal((await create('Jayant OB','admin','S2')).status,409,'admin cannot create another open batch for the same site');assert.equal((await call('/'+a.data.id+'/close',{},'admin')).status,200);
  assert.equal((await create('Sasti OC','restricted','S2')).status,403,'admin flow does not bypass site authorization');
  assert.equal((await create('Jayant OB','bob')).status,409,'same scope cannot create a duplicate');
  assert.equal((await call('/'+batch.id+'/close',{})).status,200);

@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -18,7 +19,7 @@ test('reject-group rejects the listed review cards, skips rejected ones and refu
  let tail=Promise.resolve();const query=(q,a)=>q.includes('pg_advisory_xact_lock')?Promise.resolve({rows:[]}):!a&&q.includes(';')?db.exec(q):db.query(q,a);
  const pool={query,connect:async()=>{const old=tail;let release;tail=new Promise(r=>release=r);await old;return {query,release}}};
  const app=express();app.use(express.json());const auth=(req,res,next)=>{req.session={login:'reviewer'};next()};
- const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});await service.start();await service.stop();
+ app.use(arrangeScanParent(db));const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});await service.start();await service.stop();
  app.use((e,req,res,next)=>res.status(e.status||500).json({error:e.message}));const server=app.listen(0);t.after(()=>new Promise(r=>server.close(r)));const root='http://127.0.0.1:'+server.address().port;
  const call=async(path,method='GET',body)=>{const r=await fetch(root+path,{method,headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,data:await r.json()}};
  const batch=(await call('/api/scan-batches','POST',{kind:'vehicle',expectedContext:{...context,confirmed:true}})).data.id;

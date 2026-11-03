@@ -1,3 +1,4 @@
+import {sameVlbEntryContext,vlbEntryFields} from '../src/utils/logbooks/vlb-entry-context.mjs';
 import {compactLogBookLabel,tripSerialNumber} from '../shared/logbooks/log-book-labels.mjs';
 import {validateTripEquipment,resolveTripEquipment} from '../shared/scanning/trip-equipment-validation.mjs';
 import {blankJob,blankBreakdown,padManualRows} from '../shared/logbooks/manual-log-book-details.mjs';
@@ -77,14 +78,14 @@ test('Enter on untouched next row focuses Save, while partial rows are retained 
 const source=readFileSync(new URL('../src/pages/logbooks/log-book-form.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'log-book-form.jsx',{jsx:{runtime:'classic'}});
 const all=(tree,predicate)=>{const found=[];const visit=node=>{if(Array.isArray(node))return node.forEach(visit);if(!React.isValidElement(node))return;if(predicate(node))found.push(node);visit(node.props.children)};visit(tree);return found};
-function harness(){
+function harness({vlbBatch,saveDraft=async()=>{}}={}){
   const slots=[],effects=[];let cursor=0;
   const state=initial=>{const index=cursor++;if(!(index in slots))slots[index]=typeof initial==='function'?initial():initial;return[slots[index],value=>{slots[index]=typeof value==='function'?value(slots[index]):value}]};
   const Null=()=>null;
-  const scope={compactLogBookLabel,tripSerialNumber,validateTripEquipment,resolveTripEquipment,blankJob,blankBreakdown,padManualRows,continueManualRemark,employeeAtLocation,React,useEffect:(run,deps)=>effects.push({run,deps}),useRef:value=>state(()=>({current:value}))[0],useState:state,blankTrip,nextTripEntry,...rules,canonicalSiteName,missingAssetMessage,advanceLogBookField,focusNextLogBookField,isEmptyTripPlaceholder,advanceEquipmentLogBookField};
+  const scope={sameVlbEntryContext,vlbEntryFields,isUnloadingOnlyTrip:rules.isUnloadingOnlyTrip,useBatchManualDraft:()=>({drafts:[],rejectedDrafts:[],status:"",start(){},save:saveDraft,choose(){}}),compactLogBookLabel,tripSerialNumber,validateTripEquipment,resolveTripEquipment,blankJob,blankBreakdown,padManualRows,continueManualRemark,employeeAtLocation,React,useEffect:(run,deps)=>effects.push({run,deps}),useRef:value=>state(()=>({current:value}))[0],useState:state,blankTrip,nextTripEntry,...rules,canonicalSiteName,missingAssetMessage,advanceLogBookField,focusNextLogBookField,isEmptyTripPlaceholder,advanceEquipmentLogBookField};
   for(const name of ['ManualLogBookDetails','BreakdownHoursField','SmartSelect','DoorCombobox','EmployeeIdLookup','ManualBookDate','Plus','Save','Trash2','RotateCcw','BookOpen','Search','ChevronsLeft','ChevronsRight','Pencil','Printer','X','LogOut','Info','ListFilter'])scope[name]=Null;
   const Component=new Function(...Object.keys(scope),code+';return LogBookForm')(...Object.values(scope));
-  const render=(kind='vehicle')=>{cursor=0;effects.length=0;return Component({kind,session:{token:'test'}})};
+  const render=(kind='vehicle')=>{cursor=0;effects.length=0;return Component({kind,session:{token:'test'},vlbBatch})};
   render();slots[2]={sites:[],assets:[],employees:[],shifts:[],workOrders:[]};slots[9]=false;
   return {render,slots,runAccountLocation:()=>effects.find(effect=>effect.deps?.length===4&&effect.deps[2]===slots[2]).run(),focusLocation:()=>effects.find(effect=>effect.deps?.length===5).run()};
 }
@@ -128,8 +129,8 @@ test('ELB shares VLB keyboard flow and controls while retaining equipment fields
 test('rendered VLB header follows the requested sequence and driver is explicitly skipped',()=>{
   const tree=harness().render();
   const fields=all(tree,node=>node.props.label&&node.props.children);
-  assert.deepEqual(fields.slice(0,19).filter(node=>!['Doc type','Book no.','Driver name'].includes(node.props.label)).map(node=>node.props.label),[
-    'Location','Book date','Project name','Door no.','Wo.Cont.','Employee ID / Caliber ID','Shift','Shift hour','A Form no. (Trip Card)',
+  assert.deepEqual(fields.slice(0,20).filter(node=>!['Doc type','Book no.','Driver name'].includes(node.props.label)).map(node=>node.props.label),[
+    'Location','Book date','Project name','Door no.','Wo.Cont.','Employee ID / Caliber ID','Shift','Shift hour','Trip card number','Form A (optional)',
     'Opening KMR','Closing KMR','Opening HMR','Closing HMR','R engine opening (HMR)','R engine closing (HMR)','Remark',
   ]);
   assert.equal(fields.find(node=>node.props.label==='Driver name').props.skipEnter,true);
@@ -208,3 +209,13 @@ test('changing a shift or asset clears the prior manual BD fallback',()=>{
 });
 
 
+
+test('the actual manual form Save handler keeps a selected-batch card as a draft',async()=>{
+ const previous=globalThis.fetch,requests=[],savedDrafts=[];globalThis.fetch=async(url,config)=>{requests.push(url);return {ok:true,json:async()=>({records:[]})}};
+ try{const batch={id:'batch',site:'Jayant OC',report_date:'2026-11-03',shift:'S1'};
+  const app=harness({vlbBatch:batch,saveDraft:async value=>savedDrafts.push(value)});
+  app.slots[0]={...app.slots[0],location:'Jayant OC',bookDate:'2026-11-03',cardShift:'I',bookShiftCode:'S1',shiftHours:8,assetId:'1',employeeId:'2',shiftId:'3',openingHmr:100,closingHmr:108,openingKmr:1000,closingKmr:1250,trips:[]};
+  const tree=app.render();await all(tree,node=>node.type==='form')[0].props.onSubmit({preventDefault(){}});
+  assert.equal(savedDrafts.length,1);assert.equal(savedDrafts[0].assetId,'1');assert.equal(requests.length,0,'Save must not call the final log-book API');
+ }finally{globalThis.fetch=previous}
+});

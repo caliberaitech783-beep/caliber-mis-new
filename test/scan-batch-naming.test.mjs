@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -52,10 +53,10 @@ test('upload API returns and lists the generated name rather than the source fil
  const db=new PGlite();t.after(()=>db.close());
  await db.exec('CREATE TABLE mis_log_books(id BIGSERIAL PRIMARY KEY,book_type TEXT,book_date DATE,asset_id BIGINT,data JSONB,deleted_at TIMESTAMPTZ);');
  const query=(sql,args)=>sql.includes('pg_advisory_xact_lock')?Promise.resolve({rows:[]}):!args&&sql.includes(';')?db.exec(sql):db.query(sql,args);
- const pool={query};
+ const pool={query,connect:async()=>({query,release(){}})};
  const app=express();app.use(express.json());
  const requireSession=(req,res,next)=>{req.session={login:'nitinkumar'};req.logBookScope={sites:null};req.allowedSiteBatches=null;next()};
- const service=registerBulkCardScanning(app,{pool,requireSession,requireAdministrator:(req,res,next)=>next(),localDrafts:true,ocr:{close(){}}});
+ app.use(arrangeScanParent(db));const service=registerBulkCardScanning(app,{pool,requireSession,requireAdministrator:(req,res,next)=>next(),localDrafts:true,ocr:{close(){}}});
  await service.start();t.after(()=>service.stop());
  app.use((error,req,res,next)=>res.status(error.status||500).json({error:error.message}));
  const server=app.listen(0,'127.0.0.1');await new Promise(resolve=>server.on('listening',resolve));

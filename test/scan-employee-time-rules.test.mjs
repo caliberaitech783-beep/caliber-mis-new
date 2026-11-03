@@ -47,7 +47,7 @@ test('numeric IDs in driver/operator boxes fill the correct master record for VL
  assert.equal(extractCard('Site: POUNI OB\nDriver Name: 5311','vehicle',records).draft.employeeId,'2');
  assert.equal(extractCard('Site: Sasti OC\nDriver Name: 3228','vehicle',records).draft.employeeId,'');
  const duplicate={id:4,master_name:'Employee master',record_data:{...person,employeeId:'CMPL7777',caliberId:'CMPL7777',caliberCode:'CMLL3228'}};
- assert.equal(extractCard('Site: POUNI OB\nDriver Name: 3228','vehicle',[...records,duplicate]).draft.employeeId,'');
+ assert.equal(extractCard('Site: POUNI OB\nDriver Name: 3228','vehicle',[...records,duplicate]).draft.employeeId,'1');
  assert.equal(extractCard('Site: POUNI OB\nDriver Name: CMPL3228','vehicle',[...records,duplicate]).draft.employeeId,'1');
 });
 test('lookup resolves numeric IDs from the selected location locally without ERP access, rejects duplicates and wrong sites',async t=>{

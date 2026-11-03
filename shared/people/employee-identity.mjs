@@ -22,3 +22,12 @@ export function matchesEmployeeReference(record,value){
  const fields=primary.length?primary:[record.employeeCode,record.erpEmployeeCode,record.empCode,record.code];
  return fields.some(field=>variants.includes(String(field||'').trim().toUpperCase().replace(/[\s/-]/g,'')));
 }
+
+// C.ID on a trip card contains only digits. Keep primary employee identifiers
+// separate from ERP internal codes, and let the caller reject multiple matches.
+export function matchesNumericEmployeeReference(record,value){
+ const numeric=String(value??'').replace(/\D/g,'');if(!numeric)return false;
+ const primary=[record.caliberId,record.employeeId,record.empId,record.idNo].filter(v=>v!=null&&String(v).trim());
+ const fields=primary.length?primary:[record.employeeCode,record.erpEmployeeCode,record.empCode,record.code];
+ return fields.some(field=>String(field??'').replace(/\D/g,'')===numeric);
+}

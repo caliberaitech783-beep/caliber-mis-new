@@ -88,3 +88,8 @@ The adapter never delegates unknown requests to real fetch. Unknown reads and wr
 - Additional master navigation smoke check reached Login Details, equipment, capacity, region, shift, work-contract, financial-year and company screens. Sync screens showed explicit mock-unavailable errors. These checks do not certify all form actions.
 - Verification used the available Node 24.22.1 runtime on Windows; CI specifies Node 22/Linux. Full CI parity is not claimed. Temporary Playwright/esbuild test tools were installed without changing dependency manifests.
 - Browser automation became intermittently unresponsive again during the final manual-save pass. Employee-save verification succeeded earlier; manual VLB save remains UI-unverified. API revision/persistence and real equipment matching are covered by tests.
+
+
+## VLB rules implementation verification
+
+The confirmed draft, meter, handover, status and shared-batch rules are implemented locally in caliber-mis-new. Tests use synthetic data, isolated PostgreSQL/PGlite and local Chromium fixtures. Browser tests cover offline draft edits, reload recovery, original-upload retention and pending-sync logging guards. These checks do not establish live Pulse access to newly requested company/contracts, the Oracle OB Trip average schema, real Gemini accuracy or deployed behavior. The actual Oracle capacity mapping is awaiting confirmation; no live credentials from the supplied document were embedded or used.

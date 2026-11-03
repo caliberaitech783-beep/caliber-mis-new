@@ -89,6 +89,7 @@ test('new uploads store verified Blob references, legacy images still open, and 
  const image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jBEkAAAAASUVORK5CYII=','base64');
  const rows=new Map([[legacyId,{id:legacyId,batch_id:batchId,image,raw_fields:{},draft:{}}]]);let fail=false,puts=0;
  const query=async(sql,args=[])=>{
+  if(sql.includes('FROM mis_vlb_batches'))return {rows:[{site:'Sasti OC',report_date:'2026-12-30',shift:'S1',stage:'vlb_open'}]};
   if(sql.startsWith('SELECT * FROM mis_scan_batches'))return {rows:[{id:batchId,kind:'vehicle',expected_context:{bookDate:'2026-12-30',location:'Sasti OC',cardShift:'I'}}]};
   if(sql.startsWith('SELECT * FROM mis_scan_cards'))return {rows:rows.has(args[0])?[rows.get(args[0])]:[]};
   if(sql.startsWith('SELECT count(*) AS n'))return {rows:[{n:rows.size}]};

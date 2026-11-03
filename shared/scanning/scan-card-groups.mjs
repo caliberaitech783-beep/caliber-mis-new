@@ -9,20 +9,21 @@ export const ISSUE_CARD_GROUPS=[
  {id:'mws-ted',label:'MWS / TED mismatch',description:'Machine-wise summary differs from trip entry details'}
 ];
 export const CARD_GROUPS=[
- {id:'orange',label:'All okay',description:'Values complete · saved automatically'},
+ {id:'orange',label:'All okay',description:'Values complete · retained as drafts'},
  {id:'brown',label:'Needs attention',description:'Correct values or fill missing fields'},
- {id:'red',label:'Blank / no data',description:'No usable data or rejected card'},
- {id:'error',label:'Error',description:'Extraction failed or date/site/shift mismatch'},
+ {id:'red',label:'Blank / no data',description:'No usable card data'},
+ {id:'error',label:'Error',description:'Extraction failed; retry or enter manually'},
+ {id:'rejected',label:'Rejected cards',description:'Removed from active processing; retained for review'},
  ...ISSUE_CARD_GROUPS
 ];
 const present=value=>value!==null&&value!==undefined&&String(value).trim()!=='';
 export function hasCardData(card,kind){
  const d=card.draft||{},raw=card.raw_fields||{};
  const identified=['doorText','assetId','employeeId','aFormNo','jobCardNo','openingHmr','closingHmr','openingKmr','closingKmr'].some(k=>present(d[k]))||
-  (present(d.bookDate)&&!['system-fallback','scan-unreadable'].includes(d.bookDateSource))||
+  (present(d.bookDate)&&!['system-fallback','scan-unreadable','batch'].includes(d.bookDateSource))||
   ['door','employeeCode','cardNo'].some(k=>present(raw[k]));
  if(kind!=='vehicle')return identified;
- return (d.trips||[]).some(r=>['equipmentName','loadingTime','unloadingTime','tripCount'].some(k=>present(r[k])))||
+ return identified||(d.trips||[]).some(r=>['equipmentName','loadingTime','unloadingTime','tripCount'].some(k=>present(r[k])))||
   (d.scanMachineSummary||[]).some(r=>['equipmentName','tripCount'].some(k=>present(r[k])));
 }
 export function cardReviewGroup(card,kind,options=null,context=null){
@@ -30,13 +31,14 @@ export function cardReviewGroup(card,kind,options=null,context=null){
  if(card.status==='posted')return 'orange';
  if(card.status!=='rejected'&&card.context_mismatch?.length)return 'error';
  if(card.status==='error')return 'error';
- if(card.status==='rejected'||!hasCardData(card,kind))return 'red';
+ if(card.status==='rejected')return 'rejected';
+ if(!hasCardData(card,kind))return 'red';
  if(Object.keys(manualScanIssues(card.draft,kind,card.raw_fields,options)).length||(card.checks?.errors||[]).length)return 'brown';
  return 'orange';
 }
 export function reviewGroupSummary(cards,kind,options=null,context=null){
- const counts={orange:0,brown:0,red:0,error:0,pending:0,...Object.fromEntries(ISSUE_CARD_GROUPS.map(group=>[group.id,0]))};
- for(const card of cards)counts[cardDisplayGroup(card,kind,options,context)]++;
+ const counts={orange:0,brown:0,red:0,rejected:0,error:0,pending:0,...Object.fromEntries(ISSUE_CARD_GROUPS.map(group=>[group.id,0]))};
+ for(const card of cards){counts[cardReviewGroup(card,kind,options,context)]++;for(const group of cardIssueGroups(card,kind,options))counts[group]++;}
  const ready=cards.length>0&&counts.orange===cards.length;
  const approved=ready&&cards.every(c=>c.status==='posted'||(c.status==='approved'&&c.checked_by));
  const saved=cards.filter(c=>c.status==='posted').length;
@@ -71,5 +73,5 @@ export function cardDisplayGroup(card,kind,options=null,context=null){
  return primary==='brown'?(cardIssueGroups(card,kind,options)[0]||primary):primary;
 }
 export function matchesCardGroup(card,group,kind,options=null,context=null){
- return group==='all'||cardDisplayGroup(card,kind,options,context)===group;
+ return group==='all'||(ISSUE_CARD_GROUPS.some(item=>item.id===group)?cardIssueGroups(card,kind,options).includes(group):cardReviewGroup(card,kind,options,context)===group);
 }

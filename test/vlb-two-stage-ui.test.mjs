@@ -29,7 +29,7 @@ const fleet=[
 test('fleet stepper renders status buttons, blocks non-working statuses for a loader and computes hours',async()=>{
  const h=hooks();const calls=[];
  const fetch=async(url,request)=>{calls.push({url,method:request.method,body:request.body?JSON.parse(request.body):null});return {ok:true,json:async()=>({assetId:'19',draft:{},fleet})}};
- const {VlbFleetStepper,fleetHours,firstUnsavedIndex,tripsHint,fleetDraftFields}=await compile('vlb-fleet-stepper.jsx',{React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch,crypto:{randomUUID:()=>'key'}},['VlbFleetStepper','fleetHours','firstUnsavedIndex','tripsHint','fleetDraftFields']);
+ const {VlbFleetStepper,fleetHours,firstUnsavedIndex,tripsHint,fleetDraftFields}=await compile('vlb-fleet-stepper.jsx',{assertBatchDraftsSynced:async()=>{},React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch,crypto:{randomUUID:()=>'key'}},['VlbFleetStepper','fleetHours','firstUnsavedIndex','tripsHint','fleetDraftFields']);
  assert.equal(fleetHours('100','106.5'),6.5);assert.equal(fleetHours('','5'),null);
  assert.equal(firstUnsavedIndex(fleet),0,'opens at the first machine without saved_at');
  assert.equal(firstUnsavedIndex([fleet[1],{...fleet[2],skipped:true},fleet[0]]),2,'prefers un-skipped machines');
@@ -60,7 +60,7 @@ test('fleet stepper renders status buttons, blocks non-working statuses for a lo
  assert.match(renderToStaticMarkup(tree),/Zero trips: Working needs closing HMR above opening HMR/);
  assert.equal(nodes(tree,n=>n.type==='button'&&n.props['aria-pressed']===true)[0].props.children,'No operator');
  const failing=async()=>({ok:false,status:400,json:async()=>({error:'Select the operator for a working machine.'})});
- const {VlbFleetStepper:Failing}=await compile('vlb-fleet-stepper.jsx',{React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch:failing,crypto:{randomUUID:()=>'key'}},['VlbFleetStepper']);
+ const {VlbFleetStepper:Failing}=await compile('vlb-fleet-stepper.jsx',{assertBatchDraftsSynced:async()=>{},React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch:failing,crypto:{randomUUID:()=>'key'}},['VlbFleetStepper']);
  const renderFailing=()=>{h.reset();return Failing({session:{token:'t'},batch,options:{employees:[]},onChanged(){},onDismiss(){}})};
  tree=renderFailing();await button(tree,'Next').props.onClick();tree=renderFailing();assert.match(renderToStaticMarkup(tree),/Select the operator for a working machine\./,'server validation text shows under the buttons');
 });
@@ -107,7 +107,7 @@ test('create batch shows the stage indicator and Close batch only for two-stage 
  const h=hooks();const calls=[];let elbEntry=null;
  const fetch=async(url,request)=>{calls.push({url,method:request.method,body:request.body?JSON.parse(request.body):null});return {ok:true,json:async()=>({id:'batch1',twoStage:true,stage:'elb_open',records:[]})}};
  const Stepper=()=>null,Holds=()=>null,Equipment=()=>null;
- const {VlbCreateBatch,stageLabel}=await compile('vlb-create-batch.jsx',{React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch,canonicalSiteName,displaySiteName,bookShiftCode,systemBookDate,vlbRecordSource,VlbBatchCardDetails:()=>null,VlbBatchReport:()=>null,VlbBatchGovernance:()=>null,VlbReopenDialog:()=>null,VlbFleetStepper:Stepper,VlbBatchHolds:Holds,NewEquipmentRequest:Equipment,window:{prompt:()=>'Correct VLB card V07'}},['VlbCreateBatch','stageLabel']);
+ const {VlbCreateBatch,stageLabel}=await compile('vlb-create-batch.jsx',{assertBatchDraftsSynced:async()=>{},React,SmartSelect:'select',useState:h.useState,useRef:h.useRef,useEffect:()=>{},fetch,canonicalSiteName,displaySiteName,bookShiftCode,systemBookDate,vlbRecordSource,VlbBatchCardDetails:()=>null,VlbBatchReport:()=>null,VlbBatchGovernance:()=>null,VlbReopenDialog:()=>null,VlbFleetStepper:Stepper,VlbBatchHolds:Holds,NewEquipmentRequest:Equipment,window:{prompt:()=>'Correct VLB card V07'}},['VlbCreateBatch','stageLabel']);
  assert.equal(stageLabel('vlb_open'),'VLB open');assert.equal(stageLabel('elb_open'),'ELB open');assert.equal(stageLabel('closed'),'Closed');assert.equal(stageLabel(undefined,{closed_at:'2026-11-01'}),'Closed');
  const options={sites:['Jayant OC'],shifts:[{site:'Jayant OC',name:'Shift A',shiftCode:'I'}]},selection={site:'Jayant OC',date:'2026-11-01',shift:'S1'};
  const base={id:'batch1',name:'CMLL/JAYANT OC/1ST-NOV-26/S1/B01',site:'Jayant OC',report_date:'2026-11-01',shift:'S1',records:[],created_by:'alice'};

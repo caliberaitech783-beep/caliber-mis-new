@@ -8,8 +8,8 @@ import {vlbBatchName,vlbBatchSelection} from '../shared/logbooks/vlb-batch-forma
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations
 test('batch format uses site, ordinal date, shift and padded sequence',()=>{
- assert.equal(vlbBatchName({site:'Sasti OC',date:'2026-12-30',shift:'I'},1),'CMLL/SASTI OC/30TH -DEC-26/S1/B01');
- for(const [day,suffix] of [[1,'ST'],[2,'ND'],[3,'RD'],[11,'TH'],[12,'TH'],[13,'TH'],[21,'ST'],[22,'ND'],[23,'RD'],[31,'ST']])assert.match(vlbBatchName({site:'Sasti OC',date:'2026-12-'+String(day).padStart(2,'0'),shift:'Shift B'},100),new RegExp('/'+day+suffix+' -DEC-26/S2/B100$'));
+ assert.equal(vlbBatchName({site:'Sasti OC',date:'2026-12-30',shift:'I'},1),'CMLL/SASTI OC/30th Dec 2026/S1/B001');
+ for(const [day,suffix] of [[1,'st'],[2,'nd'],[3,'rd'],[11,'th'],[12,'th'],[13,'th'],[21,'st'],[22,'nd'],[23,'rd'],[31,'st']])assert.match(vlbBatchName({site:'Sasti OC',date:'2026-12-'+String(day).padStart(2,'0'),shift:'Shift B'},100),new RegExp('/'+String(day).padStart(2,'0')+suffix+' Dec 2026/S2/B100$'));
  for(const patch of [{date:'2026-02-30'},{date:''},{site:''},{shift:'S4'}])assert.throws(()=>vlbBatchSelection({site:'Sasti OC',date:'2026-12-30',shift:'S1',...patch}));
 });
 
@@ -32,7 +32,7 @@ test('batch APIs include every matching saved source, remain open until closed, 
  assert.equal((await call(preview,'GET',undefined,'restricted')).status,403);
  const scanEntries=Array.from({length:4},()=>randomUUID());const ids=[];for(let i=0;i<130;i++)ids.push(await add({site:i%2?'Sasti OB':'Sasti OC',scan:true,scanEntry:scanEntries[Math.floor(i/40)]}));await add();
  await add({kind:'equipment'});await add({site:'Jayant OC'});await add({date:'2026-12-29'});await add({deleted:true});const otherShift=await add({shift:'S2'});
- const before=await call(preview);assert.equal(before.status,200);assert.equal(before.data.records.length,131);assert.equal(before.data.name,'CMLL/SASTI OC/30TH -DEC-26/S1/B01');
+ const before=await call(preview);assert.equal(before.status,200);assert.equal(before.data.records.length,131);assert.equal(before.data.name,'CMLL/SASTI OC/30th Dec 2026/S1/B001');
  assert.deepEqual(scanEntries.map(id=>before.data.records.filter(r=>r.data.scanBatchId===id).length),[40,40,40,10]);
  assert.ok(before.data.records.some(r=>r.data.scanCardId));assert.ok(before.data.records.some(r=>!r.data.scanCardId));
  const body={...selection,requestKey:randomUUID()};const created=await call('','POST',body);assert.equal(created.status,201,JSON.stringify(created.data));assert.equal(created.data.entry_count,131);
@@ -43,7 +43,7 @@ test('batch APIs include every matching saved source, remain open until closed, 
  assert.equal((await call('','POST',{...body,shift:'S2'})).status,409);
  assert.equal((await call('','POST',{...body,requestKey:randomUUID()})).status,409);
  assert.equal((await call('/'+created.data.id,'GET',undefined,'bob')).status,200);
- assert.equal((await call('/'+created.data.id+'/close','POST',{},'bob')).status,403);
+ assert.equal((await call('/'+created.data.id,'GET',undefined,'bob')).data.canClose,true,'authorized site users share batch controls');
  assert.equal((await call('')).data.openBatch.id,created.data.id);assert.equal(created.data.closed_at,null);assert.equal(created.data.closure_revision,0);
  await db.query("UPDATE mis_log_books SET data=data||'{\"door\":\"CHANGED\"}'::jsonb WHERE id=$1",[ids[0]]);
  assert.equal((await call('/'+created.data.id)).data.records[0].data.door,'V07');

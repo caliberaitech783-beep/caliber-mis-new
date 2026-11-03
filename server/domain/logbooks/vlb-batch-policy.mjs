@@ -71,7 +71,11 @@ export const VLB_BATCH_SCHEMA=`
  ) INSERT INTO mis_vlb_batch_audit(batch_id,actor,action,detail)
  SELECT id,created_by,'saved_lock_policy_enabled','{"reason":"Saved batches require PM approval and lock again after saving."}'::jsonb FROM migrated;
  ${VLB_TWO_STAGE_SCHEMA}
- ${VLB_APPROVAL_OTP_SCHEMA}`;
+ ${VLB_APPROVAL_OTP_SCHEMA}
+ CREATE TABLE IF NOT EXISTS mis_vlb_manual_drafts(id UUID PRIMARY KEY,batch_id UUID NOT NULL REFERENCES mis_vlb_batches(id),draft JSONB NOT NULL,revision INTEGER NOT NULL DEFAULT 1,created_by TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),logbook_id BIGINT REFERENCES mis_log_books(id));
+ ALTER TABLE mis_vlb_manual_drafts ADD COLUMN IF NOT EXISTS rejected_at TIMESTAMPTZ;
+ CREATE INDEX IF NOT EXISTS mis_vlb_manual_drafts_pending ON mis_vlb_manual_drafts(batch_id,created_at) WHERE logbook_id IS NULL;
+`;
 export const batchLogin=value=>String(value||'').trim().toLowerCase();
 export const batchFail=(message,status=409)=>{throw Object.assign(new Error(message),{status})};
 export const lockVlbBatchWrites=client=>client.query("SELECT pg_advisory_xact_lock(hashtext('mis_vlb_saved_batches'))");

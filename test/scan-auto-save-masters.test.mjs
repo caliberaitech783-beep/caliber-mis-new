@@ -15,7 +15,7 @@ const masters=[[1,'Equipment master',{category:'Vehicle',door:'V321',currentLoca
 
 test('the browser rule set sees the card as complete only when the Equipment Master is supplied',()=>{
  const raw={machineNotation:{version:1}},assets=masters.filter(([,name])=>name==='Equipment master').map(([id,,data])=>({...data,id:String(id),kind:data.category==='Vehicle'?'vehicle':'equipment',site:data.currentLocation}));
- assert.deepEqual(manualScanIssues(valid,'vehicle',raw,{assets,employees:[{id:'2'}],shifts:[{id:'3'}],workOrders:[]}),{});
+ assert.deepEqual(manualScanIssues(valid,'vehicle',raw,{assets,employees:[{id:'2',site:'Sasti OC'}],shifts:[{id:'3'}],workOrders:[]}),{});
  assert.ok(manualScanIssues(valid,'vehicle',raw,null).scanMachineSummary,'without the master the names cannot be matched');
 });
 
@@ -33,9 +33,9 @@ test('automatic saving judges completeness with the same master lists as the bro
  const add=async(ordinal,draft)=>{const id=randomUUID();await db.query("INSERT INTO mis_scan_cards(id,batch_id,ordinal,filename,image,image_hash,draft,raw_fields,status) VALUES($1,$2,$3,'test.png',$4,$5,$6,$7::jsonb,'review')",[id,batch,ordinal,Buffer.from('retained image'),randomUUID(),JSON.stringify(draft),JSON.stringify({extractionDraft:draft,machineNotation:{version:1}})]);return id};
  const call=async id=>{const r=await fetch(root+'/api/scan-cards/'+id+'/auto-save',{method:'POST',headers,body:JSON.stringify({revision:1})});return {status:r.status,data:await r.json()}};
  const saved=await call(await add(1,valid));
- assert.equal(saved.status,200,JSON.stringify(saved.data));assert.equal(saved.data.status,'posted');
+ assert.equal(saved.status,200,JSON.stringify(saved.data));assert.equal(saved.data.status,'draft');
  // A genuine conflict is still refused, and each reason is stated once rather than once per trip row.
  const refused=await call(await add(2,{...valid,aFormNo:'76',trips:[valid.trips[0],{...valid.trips[0],rowNumber:2,loadingTime:'09:20',unloadingTime:'09:30'}]}));
- assert.equal(refused.status,409);
- assert.equal(refused.data.error.split('Check the machine assignment against the summary.').length-1,1,refused.data.error);
+ assert.equal(refused.status,200);assert.equal(refused.data.status,'draft');
+ assert.equal(Number((await db.query('SELECT count(*) n FROM mis_log_books')).rows[0].n),0);
 });

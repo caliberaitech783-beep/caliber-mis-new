@@ -41,6 +41,7 @@ export function applyScanContext(context,draft){
  const next={...draft};
  if(next.bookDate!==context.bookDate||['system-fallback','scan-unreadable'].includes(next.bookDateSource)){next.bookDate=context.bookDate;next.bookDateSource='batch';}
  if(canonicalSiteName(tripCardLocation(next.location))!==canonicalSiteName(tripCardLocation(context.location)))next.location=context.location;
+ next.shiftHours=CARD_SHIFTS[context.cardShift]?.hours||next.shiftHours||'';
  if(next.cardShift!==context.cardShift){next.cardShift=context.cardShift;next.shiftHours=CARD_SHIFTS[context.cardShift]?.hours||next.shiftHours||'';next.shiftId='';}
  return next;
 }

@@ -5,12 +5,14 @@ import {shiftIdentity} from '../../../shared/masters/shift-master.mjs';
 import {hashPassword} from '../../services/auth/password-auth.mjs';
 import {randomBytes} from 'node:crypto';
 
-export const PULSE_MASTER_NAMES=['Equipment master','Region master','Shift Master','Users & employees'];
+const REQUIRED_PULSE_MASTERS=['Equipment master','Region master','Shift Master','Users & employees'];
+export const PULSE_MASTER_NAMES=[...REQUIRED_PULSE_MASTERS,'Work Order master','Company master'];
 const SOURCE='https://pulse.cmll.in';
 export function validatePulseSnapshot(data){
  if(!data||typeof data!=='object'||Array.isArray(data))throw new Error('Pulse returned an invalid master response.');
+ if(Object.hasOwn(data,'Work Contract master')&&!Object.hasOwn(data,'Work Order master'))data={...data,'Work Order master':data['Work Contract master']};
  if(!PULSE_MASTER_NAMES.some(name=>Object.hasOwn(data,name)))throw new Error('Pulse returned no recognized master groups. Existing local masters are unchanged.');
- return Object.fromEntries(PULSE_MASTER_NAMES.map(name=>{
+ return Object.fromEntries(PULSE_MASTER_NAMES.filter(name=>Object.hasOwn(data,name)).map(name=>{
    const rows=data[name]??[];
    if(!Array.isArray(rows))throw new Error(`Invalid ${name} response.`);
    const seen=new Set();
@@ -24,7 +26,7 @@ export function validatePulseSnapshot(data){
 function recordKey(master,row){
  if(master==='Shift Master')return `${shiftIdentity({...row,shiftName:row.shiftName||row.name||row.shift})}|${String(row.effectiveFrom||'').trim()}`;
  if(master==='Users & employees')return String(row.login||row.empId||row.employeeId||row.employee||'').trim().toLowerCase();
- const value=master==='Equipment master'?(row.chassis||row.door||row.registration):master==='Region master'?(row.code||row.name):(row.name||row.shiftName||row.shift);
+ const value=master==='Equipment master'?(row.chassis||row.door||row.registration):master==='Region master'?(row.code||row.name):(row.workOrderNo||row.contractNo||row.companyCode||row.companyName||row.name||row.shiftName||row.shift);
  return String(value||'').trim().toLowerCase();
 }
 export async function applyPulseSnapshot(pool,input,selectedNames=PULSE_MASTER_NAMES){
@@ -34,6 +36,7 @@ export async function applyPulseSnapshot(pool,input,selectedNames=PULSE_MASTER_N
    await client.query('BEGIN');
    await client.query('SELECT pg_advisory_xact_lock(783,42)');
    for(const name of selectedNames){
+     if(!Object.hasOwn(snapshot,name))continue;
      const {rows:links}=await client.query('SELECT source_id,local_id FROM pulse_master_links WHERE master_name=$1',[name]);
      const mapped=new Map(links.map(r=>[String(r.source_id),r.local_id]));
      const {rows:locals}=await client.query('SELECT id,record_data FROM master_records WHERE master_name=$1',[name]);
@@ -77,7 +80,7 @@ export function createPulseMasterSync({pool,stateFile,credentialStore,sharedSign
  const afterSnapshot=async()=>{if(!onSnapshot)return;try{await onSnapshot();}catch(e){console.error("Pulse snapshot follow-up failed:",e?.message||e);}};
  let breakdownCache=null;
  const fleetReadsInFlight=new Map();
- let token='',username='',lastSuccess=null,lastAttempt=null,error='',counts={},busy=false,started=false,timer;
+ let token='',username='',lastSuccess=null,lastAttempt=null,error='',counts={},missingMasters=[],busy=false,started=false,timer;
  const request=async(route,options={})=>{
    let response;
    try{response=await fetchImpl(SOURCE+route,{...options,redirect:'error',signal:AbortSignal.timeout(45000)});}catch{throw new Error('Could not reach pulse.cmll.in. The connection will retry automatically.');}
@@ -85,15 +88,18 @@ export function createPulseMasterSync({pool,stateFile,credentialStore,sharedSign
    if(!response.ok){if([401,403].includes(response.status))throw Object.assign(new Error('Pulse access expired or was denied. Reconnect an authorized Pulse administrator with MIS verification access to the card site.'),{code:'PULSE_AUTH_EXPIRED',status:response.status});throw Object.assign(new Error(body?.error||`Pulse request failed (${response.status}).`),{status:response.status});}
    return body;
  };
- const fetchMasters=async(sourceToken)=>validatePulseSnapshot(await request(`/api/masters?names=${encodeURIComponent(PULSE_MASTER_NAMES.join('|'))}`,{headers:{Authorization:`Bearer ${sourceToken}`,'Cache-Control':'no-cache'}}));
- const status=()=>({source:SOURCE,connected:Boolean(token)||Boolean(sharedSignIn?.status().connected),connectionMode:token?'manual':'shared-sign-in',username,intervalSeconds:60,lastSuccess,lastAttempt,error,counts,busy,masters:PULSE_MASTER_NAMES});
+ const fetchMasters=async(sourceToken)=>{
+  const read=names=>request(`/api/masters?names=${encodeURIComponent(names.join('|'))}`,{headers:{Authorization:`Bearer ${sourceToken}`,'Cache-Control':'no-cache'}});
+  try{return validatePulseSnapshot(await read(PULSE_MASTER_NAMES))}catch(e){if(![400,403,404,501].includes(e.status))throw e;return validatePulseSnapshot(await read(REQUIRED_PULSE_MASTERS))}
+ };
+ const status=()=>({source:SOURCE,connected:Boolean(token)||Boolean(sharedSignIn?.status().connected),connectionMode:token?'manual':'shared-sign-in',username,intervalSeconds:60,lastSuccess,lastAttempt,error,counts,missingMasters,busy,masters:PULSE_MASTER_NAMES});
  const save=async(sourceToken,sourceUsername)=>{
    if(credentialStore){await credentialStore.write('pulse-session',{token:sourceToken,username:sourceUsername});return;}if(!stateFile)throw new Error('Local Pulse sync storage is not configured.');
    await mkdir(path.dirname(stateFile),{recursive:true});
    await writeFile(stateFile+'.tmp',JSON.stringify({token:sourceToken,username:sourceUsername}),{mode:0o600});
    await rename(stateFile+'.tmp',stateFile);
  };
- const reconnect=async()=>{const credentials=await credentialStore?.read('pulse');if(!credentials)throw new Error('Connect Pulse before syncing.');const login=await request('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...credentials,portal:'operations'})});if(!login?.token||login.role!=='super'||!['admin','super admin'].includes(String(login.permissions?.adminLevel||'').toLowerCase())||PULSE_MASTER_NAMES.some(name=>!masterAccessAllows(login.permissions,name)&&!masterAccessAllows(login.permissions,name,'mobileMasterAccess')))throw new Error('Saved Pulse account is no longer authorized to sync masters.');await save(login.token,credentials.username);token=login.token;username=credentials.username;};
+ const reconnect=async()=>{const credentials=await credentialStore?.read('pulse');if(!credentials)throw new Error('Connect Pulse before syncing.');const login=await request('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...credentials,portal:'operations'})});if(!login?.token||login.role!=='super'||!['admin','super admin'].includes(String(login.permissions?.adminLevel||'').toLowerCase())||REQUIRED_PULSE_MASTERS.some(name=>!masterAccessAllows(login.permissions,name)&&!masterAccessAllows(login.permissions,name,'mobileMasterAccess')))throw new Error('Saved Pulse account is no longer authorized to sync masters.');await save(login.token,credentials.username);token=login.token;username=credentials.username;};
  const authorizedRequest=async(route,options={})=>{
   if(!token)throw new Error('Connect Pulse in Sync all masters to enable automatic MIS verification.');
   const send=()=>request(route,{...options,headers:{...options.headers,Authorization:`Bearer ${token}`,'Cache-Control':'no-cache'}});
@@ -104,7 +110,7 @@ export function createPulseMasterSync({pool,stateFile,credentialStore,sharedSign
    if(busy)throw new Error('A master sync is already running.');
    if(!token&&!sharedSignIn?.status().connected)throw new Error('Sign in to Pulse II to connect Pulse automatically.');
    busy=true;lastAttempt=new Date().toISOString();
-   try{let snapshot;if(!token&&sharedSignIn)snapshot=validatePulseSnapshot(await sharedSignIn.request('masters',{},actor));else{try{snapshot=await fetchMasters(token)}catch(e){if(e.code!=='PULSE_AUTH_EXPIRED'||!credentialStore)throw e;await reconnect();snapshot=await fetchMasters(token)}}counts={...counts,...await applyPulseSnapshot(pool,snapshot,master?[master]:PULSE_MASTER_NAMES)};await afterSnapshot();lastSuccess=new Date().toISOString();error='';return {...status(),busy:false};}
+   try{let snapshot;if(!token&&sharedSignIn)snapshot=validatePulseSnapshot(await sharedSignIn.request('masters',{},actor));else{try{snapshot=await fetchMasters(token)}catch(e){if(e.code!=='PULSE_AUTH_EXPIRED'||!credentialStore)throw e;await reconnect();snapshot=await fetchMasters(token)}}missingMasters=PULSE_MASTER_NAMES.filter(name=>!Object.hasOwn(snapshot,name));if(master&&!Object.hasOwn(snapshot,master))throw new Error('Pulse did not return '+master+'. Existing records retained; verify source access.');counts={...counts,...await applyPulseSnapshot(pool,snapshot,master?[master]:PULSE_MASTER_NAMES)};await afterSnapshot();lastSuccess=new Date().toISOString();error='';return {...status(),busy:false};}
    catch(cause){error=cause.message;throw cause;}finally{busy=false;}
  };
  return {
@@ -135,7 +141,7 @@ export function createPulseMasterSync({pool,stateFile,credentialStore,sharedSign
      try{
        const login=await request('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:String(credentials.username),password:String(credentials.password),portal:'operations'})});
        if(!login?.token||login.role!=='super'||!['admin','super admin'].includes(String(login.permissions?.adminLevel||'').toLowerCase()))throw new Error('Use a Pulse Admin or Super Admin with access to all four masters. Complete any required password change in Pulse first.');
-       if(PULSE_MASTER_NAMES.some(name=>!masterAccessAllows(login.permissions,name)&&!masterAccessAllows(login.permissions,name,'mobileMasterAccess')))throw new Error('This Pulse account cannot read all four requested masters.');
+       if(REQUIRED_PULSE_MASTERS.some(name=>!masterAccessAllows(login.permissions,name)&&!masterAccessAllows(login.permissions,name,'mobileMasterAccess')))throw new Error('This Pulse account cannot read all four requested masters.');
        const snapshot=await fetchMasters(login.token);
        // Credentials are persisted only through the encrypted integration store.
        await save(login.token,String(credentials.username));if(credentialStore)await credentialStore.write('pulse',{username:String(credentials.username),password:String(credentials.password)});token=login.token;username=String(credentials.username);

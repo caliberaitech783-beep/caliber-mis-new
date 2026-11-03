@@ -25,7 +25,7 @@ import {savedLogBookFilters} from '../../domain/logbooks/saved-log-book-filters.
 import {scanImageMime} from '../../domain/scanning/scan-image-format.mjs';
 import {employeeIdentity} from '../../../shared/people/employee-identity.mjs';
 import {logBookSiteScope,logBookAccountLocation,siteAllowed,requireLogBookSite,employeeAtLocation,filterLogBookSites} from '../../../shared/logbooks/log-book-access.mjs';
-import {meterRuleIssues,CARD_SHIFTS,formatBookNumber,bookShiftCode,matchingWorkOrders,machineLabel,machineSummary,machineDiscrepancies,systemBookDate,latestWorkOrder,interTripGap} from '../../../shared/scanning/trip-card-rules.mjs';
+import {isUnloadingOnlyTrip,meterRuleIssues,tripChronologyIssues,CARD_SHIFTS,formatBookNumber,bookShiftCode,matchingWorkOrders,machineLabel,machineSummary,machineDiscrepancies,systemBookDate,latestWorkOrder,interTripGap} from '../../../shared/scanning/trip-card-rules.mjs';
 import {equipmentDoorNumber} from '../../../shared/masters/equipment-door.mjs';
 import {summarizePulseHours} from '../../domain/logbooks/log-book-hours.mjs';
 import {randomUUID} from 'node:crypto';
@@ -62,12 +62,14 @@ export function normalizeLogBook(kind,input={}){
  if(!assetId||!employeeId&&!nonWorking||!shiftId)fail('Select an asset, employee and shift from their masters.');
  const openingHmr=number(input.openingHmr,'Opening HMR',{signed:true,optional:nonWorking})??0,closingHmr=number(input.closingHmr,'Closing HMR',{signed:true,optional:nonWorking})??openingHmr;
 const openingKmr=kind==='vehicle'?number(input.openingKmr,'Opening KMR',{signed:true}):null,closingKmr=kind==='vehicle'?number(input.closingKmr,'Closing KMR',{signed:true}):null;
+const meterIssues=meterRuleIssues({...input,shiftHours},kind);if(Object.keys(meterIssues).length)fail(Object.values(meterIssues).join(' '));
+if(input.tripCardNo&&!/^\d+$/.test(String(input.tripCardNo)))fail('Trip card number must contain digits only.');
 const timeMode=input.timeMode==='without'?'without':'with';
  if(!Array.isArray(input.trips??[]))fail('Trip details must be a list.');
  if((input.trips||[]).length>300)fail('A log book can contain up to 300 trip rows.');
  const trips=kind==='vehicle'?(input.trips||[]).map((row,index)=>{
    if(!row||typeof row!=='object'||Array.isArray(row))fail('Invalid trip row.');
-   const equipmentName=text(row.equipmentName);if(!equipmentName)fail(`Enter the loading equipment for trip row ${index+1}.`);
+   const equipmentName=text(row.equipmentName);if(!equipmentName&&!(index===0&&isUnloadingOnlyTrip(row)))fail(`Enter the loading equipment for trip row ${index+1}.`);
    const tripCount=number(row.tripCount,`Trips in row ${index+1}`,{integer:true});if(tripCount<1)fail('Each trip row must contain at least one trip.');
    const loadingTime=timeMode==='with'?text(row.loadingTime,8):'',unloadingTime=timeMode==='with'?text(row.unloadingTime,8):'';
    if(timeMode==='with'&&!validTripTimes({loadingTime,unloadingTime}))fail('Enter at least one valid loading or unloading time for each trip.');
@@ -78,7 +80,7 @@ const timeMode=input.timeMode==='without'?'without':'with';
  return {...normalizeManualDetails(input,kind),bookDate,location,assetId,employeeId,shiftId,shiftHours,docType:kind==='vehicle'?'VLB':'QLB',
    meterRuleErrors:meterRuleIssues(input,kind),openingKmr,closingKmr,openingHmr,closingHmr,totalRunningKmr:kind==='vehicle'?rounded(closingKmr-openingKmr):null,totalWorkingHmr:workingHmr,
    cardShift:CARD_SHIFTS[input.cardShift]?input.cardShift:'',bookDateSource:text(input.bookDateSource||'manual'),machineSummary:machineSummary(trips),scanMachineSummary:Array.isArray(input.scanMachineSummary)?input.scanMachineSummary.map(r=>({...r,equipmentName:text(r.equipmentName),tripCount:number(r.tripCount,'Machine summary trips',{integer:true})})):[],
-   aFormNo:kind==='vehicle'?text(input.aFormNo):'',jobCardNo:kind==='equipment'?text(input.jobCardNo):'',remark:text(input.remark,4000),timeMode,trips,shiftStatus,statusReason:kind==='equipment'?text(input.statusReason,2000):'',
+   tripCardNo:text(input.tripCardNo,40),aFormNo:kind==='vehicle'?text(input.aFormNo):'',jobCardNo:kind==='equipment'?text(input.jobCardNo):'',remark:text(input.remark,4000),timeMode,trips,shiftStatus,statusReason:kind==='equipment'?text(input.statusReason,2000):'',
    totalRecords:trips.length,openingTrips:trips.reduce((sum,row)=>sum+(row.loadingTime?row.tripCount:0),0),endingTrips:trips.reduce((sum,row)=>sum+(row.unloadingTime?row.tripCount:0),0),totalTrips:trips.reduce((sum,row)=>sum+(timeMode==='without'||row.loadingTime&&row.unloadingTime?row.tripCount:0),0),
    workOrderContract:null,manualBreakdownHours:manualBreakdownHours(input.manualBreakdownHours,shiftHours),breakdownHours:null,availabilityHours:workingHmr,runningHours:workingHmr,idleHours:rounded(shiftHours-workingHmr)};
 }
@@ -114,6 +116,7 @@ export async function resolveLogBookData(client,kind,input,{enforceEmployeeSite=
  else data.bookShiftCode=bookShiftCode(input.bookShiftCode)||bookShiftCode(data.cardShift)||bookShiftCode(shift.shiftCode)||bookShiftCode(data.shiftName)||'';
  data.chassis=text(asset.chassis||asset.chassisNo);
  const capacityPair=assetCapacityPair(asset);data.assetMake=capacityPair.make;data.assetModel=capacityPair.model;
+ if(kind==='vehicle'){const issues=tripChronologyIssues(data);if(Object.keys(issues).length)fail(Object.values(issues).join(' '));}
  return data;
 }
 export async function insertLogBook(client,kind,data,requestKey,createdBy,batchOptions){
@@ -127,16 +130,16 @@ export async function insertLogBook(client,kind,data,requestKey,createdBy,batchO
  await syncElbBatchRecord(client,result.rows[0],createdBy);
  return result.rows[0];
 }
-export function registerLogBooks(app,{pool,requireSession,requireAdministrator,pulseMasterSync,sendDeletionOtp,imageStorage,approvalOtp={},getSiteScope=async session=>logBookSiteScope(session)}){
+export function registerLogBooks(app,{pool,oracleConfig=null,requireSession,requireAdministrator,pulseMasterSync,sendDeletionOtp,imageStorage,approvalOtp={},getSiteScope=async session=>logBookSiteScope(session)}){
  let ready;
  const ensure=()=>ready??=(pool.query(LOG_BOOK_SCHEMA).catch(error=>{ready=null;throw error}));
  const protect=[requireSession,requireAdministrator,async(req,res,next)=>{try{req.logBookScope=await getSiteScope(req.session);next()}catch(error){if(error.status)return res.status(error.status).json({error:error.message});next(error)}}];
  registerLogBookDashboard(app,{pool,protect,ensureBooks:ensure});
  const batchScope=(req,res,next)=>{if(req.query?.scan!=='1')return protect[2](req,res,next);return requireAdministrator(req,res,error=>{if(error)return next(error);req.logBookScope={sites:null,label:'All sites'};next()})};
  registerManpowerReports(app,{pool,protect,ensureBooks:ensure,withHandovers:withVlbTripHandovers});
- registerProductionReports(app,{pool,protect,ensureBooks:ensure});
+ registerProductionReports(app,{pool,protect,ensureBooks:ensure,oracleConfig});
  registerMeterContinuityReport(app,{pool,protect,ensureBooks:ensure});
- registerVlbBatches(app,{pool,protect:[requireSession,batchScope],recoveryProtect:protect,ensureBooks:ensure,sendOtp:sendDeletionOtp,imageStorage,logBookOps:{resolve:(client,kind,input)=>resolveLogBookData(client,kind,input),insert:insertLogBook,applyHours:(data,actor)=>applyBreakdownHours(data,{readHours,actor})},approvalOtp});
+ registerVlbBatches(app,{pool,protect:[requireSession,batchScope],recoveryProtect:protect,ensureBooks:ensure,sendOtp:sendDeletionOtp,imageStorage,logBookOps:{resolve:(client,kind,input,options)=>resolveLogBookData(client,kind,input,options),insert:insertLogBook,applyHours:(data,actor)=>applyBreakdownHours(data,{readHours,actor})},approvalOtp});
  registerLogBookDeletion(app,{pool,protect,ensureBooks:ensure,sendOtp:sendDeletionOtp,imageStorage,permittedSites:req=>filterLogBookSites(pool,req.logBookScope),assertSite:(req,site)=>requireLogBookSite(req.logBookScope,site),allowsSite:(req,site)=>siteAllowed(req.logBookScope,site)});
 
  app.get('/api/reports/operations',...protect,async(req,res,next)=>{

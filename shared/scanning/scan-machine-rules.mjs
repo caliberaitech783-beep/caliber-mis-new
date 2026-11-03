@@ -1,3 +1,4 @@
+import {isUnloadingOnlyTrip} from './trip-card-rules.mjs';
 import {assetBookKind} from '../masters/equipment-kind.mjs';
 import {resolveTripEquipment} from './trip-equipment-validation.mjs';
 import {canonicalSiteName} from '../masters/site-location.mjs';
@@ -133,6 +134,7 @@ export function scanEquipmentMatchIssues(input={},assets=[]){
  input=normalizeScanEquipmentRows(input,assets);
  const issues={};
  for(const [collection,rows]of [['trips',input.trips||[]],['scanMachineSummary',input.scanMachineSummary||[]]])for(const [index,row]of rows.entries()){
+  if(collection==='trips'&&index===0&&isUnloadingOnlyTrip(row))continue;
   if(!text(row.equipmentName))continue;
   if(row.equipmentSource==='master-selection'){
    const match=resolveTripEquipment(row,assets,input.location);

@@ -76,7 +76,7 @@ test('VLB/ELB options, paginated records, lookups, hours and writes enforce site
   assert.equal((await call('/api/log-books/vehicle/'+other,'PUT',{...body,revision:1})).status,403,'cannot move an out-of-scope record into own site');
   assert.equal((await call('/api/log-books/hours','POST',{location:'Jayant OC'})).status,403);
   assert.notEqual((await call('/api/log-books/hours?scan=1','POST',{location:'Jayant OC'})).status,403);
-  const scanEmployee=await call('/api/log-books/employee-lookup?scan=1','POST',{caliberId:'CMPL2222',location:'Jayant OC'});assert.equal(scanEmployee.status,200);assert.equal(scanEmployee.data.caliberId,'CMPL2222');
+  const scanEmployee=await call('/api/log-books/employee-lookup?scan=1','POST',{caliberId:'CMPL2222',location:'Jayant OC'});assert.equal(scanEmployee.status,403,'scan mode never bypasses assigned-site employee access');
   assert.equal((await call('/api/log-books/employee-lookup','POST',{caliberId:'CMPL1111',location:'Sasti OB'})).status,200);
   assert.equal((await call('/api/log-books/employee-lookup','POST',{caliberId:'CMPL2222',location:'Sasti OC'})).status,403);
   assert.equal((await call('/api/log-books/employee-lookup','POST',{caliberId:'CMPL2222',location:'Jayant OC'})).status,403);

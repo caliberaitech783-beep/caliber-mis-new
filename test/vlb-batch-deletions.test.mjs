@@ -53,9 +53,10 @@ async function setup(t){
 
 test('whole batch deletion retains images for 240 hours, releases scope, and restoration swaps replacements atomically',async t=>{
  const h=await setup(t),old=await h.create(),card=await h.add(old);
+ const manualDraft=randomUUID();await h.db.query('INSERT INTO mis_vlb_manual_drafts(id,batch_id,draft,created_by) VALUES($1,$2,$3,$4)',[manualDraft,old.id,JSON.stringify({remark:'retained manual draft'}),'alice']);
  await h.db.query("INSERT INTO mis_scan_backup_items VALUES($1,$2,$3,'hash',$4)",[randomUUID(),card.scanId,'vehicle/'+card.scanId,JSON.stringify({logbookId:card.id})]);
  const unsaved=randomUUID();await h.db.query("INSERT INTO mis_scan_cards VALUES($1,$2,2,'draft.png','review',1,NULL,$3,'draft-hash',NULL,'{}','{}')",[unsaved,card.scanBatch,Buffer.from('draft-image')]);
- const p=await h.preview(old);assert.equal(p.status,200,JSON.stringify(p.data));assert.equal(p.data.manifest.target.records.length,1);assert.equal(p.data.manifest.target.scans.length,2);
+ const p=await h.preview(old);assert.equal(p.status,200,JSON.stringify(p.data));assert.equal(p.data.manifest.target.records.length,1);assert.equal(p.data.manifest.target.scans.length,2);assert.equal(p.data.manifest.target.drafts.length,1);
  assert.equal((await h.confirm(p.data)).status,403,'no OTP cannot delete');
  assert.equal((await h.send(p.data)).status,200);
  const first=h.otp(),again=await h.send(p.data);assert.equal(again.status,200);assert.equal(again.data.alreadySent,true,'a repeat click reuses the delivered OTP');assert.equal(h.otp(),first);
@@ -71,7 +72,7 @@ test('whole batch deletion retains images for 240 hours, releases scope, and res
  await assert.rejects(()=>h.db.query("UPDATE mis_scan_batches SET expected_context='{}' WHERE id=$1",[card.scanBatch]),/deleted VLB batch/);
  await assert.rejects(()=>h.db.query("INSERT INTO mis_scan_cards(id,batch_id) VALUES($1,$2)",[randomUUID(),card.scanBatch]),/deleted VLB batch/);
  const deleted=(await h.call('vlb-batch-deletions')).data.batches[0];assert.ok(deleted.can_restore);assert.ok(Math.abs((new Date(deleted.restore_until)-new Date(deleted.deleted_at))-240*3600000)<1000);
- const replacement=await h.create();assert.notEqual(replacement.id,old.id);assert.match(replacement.name,/B02$/);const replacementCard=await h.add(replacement);
+ const replacement=await h.create();assert.notEqual(replacement.id,old.id);assert.match(replacement.name,/B002$/);const replacementCard=await h.add(replacement);
  const restore=await h.preview(old,'restore');assert.equal(restore.status,200,JSON.stringify(restore.data));assert.equal(restore.data.manifest.target.batch.id,replacement.id);assert.equal(restore.data.requiresReplacementDeletion,true);
  assert.equal((await h.call('vlb-batch-deletions/'+restore.data.id+'/otp','POST',{approval:restore.data.approval})).status,400);
  assert.equal((await h.send(restore.data)).status,200);

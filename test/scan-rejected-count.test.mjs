@@ -1,3 +1,4 @@
+import {arrangeScanParent} from './operational-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import express from 'express';
@@ -12,7 +13,7 @@ test('rejecting a blank card remains visible to its batch and increments the rep
  const db=new PGlite();t.after(()=>db.close());await db.exec('CREATE TABLE master_records(id BIGINT PRIMARY KEY,master_name TEXT,record_data JSONB);'+LOG_BOOK_SCHEMA);
  const query=(sql,args)=>!args&&sql.includes(';')?db.exec(sql):db.query(sql,args),pool={query,connect:async()=>({query,release(){}})};
  const app=express();app.use(express.json());const auth=(req,res,next)=>{req.session={login:'test-admin'};next();};
- const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});
+ app.use(arrangeScanParent(db));const service=registerBulkCardScanning(app,{pool,requireSession:auth,requireAdministrator:auth,ocr:{recognize:async()=>({text:''}),close(){}}});
  await service.start();t.after(()=>service.stop());
  const batchId=randomUUID(),cardId=randomUUID(),context={bookDate:'2026-12-30',location:'Sasti OC',cardShift:'I',confirmed:true};
  await db.query("INSERT INTO mis_scan_batches(id,kind,name,created_by,expected_context) VALUES($1,'vehicle','test','test-admin',$2)",[batchId,JSON.stringify(context)]);

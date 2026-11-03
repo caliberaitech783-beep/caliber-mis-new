@@ -17,7 +17,7 @@ const hooks=()=>{const slots=[];let cursor=0;const useState=initial=>{const i=cu
 const otpCountdown=(expiresAt,now=Date.now())=>{const remaining=Math.floor((new Date(expiresAt).getTime()-now)/1000);return remaining<=0?'expired':`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')} left`};
 const otpSentText=otp=>`OTP sent to ${otp.sentTo.length} PMs via Telegram`;
 const session={token:'t'};
-const batch={id:'b1',name:'CMLL/SASTI OC/30TH -DEC-26/S1/B01',site:'sasti oc',closed_at:null,closure_revision:1,requests:[],approvalOtps:[],canRequestReopen:true,canReopen:false};
+const batch={id:'b1',name:'CMLL/SASTI OC/30th Dec 2026/S1/B001',site:'sasti oc',closed_at:null,closure_revision:1,requests:[],approvalOtps:[],canRequestReopen:true,canReopen:false};
 
 test('the approval OTP panel offers the request first, then the code entry with countdown and resend',async()=>{
  const h=hooks();

@@ -4,7 +4,7 @@ import {checkScanCard} from '../server/routes/scanning/bulk-card-scanning.mjs';
 
 const masters=[
  {id:1,master_name:'Equipment master',record_data:{category:'Vehicle',door:'V321',currentLocation:'Sasti OC'}},
- {id:2,master_name:'C-Dir Employee master',record_data:{name:'TEST DRIVER',empId:'EMP100'}},
+ {id:2,master_name:'C-Dir Employee master',record_data:{name:'TEST DRIVER',empId:'EMP100',site:'Sasti OC'}},
  {id:3,master_name:'Shift Master',record_data:{site:'Sasti OC',shiftName:'Shift I',startTime:'06:00'}},
  {id:5,master_name:'Work Order master',record_data:{site:'Sasti OC',workOrderNo:'WO1'}}
 ];
@@ -20,9 +20,9 @@ test('complete current values clear historical OCR warnings without requiring a 
 });
 test('genuinely missing values, invalid readings, summaries and missing pages still need correction',async()=>{
  const missing=await checkScanCard(client,'vehicle',card,{...draft,shiftHours:''});assert.ok(missing.errors.some(s=>/Shift hours/.test(s)));
- const invalid=await checkScanCard(client,'vehicle',card,{...draft,closingHmr:-1});assert.deepEqual(invalid.errors,[]);assert.match(invalid.data.meterRuleErrors.closingHmr,/below opening/);
+ const invalid=await checkScanCard(client,'vehicle',card,{...draft,closingHmr:-1});assert.ok(invalid.errors.some(s=>/below opening|negative/.test(s)));
  const summary=await checkScanCard(client,'vehicle',card,{...draft,scanMachineSummary:[{equipmentName:'D19',tripCount:2}]});assert.ok(summary.errors.some(s=>/summary mismatch/.test(s)));
  const back=await checkScanCard(client,'vehicle',{...card,expected_pages:2});assert.ok(back.errors.some(s=>/back page/.test(s)));
- const hours=await checkScanCard(client,'vehicle',card,{...draft,closingHmr:9});assert.deepEqual(hours.errors,[]);assert.deepEqual(hours.warnings,[]);assert.match(hours.data.meterRuleErrors.closingHmr,/Exceeds limit/);
- const kmr=await checkScanCard(client,'vehicle',card,{...draft,closingKmr:251});assert.deepEqual(kmr.errors,[]);assert.match(kmr.data.meterRuleErrors.closingKmr,/Exceeds limit/);
+ const hours=await checkScanCard(client,'vehicle',card,{...draft,closingHmr:9});assert.ok(hours.errors.some(s=>/Exceeds limit/.test(s)));
+ const kmr=await checkScanCard(client,'vehicle',card,{...draft,closingKmr:251});assert.ok(kmr.errors.some(s=>/Exceeds limit/.test(s)));
 });

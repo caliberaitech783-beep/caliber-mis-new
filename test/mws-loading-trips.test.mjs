@@ -37,7 +37,7 @@ test('unloading-only rows are excluded at any position while loading-only and un
 
 test('estimated loading does not create a machine trip; an actual corrected loading time does',()=>{
  const draft=estimateMissingTripTimes({timeMode:'with',trips:[carry,loaded]});
- assert.equal(draft.trips[0].loadingTime,'04:48');
+ assert.equal(draft.trips[0].loadingTime,'');
  assert.equal(machineTripTotal(draft.trips),1);
  assert.deepEqual(machineSummary(draft.trips),[{equipmentName:'V19',tripCount:1}]);
  const corrected=draft.trips.map((row,i)=>i===0?{...row,loadingTime:'05:00'}:row);

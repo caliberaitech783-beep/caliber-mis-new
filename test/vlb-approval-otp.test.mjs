@@ -9,8 +9,8 @@ import {LOG_BOOK_SCHEMA} from '../server/routes/logbooks/log-book.mjs';
 
 // Flag unset: the two-stage batch is on, as in production.
 test('approval OTP message names the batch, the reason and the ten-minute rule',()=>{
- const message=approvalOtpMessage({purpose:'unlock_vlb',batch:{name:'CMLL/SASTI OC/30TH -DEC-26/S1/B01',site:'sasti oc',report_date:'2026-12-30',shift:'S1'},reason:'Card 12 has the wrong tipper',requestedBy:'Alice',otp:'482913'});
- assert.match(message,/Unlock VLB/);assert.match(message,/Alice asks to unlock the VLB side of batch CMLL\/SASTI OC\/30TH -DEC-26\/S1\/B01 \(Sasti OC, 30-12-2026, S1\)/);
+ const message=approvalOtpMessage({purpose:'unlock_vlb',batch:{name:'CMLL/SASTI OC/30th Dec 2026/S1/B001',site:'sasti oc',report_date:'2026-12-30',shift:'S1'},reason:'Card 12 has the wrong tipper',requestedBy:'Alice',otp:'482913'});
+ assert.match(message,/Unlock VLB/);assert.match(message,/Alice asks to unlock the VLB side of batch CMLL\/SASTI OC\/30th Dec 2026\/S1\/B001 \(Sasti OC, 30-12-2026, S1\)/);
  assert.match(message,/Reason: Card 12 has the wrong tipper/);assert.match(message,/OTP 482913, valid 10 minutes/);assert.match(message,/recorded in the batch audit/);
  assert.match(approvalOtpMessage({purpose:'reopen',batch:{name:'B',site:'sasti oc',report_date:'2026-12-30',shift:'S1'},reason:'r',requestedBy:'Bob',otp:'1'}),/reopen the closed batch B/);
  assert.deepEqual(Object.keys(APPROVAL_PURPOSES),['reopen','unlock_vlb']);
@@ -47,7 +47,7 @@ test('site PM OTP unlocks VLB and reopens a closed batch; a PM may approve their
  deliveryFails=true;assert.match((await call(path+'/approval-otp','POST',{purpose:'unlock_vlb',reason:'Wrong tipper on card 12'})).data.error,/no Telegram or mobile/);deliveryFails=false;
  const unlockOtp=await call(path+'/approval-otp','POST',{purpose:'unlock_vlb',reason:'Wrong tipper on card 12'});
  assert.equal(unlockOtp.status,200,JSON.stringify(unlockOtp.data));assert.equal(unlockOtp.data.otp.purpose,'unlock_vlb');assert.deepEqual(unlockOtp.data.otp.sentTo,['pm','pm2']);assert.equal(unlockOtp.data.otp.status,'sent');
- assert.equal(sent.length,1);assert.deepEqual(sent[0].logins,['pm','pm2']);assert.match(sent[0].message,/ALICE asks to unlock the VLB side of batch CMLL\/SASTI OC\/30TH -DEC-26\/S1\/B01/);assert.match(sent[0].message,/Reason: Wrong tipper on card 12/);assert.match(sent[0].message,/OTP \d{6}/);
+ assert.equal(sent.length,1);assert.deepEqual(sent[0].logins,['pm','pm2']);assert.match(sent[0].message,/ALICE asks to unlock the VLB side of batch CMLL\/SASTI OC\/30th Dec 2026\/S1\/B001/);assert.match(sent[0].message,/Reason: Wrong tipper on card 12/);assert.match(sent[0].message,/OTP \d{6}/);
  assert.equal((await call(path+'/approval-otp','POST',{purpose:'unlock_vlb',reason:'Wrong tipper on card 12'})).status,429,'one OTP per minute');
  const live=await call(path);assert.equal(live.data.approvalOtps.length,1);assert.equal(live.data.approvalOtps[0].id,unlockOtp.data.otp.id,'the live OTP survives a reload for the requester');
  assert.equal((await call(path,'GET',undefined,'bob')).data.approvalOtps.length,0,'another MIS user does not see it');

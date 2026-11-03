@@ -1,3 +1,4 @@
+import {VLB_BATCH_SCHEMA} from '../server/domain/logbooks/vlb-batch-policy.mjs';
 import {randomUUID} from 'node:crypto';
 import {canonicalSiteName} from '../shared/masters/site-location.mjs';
 import {vlbRecordShift} from '../shared/logbooks/vlb-batch-format.mjs';
@@ -18,3 +19,15 @@ export async function extendOperationalScanFixture(db){
  ALTER TABLE mis_scan_cards ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT '2026-12-01T00:00:00Z';
  ALTER TABLE mis_scan_cards ADD COLUMN IF NOT EXISTS logbook_id BIGINT;`);
 }
+
+// Upload/reader protocol tests predate mandatory site batches. Arrange their
+// selected parent explicitly; authorization and lock behavior are tested by
+// vlb-draft-workflow and batch lifecycle tests without this middleware.
+export function arrangeScanParent(db){return async(req,res,next)=>{try{
+ if(!['POST','PUT','PATCH','DELETE'].includes(req.method))return next();
+ let context=req.body?.expectedContext,kind=req.body?.kind;
+ const match=req.path.match(/^\/api\/scan-(batches|cards)\/([a-f0-9-]{36})/i);
+ if(!context&&match){const id=match[1]==='cards'?(await db.query('SELECT batch_id FROM mis_scan_cards WHERE id=$1',[match[2]])).rows[0]?.batch_id:match[2];if(id){const batch=(await db.query('SELECT kind,expected_context FROM mis_scan_batches WHERE id=$1',[id])).rows[0];context=batch?.expected_context;kind=batch?.kind;}}
+ if(kind==='vehicle'&&context?.bookDate&&context.location&&context.cardShift){if(!(await db.query("SELECT to_regclass('mis_vlb_batches') AS name")).rows[0]?.name)await db.exec(VLB_BATCH_SCHEMA);await prepareVlbFixture(db,context);}
+ next();
+ }catch(e){next(e)}}}

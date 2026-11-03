@@ -9,7 +9,7 @@ Read `README.md` and `docs/development.md` before changing this project. Operati
 - Branch: `main`. Only validation CI is active in this repository; deployment workflows are archived under `docs/reference-workflows/*.disabled`.
 - Reference website: https://pulse-ll.cmll.in (the separate original application).
 - This repository has no authorized deployment target. Do not deploy to the original application.
-- Actual UI entry: `index.html` -> `src/main.jsx` -> `src/app/App.jsx`. See `docs/frontend-architecture.md` for the current folder layout. Some older README/workflow notes describe obsolete entry points and deployment arrangements.
+- Actual UI entry: `index.html` -> `src/main.jsx` -> `src/app/App.jsx`. See `docs/development.md` for the current folder layout. Some older README/workflow notes describe obsolete entry points and deployment arrangements.
 - React/Vite UI, Express backend (`server/app.mjs`, launched by `server.mjs`), PostgreSQL, scan/OCR integrations.
 - Work from the repository root, not its `test` directory.
 
@@ -30,6 +30,14 @@ Use a separate clone when another coding tool is using this checkout. Use `codex
 - Current batch deletion/recovery behavior supersedes older record deletion guidance. Never delete data merely because the user asks for instructions.
 - Do not fabricate scan values or relax validation just to make a card save.
 - Do not print secrets, connection strings, login files, access tokens, or full Azure application settings. Never commit them.
+
+## Current VLB entry rules
+- Scan and manual batch entry autosave drafts only. Final posting is an explicit atomic batch action; never restore automatic card posting.
+- Batch date/site/shift override card headers. Do not restore the Mismatch Cards UI.
+- I/II/III: 8 HMR hours and 250 KMR km maximum; Day/Night: 12 hours and 300 km. Equal readings are valid; decreasing readings are not.
+- Preserve first unloading-only and last loading-only handovers without synthesizing missing times or requiring a loader on the first unloading-only row.
+- PM approval is mandatory for locked edits. Historical trials must not bypass approval.
+- Update docs/operations.md for durable rules; do not put credentials or per-task Markdown reports into Git.
 
 ## Commands and validation
 - Match CI: Node.js 22, `npm ci`, `npm run build`, `npm test`.

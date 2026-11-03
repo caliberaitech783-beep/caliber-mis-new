@@ -107,7 +107,7 @@ test('two-stage batch: holds wait for transfer, lock builds the fleet, stepper e
  assert.deepEqual(locked.data.machines.map(m=>[m.label,m.trips,m.sourceCards]),[['VPC-019',8,1],['VPC-077',4,1]]);
  assert.deepEqual(locked.data.fleet.map(r=>[r.door,r.trips]),[['VPC-019',8],['VPC-077',4],['D1',0]],'grader at Jayant is not in the Sasti fleet');
  assert.equal(locked.data.fleetProgress.total,3);
- assert.equal((await call(batch+'/lock-vlb','POST',{})).status,409,'cannot lock twice');
+ assert.equal((await call(batch+'/lock-vlb','POST',{})).status,200,'a lost-response retry returns the already locked batch');
  assert.equal((await call('/api/log-books/vehicle','POST',card('V1',[{equipmentName:'V19',tripCount:1}]))).status,409,'VLB frozen after lock');
  const fleet=assetId=>batch+'/fleet/'+assetId;
  const tripsAsBreakdown=await call(fleet(ids['VPC-019']),'POST',{shiftStatus:'breakdown',statusReason:'Engine'});

@@ -22,7 +22,7 @@ for(const name of ['ScanEquipmentReviewDialog','ScanExtractionStatus','ScanExtra
 scope.ApplicationErrorBoundary=({children})=>children;
 scope.ScanBatchMismatchDialog=({gate})=>React.createElement('section',{className:'scan-mismatch-dialog'},gate.mismatches.length);
 const {code}=await transformWithOxc(source
- .replace('const awaitingContext=Boolean(','testCapture.setContextGate=setContextGate; testCapture.setMismatchListOpen=setMismatchListOpen; const awaitingContext=Boolean(')
+ .replace('const awaitingContext=Boolean(','testCapture.setContextGate=setContextGate; const awaitingContext=Boolean(')
  .replace('const fleetCards=cards.filter','testCapture.setCards=setCards; testCapture.setSelected=setSelected; testCapture.setOptions=setOptions; testCapture.setBatch=setBatch; testCapture.setDraft=setDraft; const fleetCards=cards.filter')
  .replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'bulk-card-scanning.jsx',{jsx:{runtime:'classic'}});
 const nodes=(tree,predicate)=>{const rows=[];const visit=n=>{if(Array.isArray(n))return n.forEach(visit);if(!React.isValidElement(n))return;if(predicate(n))rows.push(n);visit(n.props.children)};visit(tree);return rows};
@@ -46,7 +46,7 @@ const options={sites:['Jayant OB'],assets:[],employees:[],shifts:[],workOrders:[
 function loaded(app,cards,{selected='card-1',mismatchListOpen=false}={}){
  app.render();
  app.testCapture.setBatch(batch);app.testCapture.setCards(cards);app.testCapture.setOptions(options);
- app.testCapture.setContextGate(scanContextGate(batch.expected_context,cards));app.testCapture.setMismatchListOpen(mismatchListOpen);
+ app.testCapture.setContextGate(scanContextGate(batch.expected_context,cards));
  app.testCapture.setSelected(selected);app.testCapture.setDraft(cards.find(c=>c.id===selected).draft);
  return app.render();
 }
@@ -57,7 +57,7 @@ test('the review page renders the card form for a selected VLB card',()=>{
  assert.equal(totals.length,2,'Total KMR and Total HMR labels render');
  assert.ok(totals.every(label=>label.props.className===''),'readings within the 8-hour limit are not highlighted');
 });
-test('meter totals over the shift limit are highlighted without blocking the form',()=>{
+test('meter totals over the shift limit are highlighted while blocking final logging',()=>{
  const over=card(1,{draft:draftFor(1,{closingHmr:'120',closingKmr:'1400'})});
  const tree=loaded(harness('&batch=b1&scanView=review&scanGroup=all'),[over]);
  const totals=meterTotals(tree);

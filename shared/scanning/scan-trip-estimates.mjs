@@ -4,21 +4,16 @@ import {identifyCardMachine} from './scan-machine-rules.mjs';
 
 const empty=value=>value==null||String(value).trim()==='';
 export function estimateMissingTripTimes(input={},raw={}){
- if(input.timeMode==='without'||!input.trips?.length)return input;
- return {...input,trips:(input.trips||[]).map((original,index)=>{
-  const row={...original};
-  for(const [missing,known,sign] of [['loadingTime','unloadingTime',-1],['unloadingTime','loadingTime',1]]){
-   if(!empty(row[missing])||!validScannedTime(row[known]))continue;
-   const number=row.rowNumber||index+1,cell=raw.tripGrid?.rows?.find(r=>r.rowNumber===number)?.[missing==='loadingTime'?'loading':'unloading'];
-   const literal=(raw.gemini||raw.hybrid)?.trips?.r?.find(r=>r[0]===number);
-   if(cell?.present&&!cell.value||literal?.[missing==='loadingTime'?2:3]===null)continue;
-   const time=normalizeScannedTime(row[known]),[h,m]=time.split(':').map(Number),minutes=(h*60+m+sign*22+1440)%1440;
-   const value=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
-   row[missing]=value;
-   row.timeEstimates={...row.timeEstimates,[missing]:{value,minutes:22,anchorField:known,anchorValue:row[known],dayOffset:Math.floor((h*60+m+sign*22)/1440)}};
-  }
+ // Blank cells are evidence, not a request for a synthetic 22-minute journey.
+ // Remove only untouched historical estimates from editable drafts. Explicit
+ // corrections and already-posted log books retain their entered values.
+ let changed=false;
+ const trips=(input.trips||[]).map(original=>{const row={...original},estimates={...row.timeEstimates};
+  for(const [key,estimate] of Object.entries(estimates))if(row[key]===estimate.value&&row[estimate.anchorField]===estimate.anchorValue){row[key]='';delete estimates[key];changed=true;}
+  if(Object.keys(estimates).length)row.timeEstimates=estimates;else delete row.timeEstimates;
   return row;
- })};
+ });
+ return changed?{...input,trips}:input;
 }
 
 export function previousScanShift(input={}){

@@ -18,7 +18,7 @@ const snapshot=(door='EQ-1')=>({'Equipment master':[{id:5,door,chassis:'CH-1'}],
 test('source updates preserve local IDs, adopt unique local matches and delete only linked source removals',async t=>{
  const {db,pool}=await fixture(t);
  await db.query("INSERT INTO master_records(master_name,record_data) VALUES('Equipment master',$1),('Region master',$2)",[JSON.stringify({door:'OLD',chassis:'CH-1'}),JSON.stringify({code:'LOCAL',name:'Local only'})]);
- const counts=await applyPulseSnapshot(pool,snapshot());assert.deepEqual(Object.values(counts),[1,1,1,0]);
+ const counts=await applyPulseSnapshot(pool,snapshot());assert.deepEqual(Object.values(counts),[1,1,1]);
  const before=(await db.query("SELECT id FROM master_records WHERE record_data->>'chassis'='CH-1'")).rows[0].id;
  await applyPulseSnapshot(pool,snapshot('EQ-UPDATED'));
  const equipment=(await db.query("SELECT * FROM master_records WHERE record_data->>'chassis'='CH-1'")).rows[0];
@@ -89,4 +89,12 @@ test('employee sync preserves local credentials and never activates phone passwo
  const existing=users.find(u=>u.login==='existing-user'),fresh=users.find(u=>u.login==='new-user');
  assert.equal(existing.passwordHash,localHash);assert.equal(existing.mustChangePassword,true);assert.equal(existing.employee,'Updated employee');
  assert.ok(fresh.passwordHash);assert.equal(verifyPassword(fresh.phone,fresh.passwordHash),false);assert.equal(users.length,2);
+});
+
+test('optional Pulse company and contract groups synchronize without erasing omitted masters',async t=>{
+ const {db,pool}=await fixture(t);await applyPulseSnapshot(pool,snapshot());
+ const before=(await db.query("SELECT count(*) n FROM master_records WHERE master_name='Equipment master'")).rows[0].n;
+ await applyPulseSnapshot(pool,{'Company master':[{id:90,companyCode:'CMLL',companyName:'Caliber'}],'Work Contract master':[{id:91,contractNo:'WO-1',site:'Sasti OC'}]});
+ assert.equal((await db.query("SELECT count(*) n FROM master_records WHERE master_name='Equipment master'")).rows[0].n,before);
+ assert.equal((await db.query("SELECT count(*) n FROM master_records WHERE master_name IN('Company master','Work Order master')")).rows[0].n,2);
 });

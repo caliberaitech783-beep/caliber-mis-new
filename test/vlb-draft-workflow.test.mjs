@@ -1,0 +1,88 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import {randomUUID} from 'node:crypto';
+import {PGlite} from '@electric-sql/pglite';
+import {registerVlbBatches} from '../server/routes/logbooks/vlb-batches.mjs';
+import {registerBulkCardScanning} from '../server/routes/scanning/bulk-card-scanning.mjs';
+import {LOG_BOOK_SCHEMA,resolveLogBookData,insertLogBook} from '../server/routes/logbooks/log-book.mjs';
+import {normalizeLogBook} from '../server/routes/logbooks/log-book.mjs';
+import {validateTripEquipment} from '../shared/scanning/trip-equipment-validation.mjs';
+import {shiftMeterIssues,tripChronologyIssues,machineSummary} from '../shared/scanning/trip-card-rules.mjs';
+process.env.VLB_TWO_STAGE_BATCHES='0';
+test('confirmed meter limits and midnight carry-over chronology',()=>{
+ for(const [hours,limit] of [[8,250],[12,300]]){
+  const d={shiftHours:hours,openingHmr:100,closingHmr:100+hours,openingKmr:1000,closingKmr:1000+limit};
+  assert.deepEqual(shiftMeterIssues(d),{});
+  assert.ok(shiftMeterIssues({...d,closingHmr:d.closingHmr+0.1}).closingHmr);
+  assert.ok(shiftMeterIssues({...d,closingKmr:d.closingKmr+0.1}).closingKmr);
+ }
+ const d={cardShift:'III',shiftHours:8,timeMode:'with',trips:[{equipmentName:'',unloadingTime:'21:10',tripCount:1},{equipmentName:'V101',loadingTime:'23:50',unloadingTime:'00:20',tripCount:1},{equipmentName:'S123',loadingTime:'04:50',tripCount:1}]};
+ assert.deepEqual(tripChronologyIssues(d),{});
+ assert.deepEqual(validateTripEquipment({location:'Jayant OC',trips:[d.trips[0]]},[]).issues,{});
+ assert.doesNotThrow(()=>normalizeLogBook('vehicle',{...d,assetId:1,employeeId:2,shiftId:3,bookDate:'2026-11-03',location:'Jayant OC',openingHmr:0,closingHmr:8,openingKmr:0,closingKmr:250}));
+ assert.deepEqual(machineSummary(d.trips),[{equipmentName:'V101',tripCount:1},{equipmentName:'S123',tripCount:1}]);
+ assert.ok(Object.keys(tripChronologyIssues({...d,trips:[{loadingTime:'02:10',unloadingTime:'01:50'}]})).length);
+ assert.ok(Object.keys(tripChronologyIssues({...d,trips:[{loadingTime:'05:10',unloadingTime:'05:20'}]})).length);
+});
+test('shared site drafts survive validation failures, post only on batch logging, and lock atomically',async t=>{
+ const db=new PGlite();t.after(()=>db.close());await db.exec('CREATE TABLE master_records(id BIGINT PRIMARY KEY,master_name TEXT,record_data JSONB);'+LOG_BOOK_SCHEMA);
+ const masters=[[1,'Equipment master',{category:'Vehicle',door:'V519',currentLocation:'Jayant OC'}],[2,'Employee master',{name:'Driver',caliberId:'13433',site:'Jayant OC'}],[3,'Shift Master',{site:'Jayant OC',shiftName:'Shift I',startTime:'05:00',endTime:'13:00'}],[4,'Equipment master',{category:'Equipment',door:'V101',currentLocation:'Jayant OC'}]];
+ for(const row of masters)await db.query('INSERT INTO master_records VALUES($1,$2,$3)',[row[0],row[1],JSON.stringify(row[2])]);
+ const query=(sql,args)=>sql.includes('pg_advisory_xact_lock')?Promise.resolve({rows:[]}):!args&&sql.includes(';')?db.exec(sql):db.query(sql,args);
+ let tail=Promise.resolve();const pool={query,connect:async()=>{let release;const prior=tail;tail=new Promise(r=>release=r);await prior;return {query,release}}};
+ const app=express();app.use(express.json());
+ const session=(req,res,next)=>{req.session={login:req.headers.authorization||'alice'};req.logBookScope={sites:req.session.login==='outside'?[]:null};next()};
+ const admin=(req,res,next)=>next();
+ registerVlbBatches(app,{pool,protect:[session],ensureBooks:async()=>{},getActor:async session=>({login:session.login,mis:true,pm:false}),logBookOps:{resolve:resolveLogBookData,insert:insertLogBook,applyHours:async data=>{data.breakdownHours=0}}});
+ const scan=registerBulkCardScanning(app,{pool,requireSession:session,requireAdministrator:admin,getSiteScope:async session=>({sites:session.login==='outside'?[]:null}),ocr:{close(){}}});await scan.start();t.after(()=>scan.stop());
+ app.use((e,req,res,next)=>res.status(e.status||500).json({error:e.message}));
+ const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));t.after(()=>{server.closeAllConnections();server.close()});
+ const call=async(path,method='GET',body,user='alice')=>{const r=await fetch('http://127.0.0.1:'+server.address().port+path,{method,headers:{Authorization:user,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,data:await r.json()}};
+ const selection={site:'Jayant OC',date:'2026-11-03',shift:'S1',requestKey:randomUUID()};
+ const made=await call('/api/vlb-batches','POST',selection);assert.equal(made.status,201,JSON.stringify(made));const id=made.data.id;
+ assert.equal(made.data.name,'CMLL/JAYANT OC/03rd Nov 2026/S1/B001');
+ assert.equal((await call('/api/vlb-batches', 'GET',null,'bob')).data.openBatch.id,id);
+ assert.equal((await call('/api/vlb-batches','POST',{...selection,date:'2026-11-04',requestKey:randomUUID()},'bob')).status,409);
+ assert.equal((await call('/api/vlb-batches','POST',{...selection,site:'Sasti OC',requestKey:randomUUID()})).status,201);
+ const draft={bookDate:'2026-11-03',location:'Jayant OC',cardShift:'I',bookShiftCode:'S1',shiftHours:8,assetId:'1',employeeId:'2',shiftId:'3',doorText:'V519',openingHmr:100,closingHmr:108,openingKmr:1000,closingKmr:1250,timeMode:'with',trips:[{equipmentName:'V101',equipmentId:'4',tripCount:1,loadingTime:'09:00',unloadingTime:'09:30'}],scanMachineSummary:[{equipmentName:'V101',tripCount:1}]};
+ const manual=randomUUID(),manualRoute='/api/vlb-batches/'+id+'/drafts/'+manual;
+ const bad={...draft,closingKmr:1251};
+ const first=await call(manualRoute,'PUT',{draft:bad},'bob');assert.equal(first.status,200,JSON.stringify(first));
+ assert.equal((await call(manualRoute,'PUT',{draft:bad},'bob')).status,200,'lost-response retry is idempotent');
+ assert.equal((await call('/api/vlb-batches/'+id)).data.drafts.length,1);
+ const rejectId=randomUUID();const rejectedRoute='/api/vlb-batches/'+id+'/drafts/'+rejectId;
+ const rejected=await call(rejectedRoute,'PUT',{draft:{...draft,assetId:''}});assert.equal(rejected.status,200);
+ assert.equal((await call(rejectedRoute,'DELETE',{revision:rejected.data.revision})).status,200);
+ assert.equal((await call('/api/vlb-batches/'+id)).data.rejectedDrafts.length,1);
+ const entry=randomUUID(),card=randomUUID();
+ await db.query("INSERT INTO mis_scan_batches(id,kind,name,created_by,expected_context) VALUES($1,'vehicle','scan','alice',$2)",[entry,JSON.stringify({bookDate:draft.bookDate,location:draft.location,cardShift:'I',confirmed:true})]);
+ // A second card for another vehicle avoids duplicate-card policy; raw image remains retained.
+ await db.query('INSERT INTO master_records VALUES(5,$1,$2)',['Equipment master',JSON.stringify({category:'Vehicle',door:'V520',currentLocation:'Jayant OC'})]);
+ const second={...draft,assetId:'5',doorText:'V520'};
+ await db.query("INSERT INTO mis_scan_cards(id,batch_id,ordinal,filename,image,image_hash,draft,status) VALUES($1,$2,1,'scan.png',$3,$4,$5,'review')",[card,entry,Buffer.from('original'),randomUUID(),JSON.stringify(second)]);
+ const auto=await call('/api/scan-cards/'+card+'/auto-save','POST',{revision:1});assert.equal(auto.status,200,JSON.stringify(auto));assert.equal(auto.data.status,'draft');
+ assert.equal(Number((await db.query('SELECT count(*) n FROM mis_log_books')).rows[0].n),0);
+ assert.equal((await call('/api/vlb-batches/'+id+'/close','POST',{})).status,400);
+ assert.equal(Number((await db.query('SELECT count(*) n FROM mis_log_books')).rows[0].n),0);
+ assert.equal((await db.query('SELECT status FROM mis_scan_cards WHERE id=$1',[card])).rows[0].status,'review','failed finalization rolls the scanned card back as well');
+ const fixed=await call(manualRoute,'PUT',{draft,revision:first.data.revision});assert.equal(fixed.status,200,JSON.stringify(fixed));
+ const logged=await call('/api/vlb-batches/'+id+'/close','POST',{},'bob');assert.equal(logged.status,200,JSON.stringify(logged));assert.ok(logged.data.closed_at);
+ assert.equal(Number((await db.query('SELECT count(*) n FROM mis_log_books')).rows[0].n),2);
+ assert.equal((await call('/api/vlb-batches/'+id+'/close','POST',{},'bob')).status,200);
+ assert.equal(Number((await db.query('SELECT count(*) n FROM mis_log_books')).rows[0].n),2);
+ assert.equal((await call(manualRoute,'PUT',{draft,revision:2})).status,409);
+ assert.equal((await call('/api/scan-cards/'+card,'PUT',{draft:second,revision:1,action:'save'})).status,409);
+ assert.equal((await call('/api/scan-cards/'+card+'/auto-save','POST',{revision:1},'outside')).status,403);
+ assert.equal((await db.query('SELECT image FROM mis_scan_cards WHERE id=$1',[card])).rows[0].image.length,8);
+});
+
+ test('Trip Card No stays separate from optional Form A',async()=>{
+ const {extractCard}=await import('../server/domain/scanning/scan-extraction.mjs');
+ const only=extractCard('Trip Card No: 00123','vehicle');
+ assert.equal(only.draft.tripCardNo,'00123');assert.equal(only.draft.aFormNo,'');
+ const both=extractCard('Trip Card No: 00123\nForm A: 268','vehicle');
+ assert.equal(both.draft.tripCardNo,'00123');assert.equal(both.draft.aFormNo,'268');
+ const hinted=extractCard('','vehicle',[],{tripCardNumber:'00456'});
+ assert.equal(hinted.draft.tripCardNo,'00456');assert.equal(hinted.draft.aFormNo,'');
+});

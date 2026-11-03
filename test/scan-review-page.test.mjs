@@ -12,7 +12,7 @@ for(const match of source.matchAll(/^import \{([^}]+)\} from '([^']+)';$/gm)){
 }
 for(const name of ['ScanBatchMismatchDialog','ScanEquipmentReviewDialog','ScanExtractionStatus','ScanExtractionLine','ScanCorrectionStatus','BreakdownHoursField','ScanBatchReport','SmartSelect','GroqScanSettings','EmployeeIdLookup','LocalScannerPanel','ScanLine','Upload','Check','Save','Plus','Trash2','RefreshCw','ZoomIn','ZoomOut'])scope[name]=()=>null;
 scope.ApplicationErrorBoundary=({children})=>children;
-const {code}=await transformWithOxc(source.replace('const fleetCards=cards.filter','testCapture.setCards=setCards; testCapture.setSelected=setSelected; testCapture.setOptions=setOptions; testCapture.setDirty=setDirty;testCapture.setBatch=setBatch; testCapture.setBatches=setBatches; testCapture.autoSaveFailures=autoSaveFailures; testCapture.setFailureTick=setFailureTick; const fleetCards=cards.filter').replace('const mismatchPromptedCards=useRef', 'testCapture.setContextGate=setContextGate; const mismatchPromptedCards=useRef').replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'bulk-card-scanning.jsx',{jsx:{runtime:'classic'}});
+const {code}=await transformWithOxc(source.replace('const fleetCards=cards.filter','testCapture.setCards=setCards; testCapture.setSelected=setSelected; testCapture.setOptions=setOptions; testCapture.setDirty=setDirty;testCapture.setBatch=setBatch; testCapture.setBatches=setBatches; testCapture.autoSaveFailures=autoSaveFailures; testCapture.setFailureTick=setFailureTick; const fleetCards=cards.filter').replace('const awaitingContext=Boolean','testCapture.setContextGate=setContextGate; const awaitingContext=Boolean').replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'bulk-card-scanning.jsx',{jsx:{runtime:'classic'}});
 const nodes=(tree,predicate)=>{const rows=[];const visit=n=>{if(Array.isArray(n))return n.forEach(visit);if(!React.isValidElement(n))return;if(predicate(n))rows.push(n);visit(n.props.children)};visit(tree);return rows};
 function harness(search='',kind='vehicle'){
  const testCapture={},slots=[],refs=[],effects=[],listeners=new Map();let cursor=0,refCursor=0;
@@ -91,7 +91,7 @@ test('the purple extraction strip stays on the overview and is omitted from card
 test('fleet upload details start collapsed and the automatic-save alert names the refused card and the server reason',()=>{
  assert.match(source,/fleetRejection\)&&<details className="scan-fleet-rejection-details"><summary>Show fresh-upload details/);
  assert.match(source,/autoSaveError&&<div role="alert" className="scan-error"><strong>Automatic saving stopped at card \{autoSaveError\.ordinal\}\.<\/strong> \{autoSaveError\.message\}/);
- assert.match(source,/autoSaveFailures\.current\.set\(key,e\.message\)/);
+ assert.doesNotMatch(source,/api\('\/api\/scan-cards\/'\+next.id\+'\/auto-save'/);
  assert.match(source,/autoSaveFailures\.current\.clear\(\);setFailureTick/);
 });
 
@@ -282,34 +282,5 @@ test('automatic equipment prompts stay closed during corrections and open only o
 });
 
 
-test('mismatch panel prompts once per card despite changing errors and preserves manual opening',()=>{
- const app=harness();app.render();app.testCapture.setBatch({id:'batch-errors'});
- const gate=rows=>({context:{},mismatches:rows});
- const row={id:'error-1',issues:['Date mismatch','Shift mismatch']};
- app.testCapture.setContextGate(gate([row]));app.render();
- const prompt=()=>app.effects.find(fn=>String(fn).includes('mismatchPromptedCards'))();
- const toggle=tree=>nodes(tree,n=>n.type==='button'&&n.props['aria-controls']==='scan-mismatch-list')[0];
- const opened=tree=>toggle(tree).props['aria-expanded'];
- prompt();let tree=app.render();assert.equal(opened(tree),true);
- toggle(tree).props.onClick();app.render();
- app.testCapture.setContextGate(gate([{...row,issues:['Shift mismatch']}]));app.render();prompt();
- assert.equal(opened(app.render()),false);
- app.testCapture.setContextGate(gate([]));app.render();prompt();
- app.testCapture.setContextGate(gate([{...row,issues:['Location mismatch']}]));app.render();prompt();
- assert.equal(opened(app.render()),false);
- app.testCapture.setContextGate(gate([row,{id:'error-2',issues:['Date mismatch']}]));app.render();prompt();
- tree=app.render();assert.equal(opened(tree),true);
- toggle(tree).props.onClick();tree=app.render();toggle(tree).props.onClick();assert.equal(opened(app.render()),true);
-});
 
-test('date/site/shift prompts do not interrupt correction of an error card',()=>{
- const app=harness('&scanView=review');app.render();
- app.testCapture.setBatch({id:'batch-errors'});app.testCapture.setSelected('error-1');
- app.testCapture.setContextGate({context:{},mismatches:[{id:'error-1',issues:['Date mismatch','Shift mismatch']}]});
- app.render();app.effects.find(fn=>String(fn).includes('mismatchPromptedCards'))();
- app.testCapture.setSelected('');let tree=app.render();
- nodes(tree,n=>n.type==='button'&&n.props.children==='Back to card status')[0].props.onClick();
- app.render();app.effects.find(fn=>String(fn).includes('mismatchPromptedCards'))();
- tree=app.render();
- assert.equal(nodes(tree,n=>n.type==='button'&&n.props['aria-controls']==='scan-mismatch-list')[0].props['aria-expanded'],false);
-});
+test('Mismatch Cards option is removed; batch header context remains authoritative',()=>{assert.doesNotMatch(source,/Mismatch cards|ScanBatchMismatchDialog/);});

@@ -1,3 +1,4 @@
+import {isUnloadingOnlyTrip} from './trip-card-rules.mjs';
 import {fleetDoorKey} from './scan-fleet-door.mjs';
 import {cardMachineKey} from './scan-machine-rules.mjs';
 import {canonicalSiteName} from '../masters/site-location.mjs';
@@ -20,7 +21,7 @@ export function scanFleetAssignment(rows,draft={},raw={},localDoor=''){
 
 export function scanFleetSignature(draft={}){return JSON.stringify([fleetDoorKey(draft.doorText||''),canonicalSiteName(tripCardLocation(draft.location||'')),(draft.trips||[]).map(row=>fleetDoorKey(row.equipmentName||'')),(draft.scanMachineSummary||[]).map(row=>fleetDoorKey(row.equipmentName||''))]);}
 export function scanFleetIssues(rows,draft={},raw={},localDoor=''){
- const entries=[{door:draft.doorText||localDoor||raw.door,field:'doorText'},...(draft.trips||[]).map((row,i)=>({door:row.equipmentName,field:'trips.'+i+'.equipmentName'})),...(draft.scanMachineSummary||[]).map((row,i)=>({door:row.equipmentName,field:'scanMachineSummary.'+i+'.equipmentName'}))];
+ const entries=[{door:draft.doorText||localDoor||raw.door,field:'doorText'},...(draft.trips||[]).flatMap((row,i)=>i===0&&isUnloadingOnlyTrip(row)?[]:[{door:row.equipmentName,field:'trips.'+i+'.equipmentName'}]),...(draft.scanMachineSummary||[]).map((row,i)=>({door:row.equipmentName,field:'scanMachineSummary.'+i+'.equipmentName'}))];
  const issues=new Map();for(const entry of entries){if(!String(entry.door||'').trim())continue;const issue=scanFleetAssignment(rows,{doorText:entry.door,location:draft.location});if(!issue)continue;const key=fleetDoorKey(entry.door);if(!issues.has(key))issues.set(key,{...issue,key,fields:[]});issues.get(key).fields.push(entry.field);}
  return [...issues.values()];
 }
