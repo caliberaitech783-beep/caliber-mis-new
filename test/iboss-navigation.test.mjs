@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 test('IBOSS follows C-Dir as a primary dropdown containing only permitted Accounts',()=>{
  const cdir=main.indexOf('className={`masters-menu cdir-menu');
  const iboss=main.indexOf('className={`masters-menu iboss-menu');

@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import {resolveMobileAccess} from "../mobile-access.mjs";
-import {profileHeaderDesignation, profileHeaderName} from "../src/profile-designation.mjs";
+import {profileHeaderDesignation, profileHeaderName} from "../src/utils/ui/profile-designation.mjs";
 
 test("user creation contains every existing privilege option", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /const userPrivilegeFields = \[[\s\S]*"userGroup"[\s\S]*"read"[\s\S]*"edit"[\s\S]*"delete"[\s\S]*"verify"[\s\S]*"print"/);
   assert.doesNotMatch(source.match(/function UserPrivilegeFields[\s\S]*?\n}/)?.[0] || "", /Privilege location|name="location"/);
   assert.doesNotMatch(source.match(/function UserPrivilegeFields[\s\S]*?\n}/)?.[0] || "", /accessType|Desktop User \/ Mobile User/);
@@ -14,7 +14,7 @@ test("user creation contains every existing privilege option", () => {
 });
 
 test("user modal uses one role selector with role-specific sections", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /const accountRoleOptions = \["User", \.\.\.mobileUserRoleOptions\]/);
   assert.match(source, /Manager User[\s\S]*Team User/);
   assert.match(source, /roleSection === "manager"[\s\S]*name="userGroup" value="User"/);
@@ -40,7 +40,7 @@ test("user modal uses one role selector with role-specific sections", () => {
 });
 
 test("manager profile and navigation honor assigned role, location, and parent menu access", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /profileHeaderDesignation\(\{name:session\?\.name,permissions\}\)/);
   assert.match(source, /session\?\.name[\s\S]*profileLocation[\s\S]*\.join\(" · "\)/);
   assert.match(source, /accessAllows\(viewPermissions\.tabAccess, "Masters"\)[\s\S]*visibleMasterNav\.length > 0/);
@@ -57,13 +57,13 @@ test("director profiles use the Director header designation without changing man
 
 test("header user names are normalized and displayed in bold uppercase before the login icon", () => {
   assert.equal(profileHeaderName("  Anoop   Paul  "), "ANOOP PAUL");
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /className="header-user-name">\{profileHeaderName/);
   assert.match(source, /header-user-name[\s\S]*<UserProfile/);
 });
 
 test("each Manager receives a role-specific dashboard", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /function ManagerDashboard/);
   assert.match(source, /Production Manager[\s\S]*On road[\s\S]*Off road/);
   assert.match(source, /Maintenance Manager[\s\S]*Received for maintenance[\s\S]*Remaining/);
@@ -73,7 +73,7 @@ test("each Manager receives a role-specific dashboard", () => {
 });
 
 test("Admin receives every default menu including required Directory", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const defaults = source.match(/function applyUserRoleDefaults[\s\S]*?\n}/)?.[0] || "";
   assert.match(defaults, /role === "User"/);
   assert.match(defaults, /record\.adminLevel === "Admin"/);
@@ -92,7 +92,7 @@ test("persisted user privileges override legacy separate privilege rows", () => 
 });
 
 test("Privilege is no longer a separate header submenu", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const masterNavigation = source.match(/const masterNav = \[[\s\S]*?\];/)?.[0] || "";
   assert.doesNotMatch(masterNavigation, /Privilege/);
 });

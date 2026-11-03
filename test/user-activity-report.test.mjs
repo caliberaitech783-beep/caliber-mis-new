@@ -4,7 +4,7 @@ import test from 'node:test';
 import {buildUserActivitySummary,totalUserWorkedMinutes} from '../user-activity-report.mjs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('user activity report totals sessions, actions, outcomes and active time',()=>{
   const rows=buildUserActivitySummary([

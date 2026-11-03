@@ -14,7 +14,7 @@ test('only exact authenticated login receives the additional read permission',()
 });
 test('only read routes receive the exception and management controls are hidden',()=>{
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(server,/registerLoginHistoryRoutes\(app,\{pool,requireSuper:requireSession,requireAdministrator:requireUserSessionView/);
   for(const route of ["app.post('/api/user-sessions/:sessionId/messages',requireSuper,requireAdministrator", "app.delete('/api/user-sessions/:sessionId',requireSuper,requireAdministrator", "app.post('/api/user-sessions/:sessionId/assistance',requireSuper,requireAdministrator", "app.delete('/api/user-login-history',requireSuper,requireAdministrator", "app.post('/api/announcements',requireSuper,requireAdministrator"])assert.ok(server.includes(route));
   assert.ok(ui.includes('canViewAdmin||name==="User Sessions"'));

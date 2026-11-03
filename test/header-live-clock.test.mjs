@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("signed-in headers render a bold live date and time clock", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(source, /function HeaderClock\(/);
   assert.match(source, /window\.setInterval\(updateClock, 1000\)/);
@@ -23,7 +23,7 @@ test("signed-in headers render a bold live date and time clock", () => {
 });
 
 test("the header clock scales to fit every bar it is rendered in", () => {
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
   const clockRule = styles.match(/\.header-clock \{[\s\S]*?\}/)[0];
 
   // Fluid size, never a fixed one, so the clock tracks the width of its bar.
@@ -47,7 +47,7 @@ test("the header clock scales to fit every bar it is rendered in", () => {
 });
 
 test("every signed-in time row remains visible while its page scrolls", () => {
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(styles, /\.top \{\s*position: sticky;\s*top: var\(--navigation-header-height, 76px\);\s*z-index: 9;/);
   assert.match(styles, /\.normal > header \{\s*position: sticky;\s*top: 0;/);

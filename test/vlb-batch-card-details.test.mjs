@@ -1,11 +1,12 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
 import {renderToStaticMarkup} from 'react-dom/server';
-import {requestedMisPage} from '../src/mis-navigation.mjs';
-async function compile(file,name,bindings){const source=readFileSync(new URL('../src/'+file,import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});return new Function(...Object.keys(bindings),code+';return '+name)(...Object.values(bindings));}
+import {requestedMisPage} from '../src/utils/ui/mis-navigation.mjs';
+async function compile(file,name,bindings){const source=readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});return new Function(...Object.keys(bindings),code+';return '+name)(...Object.values(bindings));}
 test('Saved VLB legacy links lead to site batches; ELB remains separate',async()=>{
  assert.equal(requestedMisPage('?page=vlb-saved'),'Create VLB Batch');assert.equal(requestedMisPage('?page=elb-saved'),'Saved ELB');
  const Choice=await compile('log-book-mode-choice.jsx','LogBookModeChoice',{React,BookOpen:()=>null,Keyboard:()=>null,ScanLine:()=>null});

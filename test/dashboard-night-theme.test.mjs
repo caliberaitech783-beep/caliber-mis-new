@@ -1,15 +1,16 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), "utf8");
+const read = (path) => readFile(frontendSourceUrl(path), "utf8");
 
 test("Night mode gives the Fleet control dashboard its dark palette", async () => {
   const [main, night] = await Promise.all([read("main.jsx"), read("dashboard-night.css")]);
 
   // brand-theme.css paints every .mine-dashboard with the Day palette, so the
   // Night sheet has to load after it and every later dashboard sheet.
-  const cssImports = [...main.matchAll(/^import "\.\/([\w-]+\.css)";/gm)].map((match) => match[1]);
+  const cssImports = [...main.matchAll(/^import "(?:\.\.?\/)+(?:[\w-]+\/)*([\w-]+\.css)";/gm)].map((match) => match[1]);
   assert.deepEqual(cssImports.slice(-2), ["dashboard-night.css", "no-motion.css"]);
 
   const palette = night.match(/\.mine-dashboard\.mine-dashboard-night \{[^}]*\}/);

@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const browser = fs.readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const browser = fs.readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
 
 test("operational dashboard graphs share the region list browser", () => {
   assert.match(source, /setBreakdownDetailSite\(site\.site\)/);

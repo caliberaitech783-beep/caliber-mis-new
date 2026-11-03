@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {notifyRequestChange, REQUEST_CHANGE_STORAGE_KEY, watchRequestRefresh} from "../src/request-refresh.mjs";
+import {notifyRequestChange, REQUEST_CHANGE_STORAGE_KEY, watchRequestRefresh} from "../src/services/requests/request-refresh.mjs";
 
 function surface() {
   const listeners = new Map();

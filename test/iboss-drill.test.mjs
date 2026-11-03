@@ -47,10 +47,10 @@ test('trails carry cross-links to related parties, banks, vouchers, deposits, gu
 });
 
 test('Masters, Transactions and Report Merge all open the shared drill panel',()=>{
- const accounts=fs.readFileSync(new URL('../src/iboss-accounts.jsx',import.meta.url),'utf8');
+ const accounts=fs.readFileSync(new URL('../src/pages/accounts/iboss-accounts.jsx',import.meta.url),'utf8');
  assert.match(accounts,/accountDrill\(view,column\.key,row\)/);
  assert.match(accounts,/<DrillPanel target=\{drill\}/);
- const merge=fs.readFileSync(new URL('../src/iboss-report-merge.jsx',import.meta.url),'utf8');
+ const merge=fs.readFileSync(new URL('../src/pages/reports/iboss-report-merge.jsx',import.meta.url),'utf8');
  assert.match(merge,/<DrillPanel target=\{trail\}/);
  assert.match(merge,/filter\(\(\[,entry\]\)=>!entry\.drillOnly\)/);
 });

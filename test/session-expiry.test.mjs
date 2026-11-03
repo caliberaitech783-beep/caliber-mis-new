@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('super-only routes answer a missing session with 401, not 403',()=>{
   const requireSuper=server.slice(server.indexOf('async function requireSuper'),server.indexOf('app.get(\'/api/navigation-settings\''));

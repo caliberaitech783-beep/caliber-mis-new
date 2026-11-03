@@ -5,9 +5,9 @@ import React from "react";
 import {createPortal} from "react-dom";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
-import {buildOemBreakdownRows, buildOemBreakdownChart, createOemBreakdownSelection} from "../src/oem-breakdown-model.mjs";
+import {buildOemBreakdownRows, buildOemBreakdownChart, createOemBreakdownSelection} from "../src/utils/dashboard/oem-breakdown-model.mjs";
 
-const source = readFileSync(new URL("../src/oem-breakdown-chart.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
+const source = readFileSync(new URL("../src/components/dashboard/oem-breakdown-chart.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
 const {code} = await transformWithOxc(source, "OemChart.jsx", {jsx: {runtime: "classic"}});
 const Chart = new Function("React", "createPortal", `${code}; return OemBreakdownChart;`)(React, createPortal);
 const descendants = (node, predicate) => Array.isArray(node) ? node.flatMap(child => descendants(child, predicate)) : React.isValidElement(node) ? [...(predicate(node) ? [node] : []), ...descendants(node.props.children, predicate)] : [];

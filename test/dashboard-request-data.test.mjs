@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {createDashboardRequestLoader, requestDateKey, requestEventDate, splitDashboardRequests} from "../src/dashboard-request-data.mjs";
+import {createDashboardRequestLoader, requestDateKey, requestEventDate, splitDashboardRequests} from "../src/utils/dashboard/dashboard-request-data.mjs";
 
 const response = (body, {ok = true, status = 200, etag = ""} = {}) => ({ok, status, headers: {get: (name) => String(name).toLowerCase() === "etag" ? etag : null}, json: async () => body});
 const deferred = () => {

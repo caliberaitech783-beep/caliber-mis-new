@@ -2,12 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const dashboardSource = fs.readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
-const hourlySource = fs.readFileSync(new URL("../src/hourly-breakdown-view.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const dashboardSource = fs.readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
+const hourlySource = fs.readFileSync(new URL("../src/components/ui/hourly-breakdown-view.jsx", import.meta.url), "utf8");
 
 test("vehicle and equipment history headers prefer the newest request over fleet status", async () => {
-  const {requestStatusLabel} = await import('../src/request-status.mjs');
+  const {requestStatusLabel} = await import('../src/utils/requests/request-status.mjs');
   const expression = source.match(/const latestStatus = (requestStatusLabel\(historyRows\.at\(-1\) \|\| vehicleDetails\));/);
   assert.ok(expression);
   const status = new Function('historyRows', 'vehicleDetails', 'requestStatusLabel', `return ${expression[1]}`);

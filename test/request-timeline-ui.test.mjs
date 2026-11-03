@@ -1,4 +1,4 @@
-import {requestStatusLabel} from '../src/request-status.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import {isIdleVehicleRequest} from '../request-idle.mjs';
@@ -7,26 +7,26 @@ import React from "react";
 import { transformWithOxc } from "vite";
 import {formatTimelineDuration, parseRequestTimelineTimestamp, requestTimelineEvents, requestTimelineDurations, buildRequestTimelineChanges} from "../request-timeline.mjs";
 import * as equipment from "../request-equipment.mjs";
-import * as dailyUpdatesOrder from "../src/daily-updates-order.mjs";
+import * as dailyUpdatesOrder from "../src/utils/ui/daily-updates-order.mjs";
 import { formatDisplayDateTime } from "../date-time-format.mjs";
 import { renderToStaticMarkup } from "react-dom/server";
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 import { stageTimingSteps } from "../stage-timing-report.mjs";
 
-const source = readFileSync(new URL("../src/request-timeline.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace(/export (?:default )?function /g, "function ");
+const source = readFileSync(new URL("../src/components/requests/request-timeline.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace(/export (?:default )?function /g, "function ");
 const code = (await transformWithOxc(source, "request-timeline.jsx", {jsx: {runtime: "classic"}})).code;
 // The time breakdown lists updates through the shared panel, compiled here the same way.
-const panelSource = readFileSync(new URL("../src/daily-updates-list.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace(/^export (default )?/gm, "");
+const panelSource = readFileSync(new URL("../src/components/ui/daily-updates-list.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace(/^export (default )?/gm, "");
 const panelCode = (await transformWithOxc(panelSource, "daily-updates-list.jsx", {jsx: {runtime: "classic"}})).code;
 const panelBindings = {React, useSyncExternalStore: React.useSyncExternalStore, ...dailyUpdatesOrder, formatDisplayDateTime};
 const {DailyUpdatesPanel} = new Function("DateInput", ...Object.keys(panelBindings), panelCode + "; return {DailyUpdatesPanel};")(DateInput, ...Object.values(panelBindings));
 const panelText = node => renderToStaticMarkup(node).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 test("time breakdown wraps explanations instead of inheriting table-cell nowrap", () => {
-  const css = readFileSync(new URL("../src/request-timeline.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/request-timeline.css", import.meta.url), "utf8");
   assert.match(css,/\.request-timeline-content\s*\{[^}]*white-space:normal/);
   assert.match(css,/\.request-timeline-updates \.daily-remarks-panel/);
-  const updatesCss = readFileSync(new URL("../src/daily-updates.css", import.meta.url), "utf8");
+  const updatesCss = readFileSync(new URL("../src/styles/daily-updates.css", import.meta.url), "utf8");
   assert.match(updatesCss,/\.daily-remarks-panel\{[^}]*white-space:normal/);
   assert.match(updatesCss,/\.daily-remarks-panel \.daily-remarks-list article p\{[^}]*white-space:pre-line/);
 });
@@ -414,11 +414,11 @@ test("MIS verification attachment validation and API rejection remain inline and
 });
 
 test("the time breakdown shows the equipment group and door number with the request number", async () => {
-  const {requestTimelineIdentity} = await import("../src/request-timeline.jsx").catch(() => ({}));
+  const {requestTimelineIdentity} = await import("../src/components/requests/request-timeline.jsx").catch(() => ({}));
   const identified = {...request, equipmentGroup: "SCANIA TIPPERS", door: "S56-MH34BZ0561", site: "Dhoptala OB (2nd)"};
   const view = text(harness("RequestTimelineView").render({data: body(request.ref, {request: identified})}));
   assert.ok(view.includes("SCANIA TIPPERS · S56-MH34BZ0561 · Dhoptala OB (2nd) · QA-TIMELINE-01"));
-  const source = readFileSync(new URL("../src/request-timeline.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/components/requests/request-timeline.jsx", import.meta.url), "utf8");
   assert.ok(source.includes("const title = identity ? `Complete lifecycle · ${reference} · ${identity}` : `Complete lifecycle · ${reference}`;"));
   assert.ok(source.includes('className="request-lifecycle-overview"'));
   assert.ok(source.includes("onLoaded={request => setIdentity(requestTimelineIdentity(request))}"));

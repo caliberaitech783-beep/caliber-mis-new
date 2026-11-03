@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {readFileSync} from 'node:fs';
-import {withDashboardResponsibilityCells} from '../src/dashboard-responsibility-cells.mjs';
-import {tableModel} from '../src/table-actions-model.mjs';
+import {withDashboardResponsibilityCells} from '../src/utils/dashboard/dashboard-responsibility-cells.mjs';
+import {tableModel} from '../src/utils/ui/table-actions-model.mjs';
 const h=React.createElement;
 test('dashboard and both operational table types include the responsibility column',()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.ok(source.includes('dashboard-location-dates|workflow-table|breakdown-table-auto-fit'));
   assert.ok(source.includes('data-oem-responsibility={r.oemResponsibility}'));
   assert.ok(source.includes('data-oem-responsibility={row.oemResponsibility}'));

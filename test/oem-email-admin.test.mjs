@@ -28,7 +28,7 @@ function harness({row,locked=true,data={contacts:[],requests:[],equipment:[]}}={
 test('every delivery read, SMTP check and retry route requires both server admin guards',()=>{
   const h=harness();assert.equal(Object.keys(h.routes).length,3);
   for(const handlers of Object.values(h.routes)){assert.equal(handlers[0],h.superGuard);assert.equal(handlers[1],h.adminGuard);}
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.ok(source.includes('if(name==="OEM Email Delivery Status")return isAdministrator;'));
   assert.ok(source.includes('canViewAdmin||name==="User Sessions"'));
 });

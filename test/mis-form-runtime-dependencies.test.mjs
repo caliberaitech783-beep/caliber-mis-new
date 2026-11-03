@@ -5,11 +5,11 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("workflow time fields import the shared 12-hour controls", () => {
   assert.equal(
-    /import\s*\{\s*TwelveHourDateTimeInput\s*,\s*TwelveHourTimeInput\s*\}\s*from\s*["']\.\/twelve-hour-input\.jsx["'];/.test(source),
+    /import\s*\{\s*TwelveHourDateTimeInput\s*,\s*TwelveHourTimeInput\s*\}\s*from\s*["'](?:\.\.?\/)+(?:[\w-]+\/)*twelve-hour-input\.jsx["'];/.test(source),
     true,
     "first-trip and scheduling forms must use the shared AM/PM controls",
   );

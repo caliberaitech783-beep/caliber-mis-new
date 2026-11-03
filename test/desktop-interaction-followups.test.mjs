@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const sortableStyles = readFileSync(new URL("../src/sortable-table.css", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const sortableStyles = readFileSync(new URL("../src/styles/sortable-table.css", import.meta.url), "utf8");
 
 test("login mode tabs support standard desktop keyboard navigation", () => {
   const tabs = source.slice(source.indexOf("function AuthModeTabs"), source.indexOf("function Login("));
@@ -40,7 +40,7 @@ test("Breakdown status tabs use roving focus and identify their panel", () => {
 });
 
 test("a UI deployment reload preserves the signed-in browser session", () => {
-  const versionCheck = readFileSync(new URL('../src/site-update-notice.jsx',import.meta.url),'utf8');
+  const versionCheck = readFileSync(new URL('../src/components/ui/site-update-notice.jsx',import.meta.url),'utf8');
   assert.match(versionCheck, /window\.location\.replace\(url\.pathname\+url\.search\+url\.hash\)/);
   assert.match(versionCheck, /onClick=\{refresh\}/);
   assert.doesNotMatch(versionCheck, /removeItem\("nerveCenterSession"\)/);

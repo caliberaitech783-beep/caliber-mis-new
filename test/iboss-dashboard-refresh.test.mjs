@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {dashboardFinancialYearRange,DASHBOARD_REFRESH_MS} from '../src/iboss-dashboard-refresh.mjs';
+import {dashboardFinancialYearRange,DASHBOARD_REFRESH_MS} from '../src/services/accounts/iboss-dashboard-refresh.mjs';
 
 test('Accounts defaults to April financial year through today in India',()=>{
  for(const [now,from,to] of [
@@ -14,7 +14,7 @@ test('Accounts defaults to April financial year through today in India',()=>{
 
 test('live dashboard refresh uses ten minutes, skips in-flight requests and cleans up its timer',()=>{
  assert.equal(DASHBOARD_REFRESH_MS,600000);
- const source=fs.readFileSync(new URL('../src/iboss-dashboard.jsx',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../src/pages/dashboard/iboss-dashboard.jsx',import.meta.url),'utf8');
  assert.match(source,/if\(preview\|\|data.loading\|\|data.refreshing\)return/);
  assert.match(source,/setInterval\(\(\)=>setAttempt\(value=>value\+1\),DASHBOARD_REFRESH_MS\)/);
  assert.match(source,/return \(\)=>clearInterval\(timer\)/);

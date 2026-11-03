@@ -8,12 +8,12 @@ import { fleetAssetRequestDetails, liveEquipmentMetrics, liveEquipmentRoadStatus
 import { requestWithEquipmentMasterDetails } from "../request-equipment.mjs";
 import { recordBelongsToSite } from "../site-location.mjs";
 import { managerRoleSelection } from "../admin-access.mjs";
-import { visibleInMisRequests, visibleInMisHistory } from "../src/mis-history.mjs";
+import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
 import { isProductionFirstTripPending } from "../info-pulse-data.mjs";
-import {isNetworkFailure, isTransientStatus} from "../src/api-transient-retry.mjs";
-import {requestWriteConnectionMessage, requestWriteOutcomeConfirmed} from "../src/request-write-recovery.mjs";
+import {isNetworkFailure, isTransientStatus} from "../src/services/ui/api-transient-retry.mjs";
+import {requestWriteConnectionMessage, requestWriteOutcomeConfirmed} from "../src/services/requests/request-write-recovery.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const managerSource = source.slice(source.indexOf("function ManagerDashboard("), source.indexOf("function Dashboard("));
 const managerCode = (await transformWithOxc(managerSource, "ManagerDashboard.jsx", { jsx: { runtime: "classic" } })).code;
 const Null = () => null;

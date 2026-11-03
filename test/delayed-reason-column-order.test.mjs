@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {requestColumnsInWorkflowOrder} from '../src/table-actions-model.mjs';
+import {requestColumnsInWorkflowOrder} from '../src/utils/ui/table-actions-model.mjs';
 
 test('maintenance workflow tables lead with door, status, actions and the request timing, then the rest', () => {
   const columns = ['Reason', 'Actions', 'Started', 'Status', 'Delayed reason', 'Door no.', 'Job reference', 'Site location', 'Daily remarks', 'Make', 'Model', 'Equipment group', 'Breakdown type', 'Days of breakdown', 'Idle reason'].map((label, index) => ({label, index}));

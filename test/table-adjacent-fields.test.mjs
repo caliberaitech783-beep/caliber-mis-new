@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {jobReferenceColumnsLast, requestColumnsInWorkflowOrder} from '../src/table-actions-model.mjs';
+import {jobReferenceColumnsLast, requestColumnsInWorkflowOrder} from '../src/utils/ui/table-actions-model.mjs';
 
 test('machine and meter columns stay beside status and breakdown reason with original data indices', () => {
   const labels = ['Status', 'Days of breakdown', 'Current location', 'Started', 'Machine / Door no.', 'Equipment category', 'Type of breakdown', 'Reason of breakdown', 'Equipment group', 'Model', 'Opening HMR', 'Opening KMR'];

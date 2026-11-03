@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const mainSource = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const workflowStyles = fs.readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
+const mainSource = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const workflowStyles = fs.readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
 
 test("the workspace tab strip sits inside the banner", () => {
   const hero = mainSource.slice(

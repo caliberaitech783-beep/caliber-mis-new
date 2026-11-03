@@ -33,7 +33,7 @@ test("a 2,500-row manager profile prepares fleet and request data without a quad
 });
 
 test("large table export cells are prepared only after an export action", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const exportMenu = source.slice(source.indexOf("function ExportMenu("), source.indexOf("function ReportColumnSelector("));
   assert.match(exportMenu, /const buildExportRows = \(\) => rows\.map/);
   assert.doesNotMatch(exportMenu, /const exportRows = rows\.map/);

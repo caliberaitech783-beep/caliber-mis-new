@@ -4,8 +4,8 @@ import {requestMayBeChanged,requestMayBeVerified,REQUEST_CLOSE_STATUSES} from '.
 import {findActiveRequestConflict} from '../request-conflict.mjs';
 import {liveEquipmentRoadStatus} from '../dashboard-equipment-metrics.mjs';
 import {matchesBreakdownMovement} from '../dashboard-breakdown-movement.mjs';
-import {visibleInMisRequests} from '../src/mis-history.mjs';
-import {requestStatusLabel} from '../src/request-status.mjs';
+import {visibleInMisRequests} from '../src/utils/ui/mis-history.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 test('Running BD stays active after MIS verification and remains maintainable',()=>{
  const row={ref:'REQ-existing',door:'D1',status:'Running BD',verifiedAt:'2026-10-05 12:00'};
  assert.ok(REQUEST_CLOSE_STATUSES.includes(row.status));
@@ -42,7 +42,7 @@ test('production fleet snapshot treats Running BD as available while preserving 
  assert.equal(findActiveRequestConflict(requests,{door:'D1'}),requests[0]);
 });
 
-import {requestWriteOutcomeConfirmed} from '../src/request-write-recovery.mjs';
+import {requestWriteOutcomeConfirmed} from '../src/services/requests/request-write-recovery.mjs';
 test('connection recovery confirms a new Running BD handoff without replaying the write',()=>{
  const before={ref:'REQ-1',status:'In progress'};
  const after={...before,status:'Running BD',runningBdAt:'2026-10-05 13:00'};

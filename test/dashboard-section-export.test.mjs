@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {reportPdfHeading} from '../report-refinements.mjs';
-import {printColumnOptions} from '../src/smart-print.mjs';
-import {breakdownTrendExport, dailyBdBalanceExport, fleetSectionExport, requestLifecycleExport, throughputSectionExport} from '../src/dashboard-section-export.mjs';
+import {printColumnOptions} from '../src/services/reports/smart-print.mjs';
+import {breakdownTrendExport, dailyBdBalanceExport, fleetSectionExport, requestLifecycleExport, throughputSectionExport} from '../src/utils/dashboard/dashboard-section-export.mjs';
 
 // Each exported cell as its column prints it; a figure the row does not carry is blank.
 const cells = ({columns, rows}) => rows.map(row => columns.map(column => column.value(row) ?? ''));

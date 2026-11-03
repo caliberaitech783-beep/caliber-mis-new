@@ -19,7 +19,7 @@ test('bundled employee roster is readable and only returns names',async()=>{
   assert.ok(Array.isArray(names));
   assert.ok(names.every(name=>typeof name==='string'));
 });
-const source=readFileSync(new URL('../src/info-pulse-birthday.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/ui/info-pulse-birthday.jsx',import.meta.url),'utf8');
 const stripped=source.replace(/^import .*;\r?\n/gm,'').replace(/export default /g,'').replace(/export /g,'');
 const {code}=await transformWithOxc(stripped,'birthday.jsx',{jsx:{runtime:'classic'}});
 test('birthday banner hides empty state, escapes names and supports pause',()=>{
@@ -40,7 +40,7 @@ test('birthday endpoint is authenticated and animations honor reduced motion',()
   assert.match(server,/app.get\('\/api\/info-pulse\/birthdays',requireSession/);
   assert.match(source,/\[token,today\]/);
   assert.match(source,/result\?\.today===today/);
-  const css=readFileSync(new URL('../src/info-pulse-birthday.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/info-pulse-birthday.css',import.meta.url),'utf8');
   assert.match(css,/translateX\(-50%\)/);
   assert.match(css,/prefers-reduced-motion:reduce/);
 });

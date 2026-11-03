@@ -42,7 +42,7 @@ test('current outstanding reports retain native settlement semantics and disting
  assert.match(TRANSACTION_VIEWS['party-tcs'].sql,/GROUP BY a\.companycode,a\.partycode,a\.partyname,a\.type/);
 });
 test('the real Accounts component renders Masters and Transactions tabs inside the page',async()=>{
- const source=fs.readFileSync(new URL('../src/iboss-accounts.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
+ const source=fs.readFileSync(new URL('../src/pages/accounts/iboss-accounts.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(source,'accounts.jsx',{jsx:{runtime:'classic'}});
  const Null=()=>null;
  const scope={SmartSelect: "select",accountPrivileges,React,useEffect:React.useEffect,useMemo:React.useMemo,useState:React.useState,useRef:React.useRef,ACCOUNT_VIEWS,ACCOUNT_SECTIONS,indiaDateTimeInputValue,...Object.fromEntries(['BookUser','Contact','Wallet','Landmark','Network','Settings','BookOpen','Percent','ArrowLeft','RefreshCw'].map(name=>[name,Null]))};
@@ -63,7 +63,7 @@ test('the real Accounts component renders Masters and Transactions tabs inside t
  assert.match(master,/id="accounts-tab-merge"[\s\S]*id="accounts-tab-chat"/);
 });
 test('IBOSS opens Accounts directly without Masters and Transactions submenu entries',()=>{
- const source=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.doesNotMatch(source,/iboss-accounts-submenus|\["Accounts Masters","Masters"\]|\["Accounts Transactions","Transactions"\]/);
  assert.match(source,/\["Accounts",Landmark,"iboss-accounts"\]/);
  assert.match(source,/renderedActive === "Accounts" \? \(\s*<IbossAccounts/);

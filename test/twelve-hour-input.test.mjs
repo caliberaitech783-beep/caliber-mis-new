@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const source=readFileSync(new URL('../src/twelve-hour-input.jsx',import.meta.url),'utf8');
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-const whatsApp=readFileSync(new URL('../src/whatsapp-report-settings.jsx',import.meta.url),'utf8');
-const corrections=readFileSync(new URL('../src/request-corrections.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/ui/twelve-hour-input.jsx',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+const whatsApp=readFileSync(new URL('../src/pages/integrations/whatsapp-report-settings.jsx',import.meta.url),'utf8');
+const corrections=readFileSync(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8');
 
 test('shared time controls display AM/PM and submit machine-compatible hidden values',()=>{
   assert.match(source,/formatTimeInputValue/);

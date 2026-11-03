@@ -34,8 +34,8 @@ test("a complete arrival red flag is mandatory for active overdue or accepted-la
 });
 
 test("Maintenance acceptance is server timed and shared by every request view", () => {
-  const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const workflowCss = readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
+  const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const workflowCss = readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
   const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
   const editForm = client.slice(client.indexOf("function RequestEditForm"), client.indexOf("function CloseRequestForm"));
   assert.match(client, /request\.acceptanceRequired \? "Production timing" : "Timing"/);
@@ -68,8 +68,8 @@ test("requests accepted more than one hour after production timing are highlight
   assert.equal(requestAcceptedLate({ start, acceptedAt: "2026-09-08 09:59", status: "Closed" }), true);
   assert.equal(requestAcceptedLate({ start }), false);
   assert.equal(requestAcceptedLate({}), false);
-  const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const workflowCss = readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
+  const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const workflowCss = readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
   assert.match(client, /highlightLateAcceptance && requestAcceptedLate\(row\) \? "request-accepted-late"/);
   assert.match(client, /exportTitle=\{workspaceReportTitles\.close\} showAcceptedTime highlightLateAcceptance/);
   assert.match(client, /rows=\{historyRows\} exportTitle=\{workspaceReportTitles\.history\}(?: showStatusFilter=\{false\})? highlightLateAcceptance/);
@@ -79,7 +79,7 @@ test("requests accepted more than one hour after production timing are highlight
 });
 
 test("late acceptance red rows are carried into print, PDF and Excel exports", () => {
-  const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
   const pdfSource = readFileSync(new URL("../table-export-pdf.mjs", import.meta.url), "utf8");
   assert.match(client, /const lateAcceptanceHighlight = highlightLateAcceptance \? requestAcceptedLate : undefined;/);

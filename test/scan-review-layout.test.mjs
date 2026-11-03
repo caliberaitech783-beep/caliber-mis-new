@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {scanReviewFieldSection,scanTripPageSize,scanTripReviewPage,scanReviewTabForKey,scanReviewHelp} from '../src/scan-review-layout.mjs';
+import {scanReviewFieldSection,scanTripPageSize,scanTripReviewPage,scanReviewTabForKey,scanReviewHelp} from '../src/utils/scanning/scan-review-layout.mjs';
 
 test('routine field guidance is concise while specific validation messages remain intact',()=>{
  assert.equal(scanReviewHelp('Book date needs checking: enter the value from the scan.'),'Enter book date.');

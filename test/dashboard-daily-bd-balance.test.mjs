@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {buildDailyBdBalance, dailyBdRecordsForMetric, bdBalanceChange, DAILY_BD_METRICS} from '../src/daily-bd-balance.mjs';
+import {buildDailyBdBalance, dailyBdRecordsForMetric, bdBalanceChange, DAILY_BD_METRICS} from '../src/utils/dashboard/daily-bd-balance.mjs';
 
 const request = (ref, start, closedAt = '', extra = {}) => ({ref, start, closedAt, status: closedAt ? 'Closed' : 'Open', ...extra});
 const refs = rows => rows.map(row => row.ref).sort();

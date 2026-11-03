@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {chatOptions,matchChatQuestion,filterChatOptions,vendorSearchText} from '../src/iboss-chat-options.mjs';
+import {chatOptions,matchChatQuestion,filterChatOptions,vendorSearchText} from '../src/utils/accounts/iboss-chat-options.mjs';
 import {ACCOUNT_VIEWS} from '../iboss-accounts.mjs';
 import {readFileSync} from 'node:fs';
 import React from 'react';
@@ -25,7 +25,7 @@ test('guided questions resolve only supported requests without silently dropping
  assert.ok(filterChatOptions('fixed deposit',options).length>=3);
 });
 test('chat renders suggested questions and date controls before fetching',async()=>{
- const source=readFileSync(new URL('../src/iboss-chat.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
+ const source=readFileSync(new URL('../src/components/accounts/iboss-chat.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(source,'chat.jsx',{jsx:{runtime:'classic'}});
  const scope={React,useEffect:React.useEffect,useRef:React.useRef,useState:React.useState,chatOptions,filterChatOptions,vendorSearchText,indiaDateTimeInputValue,DateInput:()=>null};
  const Component=new Function(...Object.keys(scope),`${code};return IbossChat;`)(...Object.values(scope));

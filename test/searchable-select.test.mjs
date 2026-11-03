@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
 const [component,styles,corrections,transfers,main]=await Promise.all([
-  readFile(new URL('../src/searchable-select.jsx',import.meta.url),'utf8'),
-  readFile(new URL('../src/searchable-select.css',import.meta.url),'utf8'),
-  readFile(new URL('../src/request-corrections.jsx',import.meta.url),'utf8'),
-  readFile(new URL('../src/vehicle-transfer-workflow.jsx',import.meta.url),'utf8'),
-  readFile(new URL('../src/main.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/components/ui/searchable-select.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/styles/searchable-select.css',import.meta.url),'utf8'),
+  readFile(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/pages/people/vehicle-transfer-workflow.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/app/App.jsx',import.meta.url),'utf8'),
 ]);
 
 test('shared searchable picker supports accessible search, keyboard selection, and form submission',()=>{

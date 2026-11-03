@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import express from 'express';
 import {PGlite} from '@electric-sql/pglite';
 import {normalizeScannedTime,validScannedTime} from '../scan-clock.mjs';
-import {scanTimeInput} from '../src/scan-time-input.mjs';
+import {scanTimeInput} from '../src/utils/scanning/scan-time-input.mjs';
 import {matchesEmployeeReference,employeeReferenceVariants} from '../employee-identity.mjs';
 import {extractCard} from '../scan-extraction.mjs';
 import {aFields,reconcile} from '../gemini-hybrid.mjs';

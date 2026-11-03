@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const css=readFileSync(new URL('../src/bulk-card-scanning.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const component=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/bulk-card-scanning.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const component=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('VLB and ELB scan trip rows use half-width equipment boxes with trip labels directly beside them',()=>{
   assert.match(css,/\.scan-trip-row\{grid-template-columns:\.65fr 1fr 1fr \.7fr \.8fr auto\}/);

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-const style=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
+const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+const style=readFileSync(new URL('../src/styles/style.css',import.meta.url),'utf8');
 
 test('user menu editor offers select-all controls for every menu and submenu group',()=>{
   const adminStart=ui.indexOf('function UserViewMenuFields(');

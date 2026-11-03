@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("maintenance users can play production complaint audio", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
   assert.match(source, /showComplaintAudio && workflowHeader\("complaintAudio", "Complaint audio"\)/);
   assert.match(source, /row\.complaintAudioAvailable \? <ProtectedAudio url=\{`\/api\/requests\/\$\{encodeURIComponent\(row\.ref\)\}\/audio\/complaint`\}/);
@@ -12,7 +12,7 @@ test("maintenance users can play production complaint audio", () => {
 });
 
 test("iOS can save complaint audio when browser speech transcription is unavailable", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
   assert.match(source, /if \(!Speech\) \{[\s\S]*audioOnlyMode\.current = true;[\s\S]*Recording audio… live transcription is unavailable/);
   assert.match(source, /preferredType = \["audio\/mp4", "audio\/webm;codecs=opus", "audio\/webm"\]/);

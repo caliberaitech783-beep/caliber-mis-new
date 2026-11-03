@@ -104,8 +104,8 @@ test('general edit keeps saved responsibility locked except authorized managers 
   }
 });
 test('history column is present in both shared tables and UI writes only on submit',()=>{
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const ui=readFileSync(new URL('../src/breakdown-responsibility-history.jsx',import.meta.url),'utf8');
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/components/requests/breakdown-responsibility-history.jsx',import.meta.url),'utf8');
   assert.ok(main.includes('<ResponsibilityHistoryCell request={r} />'));
   assert.ok(main.includes('<ResponsibilityHistoryCell request={row} />'));
   assert.doesNotMatch(ui, /fetch\(|onSubmit|<select|<button/);

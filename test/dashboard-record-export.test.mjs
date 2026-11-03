@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
-import { drilldownView } from "../src/dashboard-drilldown-model.mjs";
-import { tableModel, tableExportModel } from "../src/table-actions-model.mjs";
+import { drilldownView } from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
+import { tableModel, tableExportModel } from "../src/utils/ui/table-actions-model.mjs";
 import { REGION_DATA } from "../region-scope.mjs";
 
 const h = React.createElement;
@@ -28,9 +28,9 @@ test("chart exports respect region, cascading filters, table filters, sort and d
 });
 
 test("chart detail lists opt into the existing PDF, Excel and Print menu", () => {
-  const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const browser = readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
-  const shared = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const browser = readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
+  const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   assert.match(main, /FilterDialog=\{TableParameterFilter\} ExportMenu=\{ExportMenu\}/);
   assert.match(main, /title=\{assetDrilldownTitle\} initialRegion=/);
   assert.match(browser, /exportTitle=\{hideHierarchyFilters \? title : `\$\{title\} · \$\{view\.regionLabel\}`\}/);

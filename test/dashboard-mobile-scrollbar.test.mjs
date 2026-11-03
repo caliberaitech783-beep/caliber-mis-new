@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source = readFileSync(new URL('../src/dashboard-record-browser.jsx', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx', import.meta.url), 'utf8');
 test('mobile scrollbar follows swipes, resize and table changes and cleans up listeners', () => {
   const body = source.slice(source.indexOf('    const list = listRef.current;'), source.indexOf('  }, [tableKey]);', source.indexOf('    const list = listRef.current;')));
   const listeners = {}, windowListeners = {}, observers = [];
@@ -33,7 +33,7 @@ test('mobile scroll control is accessible, only shown on overflow and absent fro
   assert.match(source, /horizontalScroll.maximum > 0 && <label className="dashboard-mobile-scrollbar"/);
   assert.match(source, /aria-label="Scroll table columns"/);
   assert.match(source, /listRef.current.scrollLeft = position/);
-  const css = readFileSync(new URL('../src/dashboard-record-browser.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/dashboard-record-browser.css', import.meta.url), 'utf8');
   assert.match(css, /\.dashboard-mobile-scrollbar \{ display: none; \}/);
   assert.match(css, /position: sticky;/);
   assert.match(css, /@media print \{ \.dashboard-mobile-scrollbar \{ display: none !important;/);

@@ -1,4 +1,4 @@
-import {requestStatusLabel} from './src/request-status.mjs';
+import {requestStatusLabel} from './src/utils/requests/request-status.mjs';
 import {transferReportTimingColumns} from './transfer-report-timing.mjs';
 import {requestShiftColumns,requestShiftLabel} from './request-shift.mjs';
 import {REPORT_XLSX_STYLES, styleReportSheets} from './report-xlsx-style.mjs';

@@ -32,7 +32,7 @@ test('the label is empty unless MIS_ENVIRONMENT_LABEL is set; live names and str
 
 test('the server reports the label read-only on /api/app-version and /api/health and uses it nowhere else',()=>{
   const server=read('server.mjs');
-  assert.match(server,/^import \{environmentLabelFromEnv\} from '\.\/environment-label\.mjs';$/m);
+  assert.match(server,/^import \{environmentLabelFromEnv\} from '(?:\.\.?\/)+(?:[\w-]+\/)*environment-label\.mjs';$/m);
   assert.match(server,/^const environmentLabel=environmentLabelFromEnv\(process\.env\);$/m);
   assert.match(server,/res\.json\(\{version:currentAppVersion,commit:deploymentSha,environmentLabel\}\);/);
   assert.match(server,/status:'ok',database:'connected',databaseTime:result\.rows\[0\]\.database_time,commit:deploymentSha,scheduledJobsEnabled,environmentLabel,/);
@@ -54,7 +54,7 @@ test('the server reports the label read-only on /api/app-version and /api/health
   assert.deepEqual(readers.sort(),['environment-label.mjs']);
 });
 
-const componentSource=read('src/environment-banner.jsx').replace(/^import .*;\n/gm,'').replace('export default function','function');
+const componentSource=read('src/components/ui/environment-banner.jsx').replace(/^import .*;\n/gm,'').replace('export default function','function');
 const {code}=await transformWithOxc(componentSource,'environment-banner.jsx',{jsx:{runtime:'classic'}});
 const textOf=node=>typeof node==='string'||typeof node==='number'?String(node):Array.isArray(node)?node.map(textOf).join(''):React.isValidElement(node)?textOf(node.props.children):'';
 
@@ -128,10 +128,10 @@ test('a server that is restarting is asked again every 15 seconds until it answe
 });
 
 test('both entries render the bar above the application, and the bar keeps clear of the navigation and the update notice',()=>{
-  const main=read('src/main.jsx'),entry=read('src/mis-entry.jsx'),css=read('src/environment-banner.css'),notice=read('src/site-update-notice.jsx');
-  assert.match(main,/^import EnvironmentBanner from '\.\/environment-banner\.jsx';$/m);
+  const main=read('src/main.jsx'),entry=read('src/app/mis-entry.jsx'),css=read('src/styles/environment-banner.css'),notice=read('src/components/ui/site-update-notice.jsx');
+  assert.match(main,/^import EnvironmentBanner from '(?:\.\.?\/)+(?:[\w-]+\/)*environment-banner\.jsx';$/m);
   assert.match(main,/<ApplicationErrorBoundary>\s*<EnvironmentBanner \/>\s*<SiteUpdateNotice currentVersion=\{APP_VERSION\} \/>\s*<App \/>/,'the bar is mounted beside the sign-in and signed-in screens alike');
-  assert.match(entry,/^import EnvironmentBanner from '\.\/environment-banner\.jsx';$/m);
+  assert.match(entry,/^import EnvironmentBanner from '(?:\.\.?\/)+(?:[\w-]+\/)*environment-banner\.jsx';$/m);
   assert.match(entry,/render\(<><EnvironmentBanner\/><MisApp\/><\/>\);/);
   // Fixed to the top edge; the update notice stays fixed to the bottom edge, so the two never overlap.
   assert.match(css,/^\.mis-environment-banner\{position:fixed;top:0;left:0;right:0;z-index:2147483646;/m);

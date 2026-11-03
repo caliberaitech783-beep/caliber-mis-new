@@ -3,8 +3,8 @@ import {readFileSync} from "node:fs";
 import test from "node:test";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const remoteAssistance = readFileSync(new URL("../src/remote-assistance.jsx", import.meta.url), "utf8");
+const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const remoteAssistance = readFileSync(new URL("../src/components/notifications/remote-assistance.jsx", import.meta.url), "utf8");
 
 test("user-session administration is restricted, token-safe, and auditable", () => {
   assert.match(server, /app\.get\('\/api\/user-sessions',requireSession,requireUserSessionView/);
@@ -98,7 +98,7 @@ test("administrators can delete user activity older than N days from the User Se
 });
 
 test('the User Sessions header is compact: title only, short summary cards, toolbar close to the top',()=>{
-  const styles=readFileSync(new URL("../src/user-sessions.css", import.meta.url), "utf8");
+  const styles=readFileSync(new URL("../src/styles/user-sessions.css", import.meta.url), "utf8");
   assert.match(client,/<header><div><h1>User Sessions<\/h1><\/div>/,'the eyebrow and the description sentence are gone');
   assert.doesNotMatch(client,/Security and access<\/span><h1>User Sessions/);
   assert.doesNotMatch(client,/securely close sessions\./);
@@ -110,7 +110,7 @@ test('the User Sessions header is compact: title only, short summary cards, tool
 });
 
 test('every User Sessions row is bold: name, status, session, role, location, device',()=>{
-  const styles=readFileSync(new URL("../src/user-sessions.css", import.meta.url), "utf8");
+  const styles=readFileSync(new URL("../src/styles/user-sessions.css", import.meta.url), "utf8");
   assert.match(styles,/\.user-session-table td\{padding:14px 16px;border-bottom:1px solid #e5eaf1;color:#132541;font-size:13px;font-weight:700;vertical-align:middle\}/);
   assert.match(styles,/\.session-device small\{display:block;margin-top:4px;color:#5b6a82;font-size:12px;font-weight:700\}/,'the second lines (login, device id) are bold too');
   assert.match(styles,/\.user-session-table code\{font:700 12px/);

@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("hierarchy master renders report-wise and site-wise tick matrix", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
   const hierarchySource = source.slice(source.indexOf("function HierarchyMasterPage"), source.indexOf("function RegionMasterPage"));
 
   assert.match(source, /function HierarchyMasterPage\(/);

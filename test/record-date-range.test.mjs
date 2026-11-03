@@ -4,11 +4,11 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { transformWithOxc } from "vite";
-import { recordDateKey, filterRecordsByDate, primaryRecordDateColumn } from "../src/record-date-range.mjs";
-import { describeDateRange, encodeDateRange, parseDateRange } from "../src/date-range-filter.mjs";
-import { tableModel, tableExportModel } from "../src/table-actions-model.mjs";
-import DateInput from '../src/date-input.mjs';
-import { indiaToday } from '../src/report-period-model.mjs';
+import { recordDateKey, filterRecordsByDate, primaryRecordDateColumn } from "../src/utils/ui/record-date-range.mjs";
+import { describeDateRange, encodeDateRange, parseDateRange } from "../src/utils/ui/date-range-filter.mjs";
+import { tableModel, tableExportModel } from "../src/utils/ui/table-actions-model.mjs";
+import DateInput from '../src/utils/ui/date-input.mjs';
+import { indiaToday } from '../src/utils/reports/report-period-model.mjs';
 
 test("non-report record dates prefer Started over closure/verification and ignore undated masters", () => {
   const columns = ["Status", "MIS verified at", "Closed", "Started", "Days of breakdown"].map((label, index) => ({key: `${index}:${label}`, label}));
@@ -49,7 +49,7 @@ test("table print/export use the same inclusive date range as displayed rows, wi
   assert.deepEqual(exportData.rows.map(row=>row.key), ["3","1"]);
 });
 
-const source=readFileSync(new URL("../src/record-date-range.jsx",import.meta.url),"utf8").replace(/^import .*;\r?\n/gm,"").replace("export default function","function");
+const source=readFileSync(new URL("../src/components/ui/record-date-range.jsx",import.meta.url),"utf8").replace(/^import .*;\r?\n/gm,"").replace("export default function","function");
 const {code}=await transformWithOxc(source,"record-date-range.jsx",{jsx:{runtime:"classic"}});
 const descendants=(node,predicate)=>Array.isArray(node)?node.flatMap(child=>descendants(child,predicate)) : React.isValidElement(node)?[...(predicate(node)?[node]:[]),...descendants(node.props.children,predicate)]:[];
 
@@ -99,11 +99,11 @@ test("visible From and To fields apply valid ranges, preserve the prior filter f
 });
 
 test("Reports stay on their existing table implementation; dated workflow tables share their existing filter/export state", () => {
-  const main=readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+  const main=readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const report=main.slice(main.indexOf("function ReportTable("),main.indexOf("function ReportTable(")+11000);
   assert.match(report,/<table className="report-filter-table">/);
   assert.doesNotMatch(report,/RecordDateRange|recordDateFilter|primaryRecordDateColumn/);
-  const shared=readFileSync(new URL("../src/shared-actions-table.jsx",import.meta.url),"utf8");
+  const shared=readFileSync(new URL("../src/components/ui/shared-actions-table.jsx",import.meta.url),"utf8");
   assert.match(shared,/value: effectiveFilters\[dateColumn.key\], onChange: \(value\) => updateFilter\(dateColumn.key, value\)/);
   assert.match(shared,/\{dateRangeControl\}/);
   assert.doesNotMatch(shared,/<ExportMenu printOnly/);
@@ -120,14 +120,14 @@ test('non-dashboard filters remain blank and unfiltered on mount',()=>{
   effects.forEach(effect=>effect());
   assert.deepEqual(changes,[]);
   assert.deepEqual(descendants(tree,node=>node.type===DateInput).map(node=>node.props.value),['','']);
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.doesNotMatch(main,/dateRangeOpened/);
-  const browser=readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8');
+  const browser=readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8');
   assert.doesNotMatch(browser,/defaultDateToday/);
   assert.match(browser,/<ActionsTable key=\{tableKey\}/);
   assert.doesNotMatch(main,/<DashboardRecordBrowser key=\{assetDrilldown\}[^>]*defaultDateToday/);
   assert.doesNotMatch(main,/<DashboardRecordBrowser key=\{managerDrilldown\}[^>]*defaultDateToday/);
-  const shared=readFileSync(new URL('../src/shared-actions-table.jsx',import.meta.url),'utf8');
+  const shared=readFileSync(new URL('../src/components/ui/shared-actions-table.jsx',import.meta.url),'utf8');
   assert.match(shared,/defaultDateToday = false/);
   assert.match(shared,/defaultToday=\{defaultDateToday\}/);
 });

@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {scanContentBounds} from '../src/scan-preview-crop.mjs';
+import {scanContentBounds} from '../src/utils/scanning/scan-preview-crop.mjs';
 const sheet=(width=200,height=300)=>({width,height,data:new Uint8ClampedArray(width*height*4).fill(255)});
 const paint=(image,x,y,w,h,color)=>{for(let row=y;row<y+h;row++)for(let col=x;col<x+w;col++)image.data.set([...color,255],(row*image.width+col)*4)};
 test('preview removes blank sheet margins around a colored full card without cutting its edges',()=>{

@@ -4,7 +4,7 @@ import {EventEmitter} from 'node:events';
 import {readFileSync} from 'node:fs';
 import {notificationText, notificationParts, notificationSiteOptions, filterNotificationsBySite, notificationCategory, notificationCategoryOptions, filterNotificationsByCategory} from '../notification-text.mjs';
 import {createNotificationFeed} from '../notification-feed.mjs';
-import {createNotificationTracker, createNotificationSound} from '../src/notification-alerts.mjs';
+import {createNotificationTracker, createNotificationSound} from '../src/services/notifications/notification-alerts.mjs';
 
 test('legacy opened/closed messages put site and one door before retained details', () => {
   for (const action of ['opened', 'closed']) {
@@ -112,7 +112,7 @@ test('site filtering handles all sites, legacy messages, missing sites and casin
   assert.deepEqual(filterNotificationsBySite(items,'Not recorded').map(item=>item.id),[5]);
   assert.deepEqual(notificationSiteOptions([], 'Majri OB'),['Majri OB']);
   assert.deepEqual(filterNotificationsBySite(items,'Other site'),[]);
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(source,/visibleItems\.map\(\(item\)/);
   assert.match(source,/alerts\.map\(\(item\)/);
   assert.match(source,/className="notification-site"/);
@@ -187,7 +187,7 @@ test('database listener timeout and disconnect are recoverable', async () => {
 });
 
 test('UI wires all toasts to exact-entry navigation and sounds outside state updaters', () => {
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(source,/alerts\.map\(\(item\) => <IncomingNotification key=\{item.id\}/);
   assert.match(source,/onOpen=\{openEntry\}/);
   assert.match(source,/playedRef\.current\.has\(id\)/);
@@ -204,7 +204,7 @@ test('UI wires all toasts to exact-entry navigation and sounds outside state upd
 });
 
 test('resolved ticket alerts stay visible until the user closes or opens them', () => {
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(source,/function isResolvedTicketNotification\(item\)/);
   assert.match(source,/function resolvedTicketDismissKey\(session\)/);
   assert.match(source,/function readDismissedResolvedTickets\(session\)/);
@@ -218,6 +218,6 @@ test('resolved ticket alerts stay visible until the user closes or opens them', 
   assert.match(source,/if \(persistent\) return undefined;[\s\S]*window\.setTimeout\(\(\) => onDismiss\(id\), 15000\)/);
   assert.match(source,/resolvedTicketAlerts\.map\(\(item\) => <IncomingNotification key=\{item.id\}[\s\S]*persistent \/>/);
   assert.match(source,/This will stay here until you close it\./);
-  const styles=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
+  const styles=readFileSync(new URL('../src/styles/style.css',import.meta.url),'utf8');
   assert.match(styles,/\.incoming-notification\.persistent-ticket-resolution/);
 });

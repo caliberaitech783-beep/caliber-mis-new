@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const css = fs.readFileSync(new URL("../src/dashboard-spacing.css", import.meta.url), "utf8");
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/dashboard-spacing.css", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("dashboard spacing overrides load after readability without changing dashboard data", () => {
-  assert.ok(source.indexOf('import "./dashboard-spacing.css"') > source.indexOf('import "./dashboard-readability.css"'));
+  assert.ok(source.indexOf('import "../styles/dashboard-spacing.css"') > source.indexOf('import "../styles/dashboard-readability.css"'));
   assert.match(css, /\.mine-dashboard \.mine-fleet-chart-heading \{ display: flex; flex-wrap: wrap; align-items: center/);
   assert.match(css, /\.mine-dashboard \.mine-fleet-chart-toggle button \{[^}]*white-space: nowrap/);
   assert.match(css, /@media \(max-width: 700px\)/);

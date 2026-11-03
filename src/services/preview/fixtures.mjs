@@ -1,0 +1,181 @@
+import {
+  MIS_ALL_PERMISSIONS,
+  misProfilePermissions,
+} from "../../../mis-permissions.mjs";
+export const sites = [
+  "Dhoptala OC (2nd)",
+  "Dudhichua East OC",
+  "Dudhichua OC",
+  "Gauri Pauni OC (2nd)",
+  "Jayant OC",
+  "Lalpeth OC",
+  "Majri OC",
+  "Sasti OC",
+];
+export const date = "2026-11-03";
+export const session = {
+  token: "local-synthetic-preview",
+  login: "PREVIEW",
+  name: "Example MIS Administrator",
+  role: "super",
+  assignedRole: "Admin",
+  permissions: misProfilePermissions({
+    misDesktopAccess: MIS_ALL_PERMISSIONS,
+    misMobileAccess: MIS_ALL_PERMISSIONS,
+  }),
+};
+export function createFixtures() {
+  const assets = [
+    {
+      id: "vehicle-1",
+      kind: "vehicle",
+      door: "DEMO-V1",
+      name: "DEMO-V1",
+      site: sites[2],
+      location: sites[2],
+      make: "Example",
+      model: "Tipper",
+      category: "Tipper",
+      equipmentCategory: "Tipper",
+      status: "On road",
+    },
+    {
+      id: "equipment-1",
+      kind: "equipment",
+      door: "DEMO-PC1",
+      name: "DEMO-PC1",
+      site: sites[2],
+      location: sites[2],
+      make: "Example",
+      model: "Excavator",
+      group: "Excavator",
+      category: "Excavator",
+      equipmentCategory: "Excavator",
+      status: "On road",
+    },
+  ];
+  const employees = [
+    {
+      id: "employee-1",
+      name: "Example Driver",
+      employeeName: "Example Driver",
+      caliberId: "CMLL900001",
+      employeeCode: "CMPL900001",
+      caliberCode: "CMLL900001",
+      site: sites[2],
+      location: sites[2],
+      locationName: sites[2],
+      departmentName: "Operations",
+      designationName: "Driver",
+      status: "Active",
+    },
+  ];
+  const shifts = sites.map((site, i) => ({
+    id: "shift-" + i,
+    name: "Shift I",
+    code: "S1",
+    shiftCode: "S1",
+    site,
+    startTime: "05:00",
+    endTime: "13:00",
+    hours: 8,
+    status: "Active",
+  }));
+  const batches = [
+    {
+      id: "11111111-1111-4111-8111-111111111111",
+      name: "LOCAL/DUDHICHUA/03-NOV-26/S1/B01",
+      site: sites[2],
+      report_date: date,
+      shift: "S1",
+      twoStage: true,
+      stage: "vlb_open",
+      closed_at: null,
+      created_at: date + "T05:00:00Z",
+      card_count: 1,
+      record_count: 1,
+    },
+    {
+      id: "22222222-2222-4222-8222-222222222222",
+      name: "LOCAL/JAYANT/03-NOV-26/S1/B01",
+      site: sites[4],
+      report_date: date,
+      shift: "S1",
+      twoStage: true,
+      stage: "closed",
+      closed_at: date + "T08:00:00Z",
+      card_count: 0,
+      record_count: 0,
+    },
+  ];
+  const records = [
+    {
+      id: 1,
+      book_no: "LOCAL/VLB/001",
+      book_type: "vehicle",
+      revision: 1,
+      data: {
+        vlbBatchId: batches[0].id,
+        bookDate: date,
+        location: sites[2],
+        assetId: "vehicle-1",
+        door: "DEMO-V1",
+        employeeId: "employee-1",
+        employeeName: "Example Driver",
+        caliberId: "CMLL900001",
+        shiftId: "shift-2",
+        shiftName: "Shift I",
+        shiftHours: 8,
+        openingKmr: 1000,
+        closingKmr: 1100,
+        openingHmr: 100,
+        closingHmr: 108,
+        timeMode: "with",
+        completedTrips: 1,
+        totalTrips: 1,
+        totalRunningKmr: 100,
+        totalWorkingHmr: 8,
+        trips: [
+          {
+            equipmentId: "equipment-1",
+            equipmentName: "DEMO-PC1",
+            loadingTime: "06:00",
+            unloadingTime: "06:20",
+            tripCount: 1,
+          },
+        ],
+        breakdownDetails: [],
+        jobDetails: [],
+        remark: "Synthetic local preview record",
+      },
+    },
+  ];
+  return {
+    assets,
+    employees,
+    shifts,
+    records,
+    batches,
+    capacities: [],
+    tickets: [],
+    masters: {
+      "Equipment master": assets.map((a) => ({
+        ...a,
+        currentLocation: a.site,
+        equipmentName: a.name,
+        equipmentStatus: "On road",
+      })),
+      "Users & employees": [
+        {
+          id: "preview-user",
+          loginName: "PREVIEW",
+          employeeName: "Example Administrator",
+          userRole: "Admin",
+          location: sites[2],
+        },
+      ],
+      "Region master": [],
+      "Shift Master": shifts,
+    },
+  };
+}

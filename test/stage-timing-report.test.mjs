@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {buildDepartmentReports, DEPARTMENT_REPORT_TITLES} from '../department-reports.mjs';
 import {stageTimingRow, stageGapLabel, slowestStageGap, slowestStageLabel, stageTimingSteps, STAGE_TIMING_GAPS} from '../stage-timing-report.mjs';
-import {isDurationColumn} from '../src/duration-sort.mjs';
+import {isDurationColumn} from '../src/utils/ui/duration-sort.mjs';
 
 const STAGE_TIMING_REPORT = 'Request Stage Timing';
 
@@ -95,10 +95,10 @@ test('the step-by-step detail numbers each stage and marks the slowest wait once
 });
 
 test('the table marks the slowest wait while exports keep the plain duration', () => {
-  const client = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+  const client = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   assert.match(client, /function withStageGapHighlights\(columns\)/);
   assert.match(client, /columns=\{withTimelineLinks\(withStageGapHighlights\(selectedReport\.columns\), session\?\.token \|\| authToken\)\}/);
   assert.match(client, /className=\{`stage-gap\$\{highlighted \? " slowest" : ""\}`\}/);
-  const styles = readFileSync(new URL('../src/reports-workspace.css', import.meta.url), 'utf8');
+  const styles = readFileSync(new URL('../src/styles/reports-workspace.css', import.meta.url), 'utf8');
   assert.match(styles, /\.stage-gap\.slowest \{/);
 });

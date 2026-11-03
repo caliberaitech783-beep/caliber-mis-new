@@ -1,10 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {dashboardPageSlices, dashboardPrintPdf, downloadDashboardPdf} from "../src/dashboard-pdf.mjs";
+import {dashboardPageSlices, dashboardPrintPdf, downloadDashboardPdf} from "../src/utils/dashboard/dashboard-pdf.mjs";
 
 test("dashboard image uses opaque browser-encoded JPEG rather than PDF PNG conversion", () => {
-  const source = readFileSync(new URL("../src/dashboard-pdf.mjs", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/utils/dashboard/dashboard-pdf.mjs", import.meta.url), "utf8");
   assert.match(source, /getContext\("2d", \{alpha: false\}\)/);
   assert.match(source, /toDataURL\("image\/jpeg", 0\.98\), "JPEG"/);
   assert.doesNotMatch(source, /addImage\(part, "PNG"/);
@@ -15,7 +15,7 @@ test("dashboard PDF reports an unavailable dashboard without downloading", async
 });
 
 test("both KPI exports opt into visual PDF without changing ordinary table exports", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.equal((source.match(/label="Print\/Export" dashboardPdf/g) || []).length, 2, "the manager KPI export and the whole fleet dashboard export");
   assert.match(source, /dashboardPdf = false/);
   assert.match(source, /if \(dashboardPdf\) \{[\s\S]*?downloadDashboardPdf[\s\S]*?return;\s*\}/);
@@ -23,7 +23,7 @@ test("both KPI exports opt into visual PDF without changing ordinary table expor
 });
 
 test("Smart Print on a dashboard prints the dashboard itself, not the KPI table", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
   const printReport = source.slice(source.indexOf("  const printReport = () => {"), source.indexOf("  if (printOnly) return"));
   assert.match(printReport, /if \(dashboardPdf\) \{\n\s+const dashboard = triggerRef\.current\?\.closest\("\.mine-dashboard, \.manager-dashboard"\);/, "the same dashboard element the PDF download captures");
   assert.match(printReport, /openSmartPrint\(\{ title, snapshot: "The dashboard prints exactly as it looks on screen/, "no KPI columns to pick");
@@ -56,7 +56,7 @@ test("printing an unavailable dashboard is refused before anything is prepared",
 });
 
 test("a print starts with the clock row and keeps the sticky banner in its place", () => {
-  const source = readFileSync(new URL("../src/dashboard-pdf.mjs", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+  const source = readFileSync(new URL("../src/utils/dashboard/dashboard-pdf.mjs", import.meta.url), "utf8").replace(/\r\n/g, "\n");
   assert.match(source, /const clockRow = forPrint \? document\.querySelector\("\.content > \.top, \.normal > header"\) : null;/, "the row with the live time and date, for prints only");
   assert.match(source, /root\.append\(rowClone, clone\);/, "the clock row sits above the dashboard, as on screen");
   assert.match(source, /root\.querySelectorAll\("\.export-menu, \.overlay, \[role=dialog\]"\)\.forEach\(node => node\.remove\(\)\);/);

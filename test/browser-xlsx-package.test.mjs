@@ -21,7 +21,7 @@ function storedFiles(buffer) {
 }
 
 function browserXlsxBuilder() {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const start = source.indexOf("function escapeExportHtml");
   const end = source.indexOf("// Smart Print goes straight to the printer", start);
   assert.ok(start >= 0 && end > start, "browser XLSX builder source is present");

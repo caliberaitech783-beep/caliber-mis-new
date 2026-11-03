@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFileSync} from 'node:fs';
-import {throughputSectionExport} from '../src/dashboard-section-export.mjs';
+import {throughputSectionExport} from '../src/utils/dashboard/dashboard-section-export.mjs';
 
 test('selected-date idle column and export do not reuse live idle total', () => {
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.ok(main.includes('idle: movementRequestRowsForShift(siteRequests, breakdownSummaryStartKey, breakdownSummaryEndKey, "idle").length'));
   assert.ok(main.includes('className="metric idle"><b>{site.idle}</b>'));
   assert.ok(main.includes('className="metric idle"><b>{total.idle.toLocaleString()}</b>'));

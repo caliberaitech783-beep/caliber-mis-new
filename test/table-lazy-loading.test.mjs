@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import React from "react";
-import { tableCellText, tableModel, tableSlots, selectTableRows } from "../src/table-actions-model.mjs";
+import { tableCellText, tableModel, tableSlots, selectTableRows } from "../src/utils/ui/table-actions-model.mjs";
 
-const shared = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
 
 test("desktop tables render in 100-row windows while phones keep 25", () => {
   assert.match(shared, /const DESKTOP_TABLE_PAGE_SIZE = 100;/);

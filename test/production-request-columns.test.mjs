@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("production request table follows the approved column order", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /const PRODUCTION_REQUEST_COLUMNS = \["door", "equipment", "model", "site", "breakdownDays", "category", "delayedReason", "complaint", "openingHmr", "openingKmr", "start", "expectedCompletionAt", "status", "dailyRemarks", "ref", "createdBy", "requesterRole"\];/);
   assert.match(source, /exportTitle = "Breakdown report", columnOrder = null \}\) \{/);
   assert.ok(source.includes('...columnOrder.map((orderKey) => columns.find(([key]) => key === orderKey)).filter(Boolean), ["oemResponsibilityHistory", "Breakdown responsibility history"]]'));

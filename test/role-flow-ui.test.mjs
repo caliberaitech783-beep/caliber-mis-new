@@ -4,9 +4,9 @@ import {isIdleVehicleRequest} from '../request-idle.mjs';
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
-import { visibleInProductionHistory } from "../src/production-history.mjs";
-import { visibleInMaintenanceHistory } from "../src/maintenance-history.mjs";
-import { visibleInMisRequests, visibleInMisHistory } from "../src/mis-history.mjs";
+import { visibleInProductionHistory } from "../src/utils/ui/production-history.mjs";
+import { visibleInMaintenanceHistory } from "../src/utils/requests/maintenance-history.mjs";
+import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
 import { isProductionFirstTripPending } from "../info-pulse-data.mjs";
 import { liveEquipmentMetrics, liveEquipmentRoadStatus, liveEquipmentRoadStatuses } from "../dashboard-equipment-metrics.mjs";
 import { recordBelongsToSite, recordsForSite } from "../site-location.mjs";
@@ -14,9 +14,9 @@ import { requestWithEquipmentMasterDetails } from "../request-equipment.mjs";
 import * as requestEquipment from "../request-equipment.mjs";
 import { managerRoleSelection } from "../admin-access.mjs";
 import { requestsVisibleToMisWorkspace } from "../mis-request-visibility.mjs";
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const codes = {};
 for (const [name, next] of [["Normal", "App"], ["ManagerDashboard", "Dashboard"], ["ManagerIdleConfirmation", "ManagerDashboard"], ["RequestEditForm", "CloseRequestForm"], ["CloseRequestForm", "VerifyRequestForm"], ["VerifyRequestForm", "TicketCreateForm"]]) {
   const text = source.slice(source.indexOf('function MeterReadingFields('), source.indexOf('function RequestEditForm(')) + source.slice(source.indexOf(`function ${name}(`), source.indexOf(`function ${next}(`));

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {withScannedDoor} from '../src/scan-door-field.mjs';
+import {withScannedDoor} from '../src/utils/scanning/scan-door-field.mjs';
 import {extractCard} from '../scan-extraction.mjs';
 import {formatScannedDoor} from '../scan-door-text.mjs';
 

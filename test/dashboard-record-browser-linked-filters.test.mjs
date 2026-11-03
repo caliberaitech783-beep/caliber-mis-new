@@ -1,3 +1,4 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
@@ -5,23 +6,23 @@ import React from "react";
 import { createPortal } from "react-dom";
 import { renderToStaticMarkup } from "react-dom/server";
 import { transformWithOxc } from "vite";
-import * as drilldown from "../src/dashboard-drilldown-model.mjs";
-import * as tableModel from "../src/table-actions-model.mjs";
-import * as recordDates from "../src/record-date-range.mjs";
-import * as dateRanges from "../src/date-range-filter.mjs";
-import { defaultDurationSort } from "../src/duration-sort.mjs";
+import * as drilldown from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
+import * as tableModel from "../src/utils/ui/table-actions-model.mjs";
+import * as recordDates from "../src/utils/ui/record-date-range.mjs";
+import * as dateRanges from "../src/utils/ui/date-range-filter.mjs";
+import { defaultDurationSort } from "../src/utils/ui/duration-sort.mjs";
 import { calculateBreakdownMinutes, formatBreakdownDaysHours } from "../breakdown-duration.mjs";
-import { requestStatusSortRank } from "../src/request-status.mjs";
+import { requestStatusSortRank } from "../src/utils/requests/request-status.mjs";
 import { formatDisplayDateTime } from "../date-time-format.mjs";
 import { reportTime12 } from "../report-time-format.mjs";
 import { REGION_DATA } from "../region-scope.mjs";
 import { matchesSmartSearch } from "../smart-search.mjs";
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
 const h = React.createElement;
 const names = { "dashboard-record-browser": "DashboardRecordBrowser", "shared-actions-table": "SharedActionsTable", "record-date-range": "RecordDateRange" };
 const compiled = Object.fromEntries(await Promise.all(Object.entries(names).map(async ([file, name]) => {
-  const source = readFileSync(new URL(`../src/${file}.jsx`, import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
+  const source = readFileSync(frontendSourceUrl(file + '.jsx'), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
   return [file, (await transformWithOxc(source, `${file}.jsx`, { jsx: { runtime: "classic" } })).code + `; return ${name};`];
 })));
 const empty = () => null;

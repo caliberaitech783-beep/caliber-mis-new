@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const css=readFileSync(new URL('../src/workspace-readability.css',import.meta.url),'utf8');
+const css=readFileSync(new URL('../src/styles/workspace-readability.css',import.meta.url),'utf8');
 const rules=[...css.replace(/\/\*[\s\S]*?\*\//g,'').matchAll(/([^{}]+)\{([^{}]*)\}/g)];
 const rule=selector=>{
   const found=rules.find(([,value])=>value.trim()===selector);

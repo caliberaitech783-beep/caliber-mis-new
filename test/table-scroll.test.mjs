@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { preventTableAutoScroll } from '../src/table-scroll.mjs';
+import { preventTableAutoScroll } from '../src/utils/ui/table-scroll.mjs';
 
 test('only middle-button auto-scroll on table content is prevented', () => {
   for (const [button, table, interactive, expected] of [

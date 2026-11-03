@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {manualScanIssues,retainManualFields} from '../src/scan-manual-fields.mjs';
+import {manualScanIssues,retainManualFields} from '../src/utils/scanning/scan-manual-fields.mjs';
 const valid={doorText:'S/14',bookDate:'2026-10-19',location:'Jayant OC',assetId:'1',employeeId:'2',shiftId:'3',shiftHours:8,openingHmr:0,closingHmr:6,openingKmr:0,closingKmr:50,aFormNo:'75',timeMode:'with',trips:[{rowNumber:1,equipmentName:'V12',loadingTime:'1:03',unloadingTime:'1:12',tripCount:1}],scanMachineSummary:[{equipmentName:'V12',tripCount:1}],extractionReviewFields:['bookDate','assetId','trips'],meterReviewFields:['openingHmr','closingHmr']};
 test('clear extracted values including zero and literal short-hour times need no manual entry',()=>{
  const before=JSON.stringify(valid);assert.deepEqual(manualScanIssues(valid),{});assert.equal(JSON.stringify(valid),before);

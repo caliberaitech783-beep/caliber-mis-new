@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const ui = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
-const mobileCss = readFileSync(new URL("../src/mobile-compat.css", import.meta.url), "utf8");
+const ui = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const css = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
+const mobileCss = readFileSync(new URL("../src/styles/mobile-compat.css", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
 test("operational tables expose search, filters, sorting, and the MIS idle queue", () => {
@@ -24,7 +24,7 @@ test("request forms expose elapsed time, site/group-scoped equipment search, and
   assert.match(ui, /groupRecords = requestEquipmentRecordsForGroup\(locationEquipmentRecords, equipmentGroup\)/);
   assert.match(ui, /<EquipmentCombobox[^]*records=\{groupRecords\}/);
   assert.doesNotMatch(ui, /equipmentSearchActive/);
-  assert.match(readFileSync(new URL('../src/maintenance-etc-input.jsx', import.meta.url), 'utf8'), /ETC \(Expected Time For Completion\)/);
+  assert.match(readFileSync(new URL('../src/components/requests/maintenance-etc-input.jsx', import.meta.url), 'utf8'), /ETC \(Expected Time For Completion\)/);
   assert.match(server, /expected_completion_at TIMESTAMPTZ/);
   assert.match(server, /expectedCompletionAt/);
 });

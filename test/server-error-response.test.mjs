@@ -93,7 +93,7 @@ test('the express handler writes Retry-After for transient failures and never do
 });
 
 test('server.mjs uses the shared handler and survives idle pool errors and stray rejections', () => {
-  assert.match(server, /import \{serverErrorHandler\} from '\.\/server-error-response\.mjs'/);
+  assert.match(server, /import \{serverErrorHandler\} from '(?:\.\.?\/)+(?:[\w-]+\/)*server-error-response\.mjs'/);
   assert.match(server, /app\.use\(serverErrorHandler\(\)\)/);
   assert.doesNotMatch(server, /res\.status\(500\)\.json\(\{error:'Server error'\}\)/);
   assert.match(server, /pool\.on\('error'/);

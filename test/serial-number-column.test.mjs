@@ -22,27 +22,27 @@ test("the serial column is added exactly once to export data", () => {
 });
 
 test("shared tables number every row by default with the Sr. No. label and forward it to their exports", () => {
-  const shared = read("../src/shared-actions-table.jsx");
+  const shared = read("../src/components/ui/shared-actions-table.jsx");
   assert.match(shared, /showRowNumbers = true, onClearToolbarFilters = null, \.\.\.tableProps \}\) \{/);
   assert.match(shared, /const numberColumn = \{ key: SERIAL_COLUMN_KEY, label: SERIAL_COLUMN_LABEL, value: \(row\) => rowNumbers\.get\(row\) \};/);
   assert.match(shared, /<th key="row-number" className="table-serial-header" scope="col" rowSpan=\{[^}]+\}>\{SERIAL_COLUMN_LABEL\}<\/th>/);
   assert.match(shared, /<td key="row-number" className="table-serial-cell">/);
-  assert.match(read("../src/dashboard-record-browser.jsx"), /showDateFilter = true, showRowNumbers = true,/);
-  assert.match(read("../src/table-actions.css"), /\.table-serial-header, \.table-serial-cell \{/);
+  assert.match(read("../src/components/dashboard/dashboard-record-browser.jsx"), /showDateFilter = true, showRowNumbers = true,/);
+  assert.match(read("../src/styles/table-actions.css"), /\.table-serial-header, \.table-serial-cell \{/);
 });
 
 test("report, backup and WhatsApp rule tables start with a Sr. No. column", () => {
-  const main = read("../src/main.jsx");
+  const main = read("../src/app/App.jsx");
   assert.match(main, /<thead><tr>\{displayedColumns\[0\]\?\.key!=='requestShift'/);
   assert.match(main, /<td className="table-serial-cell">\{firstVisibleRow \+ index\}<\/td>/);
   assert.match(main, /colSpan=\{displayedColumns\.length \+ 1\} className="empty-state"/);
-  assert.match(read("../src/backup-administration.jsx"), /<thead><tr><th>Sr\. No\.<\/th><th>Date & time<\/th>/);
-  assert.match(read("../src/backup-administration.jsx"), /history\.map\(\(row,index\)=><tr key=\{row\.id\}><td>\{index\+1\}<\/td>/);
-  assert.match(read("../src/whatsapp-report-settings.jsx"), /<th scope="col">Sr\. No\.<\/th><th scope="col">Role<\/th>/);
+  assert.match(read("../src/pages/admin/backup-administration.jsx"), /<thead><tr><th>Sr\. No\.<\/th><th>Date & time<\/th>/);
+  assert.match(read("../src/pages/admin/backup-administration.jsx"), /history\.map\(\(row,index\)=><tr key=\{row\.id\}><td>\{index\+1\}<\/td>/);
+  assert.match(read("../src/pages/integrations/whatsapp-report-settings.jsx"), /<th scope="col">Sr\. No\.<\/th><th scope="col">Role<\/th>/);
 });
 
 test("print and Excel downloads carry the serial column and the record count", () => {
-  const main = read("../src/main.jsx");
+  const main = read("../src/app/App.jsx");
   assert.match(main, /const serial = withSerialColumn\(columns, exportRows\);\r?\n  const headings = serial\.columns\.map/);
   assert.match(main, /colspan="\$\{serial\.columns\.length\}">No records available/);
   assert.match(main, /const summaryRows = \[\[sheetTitle \|\| title \|\| "Caliber Pulse-II report"\], \[recordCountLine\(exportRows\.length, formatDisplayDateTime\(new Date\(\)\)\)\]\];/);

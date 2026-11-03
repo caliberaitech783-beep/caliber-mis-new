@@ -1,6 +1,6 @@
-import { createPreviewApi } from "./api.mjs";
-import { session } from "./fixtures.mjs";
-import "./preview.css";
+import { createPreviewApi } from "../services/preview/api.mjs";
+import { session } from "../services/preview/fixtures.mjs";
+import "../styles/preview.css";
 if (
   !import.meta.env.DEV ||
   import.meta.env.MODE !== "preview" ||

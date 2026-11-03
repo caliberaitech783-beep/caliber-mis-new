@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {adaptiveRefreshInterval, mobileDataProfile, mobileTablePageSize} from "../src/mobile-performance.mjs";
+import {adaptiveRefreshInterval, mobileDataProfile, mobileTablePageSize} from "../src/utils/ui/mobile-performance.mjs";
 
 const browser = ({mobile = false, coarse = false, saveData = false, effectiveType = "4g"} = {}) => ({
   navigator: {connection: {saveData, effectiveType}},

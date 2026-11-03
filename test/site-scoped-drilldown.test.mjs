@@ -16,7 +16,7 @@ test("the breakdown type normaliser is shared so drilldown keys match the type m
 });
 
 test("site-scoped charts open the shared list with their site selected", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
   // Both key shapes carry the site, so no region or site step is needed.
   assert.match(source, /assetDrilldown\.startsWith\("site-repair:"\) \|\| assetDrilldown\.startsWith\("site-status:"\)/);
@@ -46,8 +46,8 @@ test("site-scoped charts open the shared list with their site selected", async (
 });
 
 test("both maintenance type and road status open the site-scoped drilldown", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const css = await readFile(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
 
   // Maintenance type: the six BD Type Mix cards.
   assert.match(source, /openSiteScopedDrilldown\(`site-repair:\$\{breakdownDetailSite\}\|\$\{type\.label\}`\)/);

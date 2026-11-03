@@ -3,8 +3,8 @@ import {readFileSync,existsSync} from 'node:fs';
 import test from 'node:test';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-const lazyFeature=readFileSync(new URL('../src/lazy-feature.jsx',import.meta.url),'utf8');
+const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+const lazyFeature=readFileSync(new URL('../src/components/ui/lazy-feature.jsx',import.meta.url),'utf8');
 const indexHtml=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const readOptional=(relative)=>{const file=new URL(relative,import.meta.url);return existsSync(file)?readFileSync(file,'utf8'):'';};
 const workflow=readOptional('../.github/workflows/azure-hosting_coalmine-fleet-azure-783.yml');
@@ -41,7 +41,7 @@ test('specialist browser features are emitted as lazy chunks',()=>{
     'remote-assistance.jsx','backup-administration.jsx','vehicle-transfer-workflow.jsx',
     'request-corrections.jsx','organisation-chart.jsx','whatsapp-report-settings.jsx',
     'info-pulse-content.jsx','saved-reports.jsx','recovery-guide.jsx',
-  ])assert.match(client,new RegExp(`createLazyFeature\\(\\(\\)=>import\\("\\./${module.replaceAll('.','\\.')}"\\)`));
+  ])assert.match(client,new RegExp(`createLazyFeature\\(\\(\\)=>import\\("[^"\\n]*/${module.replaceAll('.','\\.')}"\\)`));
   assert.match(lazyFeature,/const load = \(\) => modulePromise \|\|= importer\(\)/);
   assert.match(lazyFeature,/const LazyComponent = lazy\(load\)/);
   assert.match(lazyFeature,/LazyFeature\.preload = load/);
@@ -65,7 +65,7 @@ test('navigation yields expensive page mounts and isolates unrelated root update
 });
 
 test('lazy screens cannot replace the entire workspace with a blank page',()=>{
-  assert.match(client,/<ApplicationErrorBoundary>/);
+  assert.match(readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8'),/<ApplicationErrorBoundary>/);
   assert.doesNotMatch(client,/<Suspense fallback=.*<App \/>/s);
   assert.match(lazyFeature,/failed to fetch dynamically imported module/);
   assert.match(lazyFeature,/window\.location\.replace\(nextUrl\.toString\(\)\)/);

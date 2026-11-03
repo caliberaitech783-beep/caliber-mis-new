@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import React from 'react';
-import {tableModel,jobReferenceColumnsLast,projectTableRow,tableCellText} from '../src/table-actions-model.mjs';
+import {tableModel,jobReferenceColumnsLast,projectTableRow,tableCellText} from '../src/utils/ui/table-actions-model.mjs';
 
 test('dashboard preserves status, breakdown days, started order including request lists',()=>{
-  const browser=fs.readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8');
-  const shared=fs.readFileSync(new URL('../src/shared-actions-table.jsx',import.meta.url),'utf8');
+  const browser=fs.readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8');
+  const shared=fs.readFileSync(new URL('../src/components/ui/shared-actions-table.jsx',import.meta.url),'utf8');
   assert.match(browser,/<ActionsTable[^>]*preserveColumnOrder/);
   assert.match(browser,/\{requestRecords && <th>Job reference<\/th>\}<th>Status<\/th><th>Days of BD<\/th>\{bdBalanceColumns && showLocationColumn && <th>Current location<\/th>\}<th[^>]*>Started<\/th>/);
   assert.match(shared,/preserveColumnOrder \? jobReferenceColumnsLast\(originalColumns\)/);

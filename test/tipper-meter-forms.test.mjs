@@ -10,10 +10,10 @@ import {transformWithOxc} from "vite";
 import * as equipment from "../request-equipment.mjs";
 import * as workflow from "../request-workflow.mjs";
 import {approvedDelayedReason} from '../delayed-reason.mjs';
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 import {isProductionFirstTripRequired,PRODUCTION_FIRST_TRIP_ROLLOUT_LABEL} from '../info-pulse-data.mjs';
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 const evaluate = (code, dependencies) => new Function("DateInput", "isIdleVehicleRequest", ...Object.keys(dependencies), code)(DateInput, isIdleVehicleRequest, ...Object.values(dependencies));
 const tipper = {oemResponsibility: "OEM", ref: "REQ-T1", equipmentGroup: "TIPPERS", meterType: "KMR", door: "T1", chassis: "CH1", site: "Sasti OB", status: "In progress", openingMeterReading: "1000", openingMeterFileUploaded: true, category: "Breakdown"};

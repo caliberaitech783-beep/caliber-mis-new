@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {scanUploadType,SCAN_UPLOAD_ACCEPT} from '../src/scan-upload-file.mjs';
+import {scanUploadType,SCAN_UPLOAD_ACCEPT} from '../src/services/scanning/scan-upload-file.mjs';
 test('scan uploads accept PNG, JPG, JPEG and PDF with or without browser MIME metadata',()=>{
  for(const [extension,mime] of [['png','image/png'],['jpg','image/jpeg'],['jpeg','image/jpeg'],['pdf','application/pdf']]){
   for(const type of ['',mime,'application/octet-stream'])assert.equal(scanUploadType({name:'CARD.'+extension.toUpperCase(),type}),mime);

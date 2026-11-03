@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 test("menu visibility follows explicit open state, not hover or retained focus", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const css = await readFile(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(source, /setMastersSelectionClosed\(true\)/);
   assert.match(source, /onPointerLeave=\{\(\) => setMastersSelectionClosed\(false\)\}/);
@@ -14,7 +14,7 @@ test("menu visibility follows explicit open state, not hover or retained focus",
 });
 
 test("every desktop submenu closes after one of its destinations is selected", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
   for (const menu of ["Whatsapp", "Workspaces", "Admin"]) {
     assert.match(source, new RegExp(`const \\[${menu.toLowerCase()}SelectionClosed, set${menu}SelectionClosed\\] = useState\\(false\\)`));
@@ -28,8 +28,8 @@ test("every desktop submenu closes after one of its destinations is selected", a
 });
 
 test("reports opens as a graphical dropdown of report sub types", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const css = await readFile(new URL("../src/style.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
   assert.match(source, /const \[reportsOpen, setReportsOpen\] = useState\(false\)/);
   assert.match(source, /className=\{`masters-menu reports-menu/);
@@ -40,7 +40,7 @@ test("reports opens as a graphical dropdown of report sub types", async () => {
 });
 
 test("switching any top-level menu closes its peers and selecting a report closes all menus", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const names = ["Masters", "Whatsapp", "Workspaces", "Reports", "Admin", "Cdir", "Iboss"];
   const state = Object.fromEntries(names.map(name => [name, false]));
   const setters = names.map(name => value => {state[name] = typeof value === 'function' ? value(state[name]) : value;});

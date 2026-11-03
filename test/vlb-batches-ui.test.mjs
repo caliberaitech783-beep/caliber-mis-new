@@ -1,3 +1,4 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import {meterCorrectionReport} from '../scan-meter-history.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,12 +10,12 @@ import {canonicalSiteName} from '../site-location.mjs';
 import {displaySiteName} from '../region-scope.mjs';
 import {bookShiftCode,systemBookDate} from '../trip-card-rules.mjs';
 import {vlbRecordSource} from '../vlb-batch-format.mjs';
-import {requestedMisPage,misPageUrl} from '../src/mis-navigation.mjs';
+import {requestedMisPage,misPageUrl} from '../src/utils/ui/mis-navigation.mjs';
 import {misPageAllowed,misRequestAllowed} from '../mis-application-access.mjs';
 import {formatDisplayDateTime} from '../date-time-format.mjs';
 
 async function compile(file,scope,names){
- const source=readFileSync(new URL('../src/'+file,import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
+ const source=readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
  const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});
  return new Function(...Object.keys(scope),code+';return {'+names.join(',')+'}')(...Object.values(scope));
 }
@@ -22,7 +23,7 @@ const nodes=(tree,predicate)=>{const found=[];const visit=node=>{if(Array.isArra
 test('VLB and ELB show three entry options and standalone batch access inherits the VLB permission',async()=>{
  const icon=()=>null,{LogBookModeChoice}=await compile('log-book-mode-choice.jsx',{React,BookOpen:icon,Keyboard:icon,ScanLine:icon,Layers:icon},['LogBookModeChoice']);
  const cards=nodes(LogBookModeChoice({kind:'vehicle'}),n=>n.type==='button');assert.equal(cards.length,3);assert.doesNotMatch(renderToStaticMarkup(LogBookModeChoice({kind:'vehicle'})),/Create Batch/);
- const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');assert.ok(main.includes("{label:'Create Batch',page:'Create VLB Batch'},{label:'Vehicle Log Book (VLB)'"));assert.ok(main.includes("activePages:['Vehicle Log Book','Trip Card Bulk Scan','Saved VLB']"));
+ const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');assert.ok(main.includes("{label:'Create Batch',page:'Create VLB Batch'},{label:'Vehicle Log Book (VLB)'"));assert.ok(main.includes("activePages:['Vehicle Log Book','Trip Card Bulk Scan','Saved VLB']"));
  assert.equal(nodes(LogBookModeChoice({kind:'equipment'}),n=>n.type==='button').length,3);
  assert.equal(requestedMisPage('?page=vlb-create-batch'),'Create VLB Batch');
  assert.equal(misPageUrl('https://mis.example/?page=trip-scan&batch=old','Create VLB Batch'),'/?page=vlb-create-batch');
@@ -119,7 +120,7 @@ test('opened batch search and shared export controls use only its saved snapshot
  const search=nodes(report.props.controls,n=>n.type==='input')[0];assert.equal(search.props['aria-label'],'Smart Search opened batch');search.props.onChange({target:{value:'V12'}});report=render();assert.equal(report.props.query,'V12');assert.equal(report.props.rows.length,2,'search must not alter batch membership');
  // Exercise the shared section: its Generate menu must receive the same
  // filtered rows and column choices that the report table supplies for print.
- const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  const source=main.slice(main.indexOf('function ReportSection('),main.indexOf('// The step a request waited'));
  const {code}=await transformWithOxc(source,'report-section.jsx',{jsx:{runtime:'classic'}});
  const ExportMenu=()=>null,ReportTable=()=>null,FileBarChart=()=>null;

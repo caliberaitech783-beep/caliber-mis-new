@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
-const theme = readFileSync(new URL("../src/theme.css", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
+const theme = readFileSync(new URL("../src/styles/theme.css", import.meta.url), "utf8");
 const bell = source.slice(source.indexOf("function NotificationBell("), source.indexOf("function Normal("));
 const openEntry = bell.slice(bell.indexOf("const openEntry ="), bell.indexOf("useEffect(() => () =>"));
 

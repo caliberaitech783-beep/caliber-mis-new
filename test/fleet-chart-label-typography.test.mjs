@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("Total Fleet site and region names are bold and readable", async () => {
-  const css = await readFile(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
 
   const siteLabel = css.match(/\.mine-fleet-chart-sites small \{[^}]*\}/);
   assert.ok(siteLabel, "expected the site name rule");

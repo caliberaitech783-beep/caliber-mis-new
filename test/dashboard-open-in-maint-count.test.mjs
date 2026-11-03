@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("Open in Maint equals the active non-closed, non-idle opened count", () => {
   assert.match(source, /maintenance: requestLifecycleRows\.opened\.length/);

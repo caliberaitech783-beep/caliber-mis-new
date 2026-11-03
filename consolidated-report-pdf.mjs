@@ -5,7 +5,7 @@ import {canonicalSiteName} from './site-location.mjs';
 import {reportPdfFont,reportPdfText,registerReportPdfFonts,fittingReportText} from './report-pdf-text.mjs';
 import {formatDisplayDateTime} from './date-time-format.mjs';
 import {displaySiteName} from './region-scope.mjs';
-import {requestStatusLabel} from './src/request-status.mjs';
+import {requestStatusLabel} from './src/utils/requests/request-status.mjs';
 
 const COLORS={navy:'#10284c',blue:'#2859b8',muted:'#65758b',line:'#dce4ef',red:'#c43c35',green:'#16845b',soft:'#f4f7fb'};
 const indiaDateTime=(value)=>formatDisplayDateTime(value);

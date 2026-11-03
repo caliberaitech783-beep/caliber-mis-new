@@ -4,10 +4,10 @@ import {readFileSync} from 'node:fs';
 import {canReopenBreakdown,reopenBreakdownError} from '../reopen-breakdown.mjs';
 const eligible={status:'Closed',closedAt:'2026-10-05 16:00:00',acceptedAt:'2026-10-05 14:00:00'};
 test('reopening sits beside history and uses a spacious dedicated dialog',()=>{
-  const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(ui,/Closed history<\/button>\{canReopenRequests&&<button[^>]*data-nav="reopen"/);
   assert.match(ui,/className="reopen-breakdown-modal"/);
-  const css=readFileSync(new URL('../src/reopen-breakdown-form.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/reopen-breakdown-form.css',import.meta.url),'utf8');
   assert.match(css,/min-height: 160px/);
 });
 test('Maintenance and Project Managers receive the narrow reopening permission',()=>{

@@ -7,8 +7,8 @@ import {transformWithOxc} from 'vite';
 import * as policy from '../whatsapp-report-settings.mjs';
 import * as templates from '../whatsapp-template-catalog.mjs';
 
-const source=readFileSync(new URL('../src/whatsapp-report-settings.jsx',import.meta.url),'utf8');
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/integrations/whatsapp-report-settings.jsx',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace(/export default /g,'').replace(/export function /g,'function '),'whatsapp-delivery-settings.jsx',{jsx:{runtime:'classic'}});
 const descendants=(node,predicate)=>Array.isArray(node)?node.flatMap(item=>descendants(item,predicate)):React.isValidElement(node)?[...(predicate(node)?[node]:[]),...descendants(node.props.children,predicate)]:[];
 

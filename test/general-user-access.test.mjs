@@ -17,7 +17,7 @@ const sessionFor = (overrides={}) => {
   return {...profile,role:profile.sessionRole};
 };
 const server=readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
-const client=readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+const client=readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
 const middlewareSource=server.slice(server.indexOf("async function requireSession("),server.indexOf("async function requireSuper("));
 async function authorize(session,path,{method="GET",query={}}={}){
   const context=vm.createContext({readSession:async()=>session,GENERAL_USER_ROLE,generalUserCanAccessMenu});

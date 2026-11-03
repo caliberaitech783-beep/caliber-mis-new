@@ -2,7 +2,7 @@ import {canonicalSiteName} from './site-location.mjs';
 import {requestsWithDoorNumbers} from './equipment-door.mjs';
 import {formatDisplayDateTime} from './date-time-format.mjs';
 import {displaySiteName} from './region-scope.mjs';
-import {requestStatusLabel} from './src/request-status.mjs';
+import {requestStatusLabel} from './src/utils/requests/request-status.mjs';
 
 export const CONSOLIDATED_REPORT_HOURS=[6,10,14,18,22];
 const INDIA_OFFSET_MS=330*60*1000;

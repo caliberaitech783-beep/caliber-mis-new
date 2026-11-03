@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reportPortalTarget,sameReportView} from '../src/report-portal-target.mjs';
-import {ledgerReportColumns} from '../src/iboss-ledger-report.mjs';
+import {reportPortalTarget,sameReportView} from '../src/utils/reports/report-portal-target.mjs';
+import {ledgerReportColumns} from '../src/utils/accounts/iboss-ledger-report.mjs';
 
 test('report controls stay inside the topmost native ledger or dashboard dialog',()=>{
  const body={},dashboard={},ledger={};let dialogs=[];

@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NOTIFICATION_SOUNDS,DEFAULT_NOTIFICATION_SOUND,NOTIFICATION_SOUND_KEY,normalizeNotificationSound,loadNotificationSound,saveNotificationSound,toneScript,playNotificationSound,playTempleBell} from '../src/notification-chime.mjs';
+import {NOTIFICATION_SOUNDS,DEFAULT_NOTIFICATION_SOUND,NOTIFICATION_SOUND_KEY,normalizeNotificationSound,loadNotificationSound,saveNotificationSound,toneScript,playNotificationSound,playTempleBell} from '../src/services/notifications/notification-chime.mjs';
 
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const styles=readFileSync(new URL('../src/motion-icons.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const styles=readFileSync(new URL('../src/styles/motion-icons.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('five bell sounds are offered, the temple bell is the default, and the choice is remembered per device',()=>{
   assert.deepEqual(NOTIFICATION_SOUNDS.map(sound=>sound.id),['temple','chime','dingdong','beep','silent']);

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("workspace report names are visible and used by print, PDF, and Excel exports", () => {
   assert.match(source, /requests: isProduction \? "Active Production Requests" : isMaintenance \? "Active Maintenance Requests" : "MIS Requests Awaiting Verification"/);
@@ -22,7 +22,7 @@ test("the manager requests table has one Smart Export with Smart Print inside", 
 });
 
 test("Smart Print is included in table and ticket export menus", () => {
-  const table = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const table = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   assert.ok(source.includes("{!smartLabels && smartPrintItem && <button type=\"button\" role=\"menuitem\" onClick={printReport}><Printer /> Smart Print</button>}"));
   assert.ok(table.includes("smartPrintRows={smartPrintData.rows} smartPrintItem />}"));
   assert.doesNotMatch(table, /<ExportMenu printOnly/);

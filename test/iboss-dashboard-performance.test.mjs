@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dashboardCache} from '../iboss-dashboard-cache.mjs';
 import {buildDashboard} from '../iboss-dashboard.mjs';
-import {mergeDashboardSection} from '../src/iboss-dashboard-sections.mjs';
+import {mergeDashboardSection} from '../src/utils/accounts/iboss-dashboard-sections.mjs';
 
 test('dashboard requests share work, cache for ten minutes and isolate date/section keys',async()=>{
  let time=0,calls=0,release;

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { REGION_DATA } from "../region-scope.mjs";
-import { changeDrilldownFilter, drilldownView } from "../src/dashboard-drilldown-model.mjs";
+import { changeDrilldownFilter, drilldownView } from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
 
 const rows = [
   { id: 1, currentLocation: "SASTI II", category: "Vehicle", group: "SCANIA TIPPERS", door: "T01" },
@@ -117,7 +117,7 @@ test("request rows stay under their request site even if the equipment has moved
 });
 
 test("the list is unconditional and tabs support keyboard navigation", () => {
-  const component = readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
+  const component = readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
   assert.match(component, /role="tablist" aria-label="Chart records by region"/);
   assert.match(component, /role="tabpanel"/);
   assert.match(component, /event\.key === "ArrowRight"/);
@@ -128,8 +128,8 @@ test("the list is unconditional and tabs support keyboard navigation", () => {
 });
 
 test("each fleet list opens from the top with its column header pinned while scrolling", () => {
-  const browser = readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
-  const css = readFileSync(new URL("../src/dashboard-record-browser.css", import.meta.url), "utf8");
+  const browser = readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/dashboard-record-browser.css", import.meta.url), "utf8");
   assert.ok(browser.includes(`<div className="dashboard-asset-list" ref={listRef}>`));
   assert.ok(browser.includes("useEffect(() => { if (listRef.current) listRef.current.scrollTop = 0; }, [tableKey]);"));
   assert.ok(css.includes(".dashboard-record-browser .dashboard-asset-list thead th { position: sticky; top: 0; z-index: 2;"));

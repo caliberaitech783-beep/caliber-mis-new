@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {chooseScanCard,scanStatusLabels,scanCardStatus} from '../src/scan-reader-status.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {chooseScanCard,scanStatusLabels,scanCardStatus} from '../src/utils/scanning/scan-reader-status.mjs';
 test('first available Gemini draft opens automatically without replacing an edited or completed card',()=>{const cards=[{id:'one',status:'queued'},{id:'two',status:'review'}];assert.equal(chooseScanCard(cards,'one'), 'two');assert.equal(chooseScanCard(cards,'one',null,{dirty:true}), 'one');assert.equal(chooseScanCard(cards,'two'), 'two');assert.equal(chooseScanCard(cards,'','one'),'one');assert.equal(chooseScanCard([],'one'),'');});
 test('Gemini queue reports actual A/B stages, keeping existing non-Gemini labels',()=>{assert.equal(scanStatusLabels('gemini-hybrid').queued,'Waiting for Gemini');assert.equal(scanCardStatus({status:'reading',raw_fields:{scanProgress:{stage:'B'}}},'gemini-hybrid'),'Gemini Priority B');assert.equal(scanStatusLabels().queued,'Waiting for OCR');});
 

@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-const css = readFileSync(new URL("../src/workspace-night.css", import.meta.url), "utf8");
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const css = readFileSync(new URL("../src/styles/workspace-night.css", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 test("workspace Night overrides follow brand styles and precede chart styles", () => {
-  assert.ok(main.indexOf('import "./workspace-night.css"') > main.indexOf('import "./brand-theme.css"'));
-  assert.ok(main.indexOf('import "./workspace-night.css"') < main.indexOf('import "./dashboard-night.css"'));
+  assert.ok(main.indexOf('import "../styles/workspace-night.css"') > main.indexOf('import "../styles/brand-theme.css"'));
+  assert.ok(main.indexOf('import "../styles/workspace-night.css"') < main.indexOf('import "../styles/dashboard-night.css"'));
   assert.match(css, /@media screen/);
   assert.equal((css.match(/^}/gm) || []).length, 1);
 });

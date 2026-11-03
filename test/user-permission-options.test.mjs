@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ADMIN_SUBMENU_OPTIONS} from '../admin-access.mjs';
-import {userPermissionOptions,retainedHiddenPermissions} from '../src/user-permission-options.mjs';
+import {userPermissionOptions,retainedHiddenPermissions} from '../src/utils/people/user-permission-options.mjs';
 
 test('user permission form excludes only the four requested report choices',()=>{
   const reports=ADMIN_SUBMENU_OPTIONS.Reports;

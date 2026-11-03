@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
 test("Equipment Master reviews and deletes every row matching the current filters", () => {

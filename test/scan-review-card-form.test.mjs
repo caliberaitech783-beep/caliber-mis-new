@@ -11,11 +11,11 @@ import React from 'react';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
 import {scanContextGate} from '../scan-batch-context.mjs';
-const source=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
 const scope={React};
 for(const match of source.matchAll(/^import \{([^}]+)\} from '([^']+)';$/gm)){
  if(!match[2].startsWith('.'))continue;
- const module=await import(new URL('../src/'+match[2],import.meta.url));
+ const module=await import(new URL(match[2],new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url)));
  for(const name of match[1].split(',').map(v=>v.trim()))scope[name]=module[name];
 }
 for(const name of ['ScanEquipmentReviewDialog','ScanExtractionStatus','ScanExtractionLine','ScanCorrectionStatus','BreakdownHoursField','ScanBatchReport','SmartSelect','EmployeeIdLookup','LocalScannerPanel','ScanAliasMismatchDialog','ScanDuplicateList','ScanUploadTimer','ScanLine','Check','Save','Plus','Trash2','RefreshCw','ZoomIn','ZoomOut'])scope[name]=()=>null;

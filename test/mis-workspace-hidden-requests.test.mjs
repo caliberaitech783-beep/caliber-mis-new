@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("MIS workspace filters its tables, dashboard, reports, and Info Pulse", () => {
   assert.match(source, /const misWorkspaceRequests=useMemo\(\(\)=>requestsVisibleToMisWorkspace\(requests,isMis\)/);

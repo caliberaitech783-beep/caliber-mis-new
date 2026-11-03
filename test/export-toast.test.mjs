@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {openSmartPrint} from '../src/smart-print.mjs';
+import {openSmartPrint} from '../src/services/reports/smart-print.mjs';
 
 test('PDF toast announces preparation, download handoff and errors without changing rows',async()=>{
   class Element {

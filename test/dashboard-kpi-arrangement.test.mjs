@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import {requestEventDate} from "../src/dashboard-request-data.mjs";
+import {requestEventDate} from "../src/utils/dashboard/dashboard-request-data.mjs";
 
-const client = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const css = fs.readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
+const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
 
 test("removed KPI strip no longer leaves arrangement controls", () => {
   assert.doesNotMatch(client, /nerveCenterDashboardKpiOrder/);
@@ -14,7 +14,7 @@ test("removed KPI strip no longer leaves arrangement controls", () => {
 });
 
 test("request lifecycle counts each workflow timestamp separately", () => {
-  assert.match(client, /import \{[^}]*requestEventDate[^}]*\} from "\.\/dashboard-request-data\.mjs"/);
+  assert.match(client, /import \{[^}]*requestEventDate[^}]*\} from "(?:\.\.?\/)+(?:[\w-]+\/)*dashboard-request-data\.mjs"/);
   const record = {start: "2026-09-05 09:00:00", closedAt: "2026-09-07 09:00:00", verifiedAt: "2026-09-08T19:00:00Z", idealRequestedAt: "2026-09-06 10:00:00"};
   assert.equal(requestEventDate(record, "opened"), "2026-09-05");
   assert.equal(requestEventDate(record, "idle"), "2026-09-06");

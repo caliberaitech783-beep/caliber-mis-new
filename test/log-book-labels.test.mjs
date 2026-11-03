@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {compactLogBookLabel,tripSerialNumber} from '../log-book-labels.mjs';
-import {buildOperationReport,normalise} from '../src/operations-report-model.mjs';
+import {buildOperationReport,normalise} from '../src/utils/reports/operations-report-model.mjs';
 import {scanBatchReport,scanBatchExportTables} from '../scan-batch-report.mjs';
 
 test('short labels keep trip count, employee identity and reading units distinct',()=>{

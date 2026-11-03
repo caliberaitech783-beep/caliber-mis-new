@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { visibleInMisRequests, visibleInMisHistory } from "../src/mis-history.mjs";
+import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
 
 test("MIS queues use lifecycle state, not the closer, verifier or historical reference", () => {
   for (const closedBy of ["Anoop Paul", "maimaintenance manager", "Sanskar Manohare", "Other closer"]) {
@@ -31,7 +31,7 @@ test("open, in-progress and pending idle approvals do not enter either MIS queue
 });
 
 test("MIS queue and history consume the state predicates", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /isMis\s*\?\s*requestRows\.filter\(visibleInMisRequests\)\s*:\s*activeRequests/);
   assert.match(source, /historyRows\s*=\s*useMemo\(\(\)\s*=>\s*isMis\s*\?\s*requestRows\.filter\(visibleInMisHistory\)\s*:\s*isProduction/);
 });

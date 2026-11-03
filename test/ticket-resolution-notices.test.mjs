@@ -30,7 +30,7 @@ test('resolution notices and acknowledgement are restricted to the creator and c
   assert.equal((await call('/api/tickets/acknowledge-resolution','owner')).code,400);
 });
 
-const source=readFileSync(new URL('../src/ticket-resolution-notices.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/notifications/ticket-resolution-notices.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'notices.jsx',{jsx:{runtime:'classic'}});
 test('notice persists until successful manual close and late polling cannot restore a dismissed notice',async()=>{
   let cursor=0,poll,failClose=true;
@@ -48,7 +48,7 @@ test('notice persists until successful manual close and late polling cannot rest
   failClose=false;await buttons(render())[0].props.onClick();assert.equal(render(),null);
   await poll();assert.equal(render(),null,'stale polling cannot resurrect a successfully closed notice');
   assert.doesNotMatch(source,/setTimeout|onMouseLeave|onKeyDown/);
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  assert.match(main,/<TicketResolutionNotices key=\{token\} token=\{token\} \/>/);
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  assert.match(main,/<TicketResolutionNotices key=\{"tickets:"\+token\} token=\{token\} \/>/);
   assert.equal((main.match(/<AppBackgroundServices session=\{session\} logout=\{logout\} \/>/g)||[]).length,3);
 });

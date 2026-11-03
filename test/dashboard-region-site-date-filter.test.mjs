@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = fs.readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
-const brandStyles = fs.readFileSync(new URL("../src/brand-theme.css", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = fs.readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
+const brandStyles = fs.readFileSync(new URL("../src/styles/brand-theme.css", import.meta.url), "utf8");
 
 test("dashboard region selection exposes its sites and filters every scoped data source", () => {
   assert.match(source, /const \[dashboardSite, setDashboardSite\] = useState\("all"\)/);
@@ -50,7 +50,7 @@ test("dashboard region and date controls keep white labels and native icons", ()
 });
 
 test("the WCL / NCL divider on the fleet chart is clearly visible in both themes", () => {
-  const readability = fs.readFileSync(new URL("../src/dashboard-readability.css", import.meta.url), "utf8");
+  const readability = fs.readFileSync(new URL("../src/styles/dashboard-readability.css", import.meta.url), "utf8");
   assert.match(readability, /\.mine-fleet-chart-regions > section \+ section \{ border-left: 3px solid rgba\(124, 58, 190, 0\.28\); \}/, "a translucent violet band");
   assert.match(readability, /:root\[data-theme="dark"\] \.mine-fleet-chart-regions > section \+ section \{ border-left-color: rgba\(196, 160, 255, 0\.38\); \}/);
 });

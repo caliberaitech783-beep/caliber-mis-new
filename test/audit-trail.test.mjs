@@ -4,7 +4,7 @@ import test from "node:test";
 import { auditChangedFields, auditDateRange, auditIndiaDateKey, auditRouteDetails, auditSafeError, auditShouldRecord, auditSubmittedFields } from "../audit-trail.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("audit field summaries show changes without exposing credentials or media", () => {
   assert.deepEqual(auditChangedFields(

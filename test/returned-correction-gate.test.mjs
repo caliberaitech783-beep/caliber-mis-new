@@ -7,7 +7,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import * as policy from '../request-correction-policy.mjs';
 import * as icons from 'lucide-react';
 
-const source=readFileSync(new URL('../src/returned-correction-gate.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/notifications/returned-correction-gate.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'gate.jsx',{jsx:{runtime:'classic'}});
 test('returned correction popup blocks Escape and has no close or timeout action',()=>{
   const effects=[];
@@ -27,8 +27,8 @@ test('returned correction popup blocks Escape and has no close or timeout action
   assert.equal(Gate({token:'fixture'}),null);
 });
 test('gate is mounted for both workspaces and fetches owner-only durable records',()=>{
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  assert.match(main,/<ReturnedCorrectionGate key=\{token\} token=\{token\} \/>/);
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  assert.match(main,/<ReturnedCorrectionGate key=\{"corrections:"\+token\} token=\{token\} \/>/);
   assert.equal((main.match(/<AppBackgroundServices session=\{session\} logout=\{logout\} \/>/g)||[]).length,3);
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   const route=server.slice(server.indexOf("app.get('/api/request-corrections/returned'"),server.indexOf("app.patch('/api/request-corrections/:id/admin-decision'"));
@@ -40,7 +40,7 @@ test('gate is mounted for both workspaces and fetches owner-only durable records
 });
 
 test('Admin sees Revert only for an application error and Reject only while approved',async()=>{
-  const source=readFileSync(new URL('../src/request-corrections.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8');
   const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function'),'corrections.jsx',{jsx:{runtime:'classic'}});
   const bindings={SmartSelect: "select",React,useState:React.useState,...policy,...Object.fromEntries(Object.entries(icons).filter(([key])=>key!=='default' && /^[A-Za-z_$][\w$]*$/.test(key))),RequestTimelineButton:()=>null};
   const Card=new Function(...Object.keys(bindings),code+';return CorrectionCard;')(...Object.values(bindings));

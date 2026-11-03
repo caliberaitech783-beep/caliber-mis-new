@@ -73,8 +73,8 @@ test('audit details identify the full route, completed work, and next pending ow
 
 test('server and interface wire submission, both PM actions, audit, notifications and master update',()=>{
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const client=readFileSync(new URL('../src/vehicle-transfer-workflow.jsx',import.meta.url),'utf8');
-  const styles=readFileSync(new URL('../src/vehicle-transfer-workflow.css',import.meta.url),'utf8');
+  const client=readFileSync(new URL('../src/pages/people/vehicle-transfer-workflow.jsx',import.meta.url),'utf8');
+  const styles=readFileSync(new URL('../src/styles/vehicle-transfer-workflow.css',import.meta.url),'utf8');
   assert.match(server,/app\.post\('\/api\/vehicle-transfers'/);
   assert.match(server,/source-approval/);
   assert.match(server,/destination-verification/);
@@ -110,7 +110,7 @@ test('server and interface wire submission, both PM actions, audit, notification
 });
 
 test('MIS navigation places Vehicle Transfer directly after Tickets',()=>{
-  const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const normalHeader=client.match(/<nav className="normal-header-nav">[\s\S]*?<\/nav>/)?.[0]||'';
   assert.ok(normalHeader.indexOf('> Tickets</button>')<normalHeader.indexOf('> Vehicle Transfer</button>'));
   assert.match(client,/vehicleTransferDirectAccess&&<div className="nav-config-row">/);

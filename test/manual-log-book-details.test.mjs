@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {blankJob,blankBreakdown,padManualRows,normalizeManualDetails,jobDurationHours} from '../manual-log-book-details.mjs';
-import {continueManualRemark,isEmptyTripPlaceholder} from '../src/log-book-enter-navigation.mjs';
+import {continueManualRemark,isEmptyTripPlaceholder} from '../src/utils/logbooks/log-book-enter-navigation.mjs';
 import {blankTrip} from '../trip-entry.mjs';
 test('manual forms start with five trip, two job and two breakdown placeholders without sharing row state',()=>{
  const trips=padManualRows([],5,blankTrip),jobs=padManualRows([],2,blankJob),bd=padManualRows([],2,blankBreakdown);

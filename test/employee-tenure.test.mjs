@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {employeeTenure, buildEmployeeTenureReport, TENURE_MONTHS} from '../src/employee-tenure.mjs';
+import {employeeTenure, buildEmployeeTenureReport, TENURE_MONTHS} from '../src/utils/people/employee-tenure.mjs';
 
 test('tenure uses calendar months and remaining days, including month ends and leap years', () => {
   assert.equal(employeeTenure('2023-07-15','2026-09-30').label,'3Y 2M 15D');
@@ -26,11 +26,11 @@ test('report includes active employees at three months, excludes former staff an
 });
 
 test('C-Dir menu puts directory first, then employee tenure and masters and uses live employee data', () => {
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.ok(!source.includes('{id: "employee-tenure", label:'));
   assert.match(source,/cdir-dropdown[\s\S]*?data-workspace="directory"[\s\S]*?data-workspace="report-employee-tenure"[\s\S]*?ClockMenu down label="C-Dir Masters"/);
   assert.match(source,/renderedActive === "Employee Tenure Report" \? \([\s\S]*?<EmployeeTenureReport/);
-  const component=readFileSync(new URL('../src/employee-tenure-report.jsx',import.meta.url),'utf8');
+  const component=readFileSync(new URL('../src/pages/reports/employee-tenure-report.jsx',import.meta.url),'utf8');
   for(const label of ['Employee ID','Employee name','Department','Designation','Joining date','Working tenure']) assert.ok(component.includes(`label: '${label}'`));
   assert.ok(component.includes("fetch('/api/cdir/directory'"));
   assert.ok(component.includes('ReportSection title='));

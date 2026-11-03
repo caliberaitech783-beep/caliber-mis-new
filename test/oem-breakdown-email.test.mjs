@@ -71,7 +71,7 @@ test('PDF and real Excel attachments include every selected case and match websi
   for(const row of rows)assert.ok(xml.includes(row.ref));
   assert.match(xml,/TableStyleLight15/);
   assert.match(xml,/FF000000/);
-  const website=await readFile(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const website=await readFile(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const shared=await readFile(new URL('../report-xlsx.mjs',import.meta.url),'utf8');
   const normalize=value=>value.replaceAll('\r\n','\n').trim();
   assert.equal(normalize(shared.slice(shared.indexOf('function escapeExportHtml'),shared.indexOf('\nexport {'))),normalize(website.slice(website.indexOf('function escapeExportHtml'),website.indexOf('function buildXlsxWorkbook('))));

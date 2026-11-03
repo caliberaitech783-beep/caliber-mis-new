@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const modal = source.slice(source.indexOf("function Modal("), source.indexOf("function requestStartParts"));
-const css = fs.readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
 test("shared dialogs offer Back and Close through the same guarded close callback", () => {
   assert.match(modal, /className="modal-back-button" onClick=\{close\} aria-label="Back"/);

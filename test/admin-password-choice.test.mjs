@@ -124,7 +124,7 @@ test('Super Admin protection and missing-account handling remain enforced', asyn
 });
 
 test('admin password fields require confirmation without browser minimum-length rules', () => {
-  const ui = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const ui = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   const form = ui.slice(ui.indexOf('<form className="form employee-password-form"'), ui.indexOf('</form>', ui.indexOf('<form className="form employee-password-form"')));
   assert.doesNotMatch(form, /minLength|maxLength|pattern=/);
   assert.match(form, /name="password"[^>]+required/);

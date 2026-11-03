@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createPreviewApi } from "../src/preview/api.mjs";
-import { createFixtures, sites, date } from "../src/preview/fixtures.mjs";
+import { createPreviewApi } from "../src/services/preview/api.mjs";
+import { createFixtures, sites, date } from "../src/services/preview/fixtures.mjs";
 import { previewGuard } from "../scripts/preview-guard.mjs";
 const send = (api, path, body, method = "POST") =>
   api(path, { method, body: JSON.stringify(body) });

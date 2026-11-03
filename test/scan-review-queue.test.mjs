@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {remainingScanCards,scanReviewPosition} from '../src/scan-review-queue.mjs';
+import {remainingScanCards,scanReviewPosition} from '../src/utils/scanning/scan-review-queue.mjs';
 import {applySavedScanCard} from '../scan-batch-report.mjs';
 
 test('10 uploaded cards become six review cards after four saves, then five after an explicit save',()=>{

@@ -4,9 +4,9 @@ import React from 'react';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
 import {canAutoSaveScanCard} from '../scan-auto-save.mjs';
-import {SCAN_UPLOAD_MAX_WIDTH,SCAN_UPLOAD_MAX_HEIGHT} from '../src/scan-upload-image.mjs';
+import {SCAN_UPLOAD_MAX_WIDTH,SCAN_UPLOAD_MAX_HEIGHT} from '../src/services/scanning/scan-upload-image.mjs';
 
-const source=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
 const pageSource=source.slice(source.indexOf('async function* pages('),source.indexOf('\nconst uploadPageCount='));
 function pageHarness({renderError=false,encodeError=false}={}){
  const canvases=[],cleaned=[],destroyed=[];
@@ -55,7 +55,7 @@ test('only background polls during uploads use unchecked progress; final and nor
 });
 
 test('elapsed timer updates its own component once per second and clears the interval',async()=>{
- const timerSource=readFileSync(new URL('../src/scan-upload-timer.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+ const timerSource=readFileSync(new URL('../src/components/scanning/scan-upload-timer.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(timerSource,'scan-upload-timer.jsx',{jsx:{runtime:'classic'}});
  let now=2000,elapsed,cleanup,tick,interval,cleared=false,updates=0;
  const scope={React,performance:{now:()=>now},formatExtractionTime:seconds=>Math.floor(seconds)+' sec',

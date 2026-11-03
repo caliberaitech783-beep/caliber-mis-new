@@ -4,7 +4,7 @@ import test from 'node:test';
 import {DELAYED_REASON_DEFAULTS,DELAYED_REASON_DEFAULT_REPAIR_TYPES,DELAYED_REASONS_BY_REPAIR_TYPE,approvedDelayedReason,delayedReasonRequired,delayedReasonsForRepairType} from '../delayed-reason.mjs';
 
 test('the requests table only displays the delayed reason; only approved reasons are accepted',()=>{
-  const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   assert.doesNotMatch(client,/function DelayedReasonForm|Add custom reason|Select delayed reason<\/button>|setDelaying|delayed-reason-compact/);
   assert.match(client,/<td>\{row\.delayedReason \|\| "—"\}<\/td>/);
@@ -38,7 +38,7 @@ test('delayed reasons are offered per breakdown type in the approved order',()=>
   assert.deepEqual(delayedReasonsForRepairType('Breakdown',master),['Parts - CMLL','Fault Diagnosis - OEM']);
   assert.deepEqual(delayedReasonsForRepairType('Accidental',master),['Parts - CMLL','Acc- Repair Estimate-OEM']);
   assert.deepEqual(delayedReasonsForRepairType('Super Structure',master),['Parts - CMLL','Fault Diagnosis - OEM','Superstructure - Repair']);
-  const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(client,/delayedReasonsForRepairType\(request\.category,delayedReasonRecords\|\|\[\]\)/);
   assert.match(client,/\{key: "category", label: "BD type", value: \(row\) => row\.category\}/);
   assert.match(client,/\["category", "BD type"\], \["delayedReason", "Delayed reason"\]/);
@@ -61,7 +61,7 @@ test('breakdown types stored in the Delayed Reason master drive the picker and t
   assert.deepEqual(delayedReasonsForRepairType('WGM',edited),['Parts - OEM','Approval - CMLL','Superstructure - Repair']);
   assert.deepEqual(delayedReasonsForRepairType('Breakdown',edited),['Approval - CMLL']);
   assert.deepEqual(delayedReasonsForRepairType('Accidental',edited),['Approval - CMLL','Superstructure - Repair']);
-  const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   assert.match(client,/\["repairTypes", "Breakdown types \(comma separated, or All\)"\]/);
   assert.match(client,/const etcDelayed = etcChanged && expectedCompletionAt\.slice\(0,16\) > initialEtc;/);
@@ -108,7 +108,7 @@ test('the Delayed reason column only appears once ETC has passed and the close f
   const etc='2026-09-06 10:00';
   assert.equal(delayedReasonRequired(etc,new Date('2026-09-06T09:59+05:30'),0),false);
   assert.equal(delayedReasonRequired(etc,new Date('2026-09-06T10:00+05:30'),0),true);
-  const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   assert.match(client,/\{workflowHeader\("delayedReason", "Delayed reason"\)\}/);
   assert.doesNotMatch(client.slice(client.indexOf('function CloseRequestForm'),client.indexOf('function VerifyRequestForm')),/name="delayedReason"/);
@@ -121,7 +121,7 @@ test('the Delayed reason column only appears once ETC has passed and the close f
 });
 
 test('Delayed Reason master, close form, and server validation are connected',()=>{
-  const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   const access=fs.readFileSync(new URL('../admin-access.mjs',import.meta.url),'utf8');
   assert.match(access,/"Region master",\s*"Shift Master",\s*"Delayed Reason",\s*"Vehicle transfers"/);

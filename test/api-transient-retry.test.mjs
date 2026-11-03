@@ -8,9 +8,9 @@ import {
   retryDelayMs,
   shouldRetryResponse,
   RETRY_DELAYS_MS,
-} from "../src/api-transient-retry.mjs";
+} from "../src/services/ui/api-transient-retry.mjs";
 
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 function response(status, headers = {}) {
   return { status, ok: status >= 200 && status < 300, headers: { get: (name) => headers[name.toLowerCase()] || "" } };
@@ -89,6 +89,6 @@ test("delays honour Retry-After within a bound and fall back to the schedule", (
 });
 
 test("the application fetch interceptor routes API calls through the transient retry", () => {
-  assert.match(main, /import \{fetchWithTransientRetry,isNetworkFailure,isTransientStatus\} from "\.\/api-transient-retry\.mjs";/);
+  assert.match(main, /import \{fetchWithTransientRetry,isNetworkFailure,isTransientStatus\} from "(?:\.\.?\/)+(?:[\w-]+\/)*api-transient-retry\.mjs";/);
   assert.match(main, /window\.__sessionExpiryFetch = true;[\s\S]*fetchWithTransientRetry\(nativeFetch, input, requestInit/);
 });

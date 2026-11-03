@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("mobile workspaces display the correct role-specific header", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const normalWorkspace = source.slice(source.indexOf("function Normal"), source.indexOf("function App"));
 
   assert.match(normalWorkspace, /isProduction \? "Production Maintenance Request"/);

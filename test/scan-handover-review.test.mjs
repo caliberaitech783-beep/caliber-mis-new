@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {handoverTimeNote,isBlankHandoverIssue} from '../src/scan-handover-review.mjs';
+import {handoverTimeNote,isBlankHandoverIssue} from '../src/utils/scanning/scan-handover-review.mjs';
 test('handover notes are neutral and only describe a missing half with a valid other time',()=>{
  assert.match(handoverTimeNote({loadingTime:'23:50',unloadingTime:''},'unloadingTime'),/Open handover/);
  assert.match(handoverTimeNote({loadingTime:'',unloadingTime:'1:10'},'loadingTime'),/awaiting the loading card/);

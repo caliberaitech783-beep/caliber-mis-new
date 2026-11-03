@@ -121,7 +121,7 @@ import {HOUSEKEEPING_CATEGORIES,housekeepingCategory,purgeRequestError} from './
 import {PURGEABLE_TABLES,deadRowShare,diskState,sharePercent,tableLabel} from './storage-management.mjs';
 import {MAX_TRANSLATION_CHARS,normalizeLanguage,translationCacheKey,translatorFromEnvironment} from './text-translation.mjs';
 import {ANNOUNCEMENT_ACTIVE_DAYS,announcementImageBinary,announcementImageError,announcementReaderKey,announcementReaderKeys,announcementValidationError,normalizeAnnouncement} from './announcement.mjs';
-import {normalizeSavedReportName,savedReportUserKey,savedReportValidationError,serializeTableView} from './src/saved-reports.mjs';
+import {normalizeSavedReportName,savedReportUserKey,savedReportValidationError,serializeTableView} from './src/utils/reports/saved-reports.mjs';
 import {sendDirectorReportEmail} from './director-report-email.mjs';
 import {auditLogExportDue,auditLogExportSlot,sendAuditLogExportEmail} from './audit-log-export.mjs';
 import {buildUserActivitySummary,totalUserWorkedMinutes} from './user-activity-report.mjs';
@@ -146,7 +146,7 @@ import {BACKUP_FORMAT,backupFileName,exportDatabase,readBackupRecords,restoreDat
 import {BACKUP_SETTING_KEY,DEFAULT_BACKUP_SETTINGS,indiaBackupSlot,normalizeBackupSettings,scheduledBackupDue} from './backup-settings.mjs';
 import {dashboardFleetSnapshot} from './dashboard-fleet-snapshot.mjs';
 import {fleetChartCounts} from './dashboard-equipment-metrics.mjs';
-import {dailyCountChange,indiaCountDayWindow} from './src/fleet-count-trend.mjs';
+import {dailyCountChange,indiaCountDayWindow} from './src/utils/dashboard/fleet-count-trend.mjs';
 import {REGION_DATA,displaySiteName,displaySiteSelection,managerReportScope,normalizeOperationalSiteFields,normalizeUserSiteFields,reportScopeIncludesSite,userSiteScope,userSiteSelection} from './region-scope.mjs';
 import {attachRequestOems,consolidatedReportDue,consolidatedReportWindow,prepareConsolidatedRows} from './consolidated-whatsapp-report.mjs';
 import {buildFleetConsolidatedReportPdf,buildTicketConsolidatedReportPdf} from './consolidated-report-pdf.mjs';

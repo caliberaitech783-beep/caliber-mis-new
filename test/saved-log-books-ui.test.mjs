@@ -8,7 +8,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 
-const source=readFileSync(new URL('../src/saved-log-books.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/logbooks/saved-log-books.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function'),'saved-log-books.jsx',{jsx:{runtime:'classic'}});
 function harness(){
   const slots=[];let cursor=0;

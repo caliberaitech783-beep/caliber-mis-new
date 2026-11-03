@@ -1,3 +1,4 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -7,11 +8,11 @@ import {transformWithOxc} from 'vite';
 import {aliasForSelection} from '../equipment-alias-rules.mjs';
 import {formatDisplayDateTime} from '../date-time-format.mjs';
 import {canonicalSiteName} from '../site-location.mjs';
-import {searchSiteDoors,doorLabel} from '../src/door-search.mjs';
-import {nextMismatchPair,mismatchPairCount} from '../src/scan-alias-mismatch.mjs';
+import {searchSiteDoors,doorLabel} from '../src/utils/ui/door-search.mjs';
+import {nextMismatchPair,mismatchPairCount} from '../src/utils/scanning/scan-alias-mismatch.mjs';
 
 async function compile(file,scope,names){
- const source=readFileSync(new URL('../src/'+file,import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
+ const source=readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
  const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});
  return new Function(...Object.keys(scope),code+';return {'+names.join(',')+'}')(...Object.values(scope));
 }

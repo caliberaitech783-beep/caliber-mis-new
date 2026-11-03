@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {parseCardResponse} from '../gemini-card-reader.mjs';
 import {aFields} from '../gemini-hybrid.mjs';
 import {responseReviewNeeded} from '../scan-response-recovery.mjs';
-import {scanFieldIssues} from '../src/scan-field-review.mjs';
+import {scanFieldIssues} from '../src/utils/scanning/scan-field-review.mjs';
 import {checkScanCard} from '../bulk-card-scanning.mjs';
 import {mergeReextractedDraft} from '../scan-reextract.mjs';
 import {normalizeScanEquipmentRows} from '../scan-machine-rules.mjs';

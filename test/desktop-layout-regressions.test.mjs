@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const compatibilityStyles = readFileSync(new URL("../src/mobile-compat.css", import.meta.url), "utf8");
-const workflowStyles = readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
-const dashboardStyles = readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
+const compatibilityStyles = readFileSync(new URL("../src/styles/mobile-compat.css", import.meta.url), "utf8");
+const workflowStyles = readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
+const dashboardStyles = readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
 
 test("dark generic modal headers retain a dark surface and readable close control", () => {
   assert.match(

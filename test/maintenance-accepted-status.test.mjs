@@ -7,14 +7,14 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { transformWithOxc } from 'vite';
 import { matchesSmartSearch } from '../smart-search.mjs';
 import * as acceptance from '../request-acceptance.mjs';
-import {requestStatusLabel, requestStatusSortRank} from '../src/request-status.mjs';
+import {requestStatusLabel, requestStatusSortRank} from '../src/utils/requests/request-status.mjs';
 import {requestMeterReadings, requestMeterReadingLabel} from '../request-equipment.mjs';
 import {breakdownMeterValue} from '../breakdown-meter-columns.mjs';
-import {isDurationColumn, compareDurationValues, defaultDurationSort} from '../src/duration-sort.mjs';
+import {isDurationColumn, compareDurationValues, defaultDurationSort} from '../src/utils/ui/duration-sort.mjs';
 import {calculateBreakdownMinutes} from '../breakdown-duration.mjs';
-import {dailyUpdatesExportText} from '../src/daily-updates-order.mjs';
+import {dailyUpdatesExportText} from '../src/utils/ui/daily-updates-order.mjs';
 
-const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 const component = source.slice(source.indexOf('function Status('), source.indexOf('function ThemeToggle('))
   + source.slice(source.indexOf('const sortCollator ='), source.indexOf('function SortableHeader('))
   + source.slice(source.indexOf('const EMPTY_TABLE_FILTER_VALUE ='), source.indexOf('function TableParameterFilter('))

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 
 test("table print layout suppresses browser headers and keeps report spacing", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /@page\{size:landscape;margin:0\}body\{margin:12mm\}/);
   // No fixed paper size: a fixed size hides the browser's Paper size option and prints shrunken when the printer's paper differs.
   assert.doesNotMatch(source, /@page\{size:(?:A4|A3|\$\{)/);

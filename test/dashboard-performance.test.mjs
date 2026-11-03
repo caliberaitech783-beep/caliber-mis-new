@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const metrics = readFileSync(new URL("../dashboard-equipment-metrics.mjs", import.meta.url), "utf8");
 const lifecycle = main.slice(main.indexOf("  const requestLifecycleRows ="), main.indexOf("  // Keep all six compact series"));
 

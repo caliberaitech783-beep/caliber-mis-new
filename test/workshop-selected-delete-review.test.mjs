@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-const source=readFileSync(new URL('../src/workshop-selected-delete.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/requests/workshop-selected-delete.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export function','function'),'review.jsx',{jsx:{runtime:'classic'}});
 function setup({reason='',busy=false,error='',onDelete=async()=>{},records}={}) {
   let index=0,closed=false; const values=[reason,busy,error]; const updates=[];

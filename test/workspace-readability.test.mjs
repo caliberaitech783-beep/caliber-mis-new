@@ -1,8 +1,9 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const read=name=>readFileSync(new URL(`../src/${name}`,import.meta.url),'utf8');
+const read=name=>readFileSync(frontendSourceUrl(name),'utf8');
 const css=read('workspace-readability.css').replace(/\/\*[\s\S]*?\*\//g,'');
 const client=read('main.jsx');
 const compact=read('maintenance-mobile-compact.css');
@@ -18,9 +19,9 @@ const dialog='.modal:not([class*="dashboard-"]):not(.director-timing-modal)';
 
 test('operational readability loads after old compact styles but before the isolated dashboard overrides',()=>{
   const imports=[...client.matchAll(/import ["'](.+\.css)["'];/g)].map(match=>match[1]);
-  assert.equal(imports.filter(path=>path==='./workspace-readability.css').length,1);
-  assert.ok(imports.indexOf('./workspace-readability.css')>imports.indexOf('./maintenance-mobile-compact.css'));
-  assert.deepEqual(imports.slice(-6),['./workspace-readability.css','./dashboard-readability.css','./dashboard-spacing.css','./mobile-phone-optimization.css','./dashboard-night.css','./no-motion.css']);
+  assert.equal(imports.filter(path=>path==='../styles/workspace-readability.css').length,1);
+  assert.ok(imports.indexOf('../styles/workspace-readability.css')>imports.indexOf('../styles/maintenance-mobile-compact.css'));
+  assert.deepEqual(imports.slice(-6),['../styles/workspace-readability.css','../styles/dashboard-readability.css','../styles/dashboard-spacing.css','../styles/mobile-phone-optimization.css','../styles/dashboard-night.css','../styles/no-motion.css']);
   for(const root of ['mobile-workspace','pagepanel','ticket-page','admin-lock-page']){
     assert.ok(client.includes(root),`Missing actual screen root: ${root}`);
     assert.ok(css.includes(`.${root}`),`Missing readable screen scope: ${root}`);

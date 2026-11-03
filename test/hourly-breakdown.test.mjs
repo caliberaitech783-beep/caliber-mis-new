@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hourlyBreakdownEvents, hourlyBreakdownView, openHourlyBreakdownTab, breakdownElapsed } from "../src/hourly-breakdown.mjs";
+import { hourlyBreakdownEvents, hourlyBreakdownView, openHourlyBreakdownTab, breakdownElapsed } from "../src/utils/ui/hourly-breakdown.mjs";
 import { REGION_DATA } from "../region-scope.mjs";
 
 test("site aliases merge, permitted zero-count sites remain, and timers stop on closure", () => {

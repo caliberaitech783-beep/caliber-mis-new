@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {filterOemDelayedRows} from '../src/oem-delay-filter.mjs';
-import {buildOemBreakdownRows} from '../src/oem-breakdown-model.mjs';
+import {filterOemDelayedRows} from '../src/utils/dashboard/oem-delay-filter.mjs';
+import {buildOemBreakdownRows} from '../src/utils/dashboard/oem-breakdown-model.mjs';
 test('live OEM list includes old open cases but excludes completed and idle cases', () => {
   const requests = ['Accepted', 'In progress', 'Closed', 'Verified', 'Idle'].map((status, index) => ({ref: String(index), door: `V${index}`, site: 'Sasti OC', status, start: '2026-08-01 09:00:00', delayedReason: 'Manpower OEM'}));
   const rows = filterOemDelayedRows(buildOemBreakdownRows({requests}));

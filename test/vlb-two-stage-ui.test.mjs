@@ -1,3 +1,4 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -11,7 +12,7 @@ import {bookShiftCode,systemBookDate} from '../trip-card-rules.mjs';
 import {vlbRecordSource} from '../vlb-batch-format.mjs';
 
 async function compile(file,scope,names){
- const source=readFileSync(new URL('../src/'+file,import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
+ const source=readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function').replaceAll('export const','const');
  const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});
  return new Function(...Object.keys(scope),code+';return {'+names.join(',')+'}')(...Object.values(scope));
 }
@@ -147,7 +148,7 @@ test('create batch shows the stage indicator and Close batch only for two-stage 
  stepper.props.onChanged({record:{id:1},fleet:[],fleetProgress:{total:2,saved:2,remaining:0},closeBlockers:[]});assert.deepEqual(h.slots[5].closeBlockers,[]);assert.equal(h.slots[5].fleetProgress.saved,2);assert.equal(h.slots[5].record,undefined);
  await button(tree,'Unlock VLB').props.onClick();assert.equal(calls.at(-1).url,'/api/vlb-batches/batch1/unlock-vlb');assert.deepEqual(calls.at(-1).body,{reason:'Correct VLB card V07'});
  h.slots[5]={...elbStage,canClose:true,closeBlockers:[]};tree=render();await nodes(tree,n=>n.type==='button'&&n.props.children==='Close batch'&&!n.props.disabled)[0].props.onClick();assert.equal(calls.at(-1).url,'/api/vlb-batches/batch1/close');
- const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');assert.ok(source.includes("onElbEntry={batch=>{rememberVlbEntryBatch(session,batch);selectMenu('Equipment Log Book Options')}}"),'main.jsx routes ELB entry from the batch');
+ const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');assert.ok(source.includes("onElbEntry={batch=>{rememberVlbEntryBatch(session,batch);selectMenu('Equipment Log Book Options')}}"),'main.jsx routes ELB entry from the batch');
 });
 
 test('batch report adds the machine-wise shift report with totals only when the server supplies it',async()=>{

@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("production, maintenance, and MIS request tables use header filter popovers", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const breakdownTable = source.slice(source.indexOf("function BreakdownTable"), source.indexOf("const masterFields"));
   const workflowTable = source.slice(source.indexOf("function MobileWorkflowTable"), source.indexOf("function RequestEditForm"));
 

@@ -7,18 +7,18 @@ import {transformWithOxc} from 'vite';
 import * as data from '../info-pulse-data.mjs';
 import {parseIstTimestamp} from '../ai-feeder.mjs';
 import * as dates from '../date-time-format.mjs';
-import {requestStatusLabel} from '../src/request-status.mjs';
-import * as timing from '../src/info-pulse-timing.mjs';
-import * as reasons from '../src/info-pulse-reasons.mjs';
-import * as exportModel from '../src/info-pulse-export.mjs';
-import * as dailyUpdatesOrder from '../src/daily-updates-order.mjs';
-import DateInput from '../src/date-input.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
+import * as timing from '../src/utils/ui/info-pulse-timing.mjs';
+import * as reasons from '../src/utils/ui/info-pulse-reasons.mjs';
+import * as exportModel from '../src/utils/reports/info-pulse-export.mjs';
+import * as dailyUpdatesOrder from '../src/utils/ui/daily-updates-order.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
-const source = readFileSync(new URL('../src/info-pulse-content.jsx', import.meta.url), 'utf8')
+const source = readFileSync(new URL('../src/components/ui/info-pulse-content.jsx', import.meta.url), 'utf8')
   .replace(/^import .*;\r?\n/gm, '').replace('export default function', 'function');
 const {code} = await transformWithOxc(source, 'pulse-content.jsx', {jsx: {runtime: 'classic'}});
 // Info Pulse lists updates through the shared panel, compiled here the same way.
-const panelSource = readFileSync(new URL('../src/daily-updates-list.jsx', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, '').replace(/^export (default )?/gm, '');
+const panelSource = readFileSync(new URL('../src/components/ui/daily-updates-list.jsx', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, '').replace(/^export (default )?/gm, '');
 const panelCode = (await transformWithOxc(panelSource, 'daily-updates-list.jsx', {jsx: {runtime: 'classic'}})).code;
 const panelBindings = {React, useSyncExternalStore: React.useSyncExternalStore, ...dailyUpdatesOrder, formatDisplayDateTime: dates.formatDisplayDateTime};
 const {DailyUpdatesPanel} = new Function("DateInput", ...Object.keys(panelBindings), panelCode + '; return {DailyUpdatesPanel};')(DateInput, ...Object.values(panelBindings));
@@ -372,7 +372,7 @@ test('loading, failures and an empty balance never render a misleading count and
 });
 
 test('the panel header drops the total pill and the trigger badge carries the BD balance', () => {
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.match(main, /<h2 id="ai-feeder-title">Open breakdowns<\/h2><InfoPulseBirthday token=\{session\?\.token\} now=\{now\} \/><\/div>/);
   assert.ok(!main.includes('pulse-heading-total') && !main.includes('headerTarget'));
   assert.match(main, /const breakdowns = useMemo\(\(\) => ready \? buildInfoPulseBreakdowns\(requests\) : \[\], \[requests, ready\]\);/);
@@ -384,8 +384,8 @@ test('the panel header drops the total pill and the trigger badge carries the BD
 });
 
 test('Info Pulse opens full screen with its content scrolling inside the panel', () => {
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
-  const css = readFileSync(new URL('../src/info-pulse-content.css', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/info-pulse-content.css', import.meta.url), 'utf8');
   assert.match(main, /<div className="ai-feeder-overlay pulse-overlay">\s*<div className="ai-feeder-panel pulse-panel"/);
   assert.match(css, /\.ai-feeder-overlay\.pulse-overlay \{ padding: 0; \}/);
   assert.match(css, /\.ai-feeder-panel\.pulse-panel \{ width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; border: 0; box-shadow: none; \}/);
@@ -394,7 +394,7 @@ test('Info Pulse opens full screen with its content scrolling inside the panel',
 });
 
 test('filters, KPI cards and rows follow the dashboard record-browser styling and stack on narrow screens', () => {
-  const css = readFileSync(new URL('../src/info-pulse-content.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/info-pulse-content.css', import.meta.url), 'utf8');
   assert.match(css, /\.pulse-filter-panel:not\(\[open\]\) \.pulse-hide-filters, \.pulse-filter-panel\[open\] \.pulse-show-filters \{ display: none; \}/);
   assert.match(css, /\.pulse-region-tabs button\[aria-selected="true"\] \{ background: var\(--record-purple\); color: #fff;/);
   assert.match(css, /\.pulse-filter-level\[data-level="site"\] \.pulse-filter-chips > button\[aria-pressed="true"\] \{ background: var\(--record-purple\); color: #fff;/);
@@ -442,7 +442,7 @@ test('the filter panel opens collapsed with a purple blinking cue that clears af
   panel().props.onToggle({currentTarget: {open: true}});
   tree = app.render();
   assert.equal(panel().props.open, true, 'the user can still expand it');
-  const css = readFileSync(new URL('../src/info-pulse-content.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/info-pulse-content.css', import.meta.url), 'utf8');
   assert.match(css, /\.pulse-filter-panel\.pulse-filter-hint \{ border: 2px solid var\(--record-purple\); animation: pulse-filter-blink/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{ \.pulse-filter-panel\.pulse-filter-hint, \.pulse-filter-cue \{ animation: none; \} \}/);
 });
@@ -477,12 +477,12 @@ test('Export beside Refresh offers PDF, Excel and Smart Print for every breakdow
   assert.equal(descendants(byLabel(wide, 'BD balance breakdowns, longest standing first'), node => node.type === 'li').length, 24);
   assert.equal(exportOf(wide).props.title, 'Info Pulse BD balance breakdowns · All regions · All dates');
   // The panel hands over the shared menu, whose popover and "preparing file" overlay are raised above the full-screen panel.
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.match(main, /<InfoPulseContent breakdowns=\{breakdowns\}[^\r\n]* ExportMenu=\{ExportMenu\}[^\r\n]* \/>/);
   assert.match(main, /function ExportMenu\(\{[^\r\n]*, portalClassName = "", printSection = false, excelSheets = null \}\) \{/);
   assert.match(main, /className=\{`export-menu-popover\$\{portalClassName \? ` \$\{portalClassName\}` : ""\}`\}/);
   assert.match(main, /<CaliberActivityOverlay message=\{downloadActivity\} className=\{portalClassName\} \/>/);
-  const css = readFileSync(new URL('../src/info-pulse-content.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/info-pulse-content.css', import.meta.url), 'utf8');
   assert.match(css, /\.export-menu-popover\.pulse-export-layer, \.caliber-activity-overlay\.pulse-export-layer \{ z-index: 10001; \}/);
   assert.match(css, /\.pulse-export svg:first-child \{ width: 16px; height: 16px; \}/);
 });

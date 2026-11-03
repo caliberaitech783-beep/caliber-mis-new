@@ -4,8 +4,8 @@ import {readFile} from 'node:fs/promises';
 
 const [server,main,view]=await Promise.all([
   readFile(new URL('../server.mjs',import.meta.url),'utf8'),
-  readFile(new URL('../src/main.jsx',import.meta.url),'utf8'),
-  readFile(new URL('../src/request-corrections.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/app/App.jsx',import.meta.url),'utf8'),
+  readFile(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8'),
 ]);
 
 test('server persists a manager-requested correction register with evidence, PM review, and Admin application',()=>{

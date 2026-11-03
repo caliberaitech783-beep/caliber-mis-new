@@ -191,8 +191,8 @@ test("Info Pulse fails closed when an operational user has no assigned location"
 });
 
 test("Info Pulse retains its scoped countdown behavior while staying absent from MIS chrome", () => {
-  const mainSource = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = fs.readFileSync(new URL("../src/ai-feeder.css", import.meta.url), "utf8");
+  const mainSource = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = fs.readFileSync(new URL("../src/styles/ai-feeder.css", import.meta.url), "utf8");
   const serverSource = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
   assert.match(mainSource, /function AiFeederPanel\(/);

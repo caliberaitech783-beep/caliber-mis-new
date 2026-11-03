@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const find=(node,predicate)=>Array.isArray(node)?node.flatMap(child=>find(child,predicate)):React.isValidElement(node)?[...(predicate(node)?[node]:[]),...find(node.props.children,predicate)]:[];
 
 test('both first-trip reminders can be dismissed without changing the pending queue',async()=>{
@@ -32,8 +32,8 @@ test('both first-trip reminders can be dismissed without changing the pending qu
 });
 
 test('date overlays reserve a separate picker area and toolbar fields wrap instead of shrinking',()=>{
-  const css=readFileSync(new URL('../src/date-input.css',import.meta.url),'utf8');
-  const table=readFileSync(new URL('../src/table-actions.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/date-input.css',import.meta.url),'utf8');
+  const table=readFileSync(new URL('../src/styles/table-actions.css',import.meta.url),'utf8');
   assert.match(css,/min-width: calc\(12ch \+ 2\.25em\)/);
   assert.match(css,/padding-right: 2\.25em/);
   assert.match(css,/::before \{ right: 2\.25em; overflow: hidden/);

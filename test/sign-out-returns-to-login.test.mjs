@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const bell = main.slice(main.indexOf("function NotificationBell("), main.indexOf("function Normal("));
 const app = main.slice(main.indexOf("function App()"));
 

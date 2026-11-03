@@ -5,7 +5,7 @@ import {PC_BACKUP_KEY_PREFIX,createPcBackupKey,matchPcBackupKey,normalizePcBacku
 import {auditRouteDetails} from '../audit-trail.mjs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const client=readFileSync(new URL('../src/backup-administration.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const client=readFileSync(new URL('../src/pages/admin/backup-administration.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const script=readFileSync(new URL('../public/pc-backup/Caliber-Pulse-Backup-Setup.ps1',import.meta.url),'utf8');
 
 test('PC keys are random, stored only as hashes, matched in constant time and revocable',()=>{

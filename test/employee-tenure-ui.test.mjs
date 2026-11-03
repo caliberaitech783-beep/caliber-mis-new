@@ -4,11 +4,11 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {TENURE_MONTHS, buildEmployeeTenureReport} from '../src/employee-tenure.mjs';
+import {TENURE_MONTHS, buildEmployeeTenureReport} from '../src/utils/people/employee-tenure.mjs';
 import {formatDisplayDate} from '../date-time-format.mjs';
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
-const source=readFileSync(new URL('../src/employee-tenure-report.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+const source=readFileSync(new URL('../src/pages/reports/employee-tenure-report.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
 const {code}=await transformWithOxc(source,'employee-tenure-report.jsx',{jsx:{runtime:'classic'}});
 test('employee report passes exact tenure and nine requested columns to the exportable report and hides stale sessions',()=>{
   const slots=['2026-09-30',3,0,{token:'fixture',loading:false,error:'',directory:{sites:[{id:'site',label:'Head Office',group:'CORP'}],matrix:{'site|A1':[
@@ -59,12 +59,12 @@ test('employee report passes exact tenure and nine requested columns to the expo
 });
 
 test('tenure header puts the controlled search before Refresh and removes explanatory paragraph', async () => {
-  const component=readFileSync(new URL('../src/employee-tenure-report.jsx',import.meta.url),'utf8');
+  const component=readFileSync(new URL('../src/pages/reports/employee-tenure-report.jsx',import.meta.url),'utf8');
   assert.doesNotMatch(component, /<p>Currently working employees only/);
   assert.doesNotMatch(component, /active employee records excluded because/);
   assert.match(component,/type="search"[\s\S]*?>Refresh<\/button>/);
   assert.match(component,/query=\{search\} showSearch=\{false\}/);
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const section=main.slice(main.indexOf('function ReportSection('), main.indexOf('\nfunction ',main.indexOf('function ReportSection(')+1));
   const {code: sectionCode}=await transformWithOxc(section,'report-section.jsx',{jsx:{runtime:'classic'}});
   let tableProps;
@@ -79,11 +79,11 @@ test('tenure header puts the controlled search before Refresh and removes explan
 });
 
 test('tenure uses the same Generate labels as other reports while retaining export handlers', () => {
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.doesNotMatch(source,/smartLabels=\{category === "employee-tenure"\}/);
   assert.match(source,/smartLabels && smartPrintItem && <button[^>]+onClick=\{printReport\}[^>]*><Printer \/> Smart Print/);
   assert.match(source,/onClick=\{downloadPdf\}[^>]*><Download \/> \{smartLabels \? "Smart PDF"/);
   assert.match(source,/onClick=\{downloadExcel\}[^>]*><FileSpreadsheet \/> \{smartLabels \? "Smart Excel"/);
-  const css=readFileSync(new URL('../src/topbar.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/topbar.css',import.meta.url),'utf8');
   assert.match(css,/\.cdir-dropdown \.cdir-clock \{\s*position: relative;\s*top: auto;\s*left: auto;/);
 });

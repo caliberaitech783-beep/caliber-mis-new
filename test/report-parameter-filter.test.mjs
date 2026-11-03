@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("report views expose parameter filters through the report actions control", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const breakdown = source.slice(source.indexOf("function BreakdownTable"), source.indexOf("const masterFields"));
   const reportTable = source.slice(source.indexOf("function ReportTable"), source.indexOf("function parseCsv"));
   const mobileWorkflow = source.slice(source.indexOf("function MobileWorkflowTable"), source.indexOf("function RequestEditForm"));

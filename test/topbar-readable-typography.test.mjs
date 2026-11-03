@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("the colored top bar increases text by two pixels at each responsive size", async () => {
-  const css = await readFile(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(css, /@media \(min-width: 1601px\)/);
   assert.match(css, /\.app > aside \.caliber-app-name strong \{ font-size: 17px; \}/);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {fetchPdfExport} from '../src/pdf-export-request.mjs';
+import {fetchPdfExport} from '../src/services/reports/pdf-export-request.mjs';
 
 test('small and large PDF reports use compatible transport without changing data or authentication', async () => {
   for (const size of [20, 150000]) {
@@ -35,7 +35,7 @@ test('PDF failures preserve application errors and explain HTML gateway failures
 });
 
 test('all four PDF export entry points use the same transport', () => {
-  const source = readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source = readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.equal((source.match(/fetchPdfExport\("\/api\/exports\/pdf"/g)||[]).length,4);
   assert.doesNotMatch(source,/await fetch\("\/api\/exports\/pdf"/);
 });

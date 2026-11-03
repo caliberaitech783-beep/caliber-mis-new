@@ -2,7 +2,7 @@ import {canonicalSiteName, equipmentSiteName} from './site-location.mjs';
 import {isIdleVehicleRequest} from './request-idle.mjs';
 import {requestMeterReadings} from './request-equipment.mjs';
 import {equipmentDoorNumber} from './equipment-door.mjs';
-import {requestStatusLabel} from './src/request-status.mjs';
+import {requestStatusLabel} from './src/utils/requests/request-status.mjs';
 
 const normalize = (value) => String(value ?? "").trim().toLowerCase();
 

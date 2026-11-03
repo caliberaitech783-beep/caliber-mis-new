@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 test('dashboard graph lists omit equipment name and make while retaining the other columns',()=>{
-  const source=readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8');
   assert.doesNotMatch(source,/<th>Equipment name<\/th>|<th>Make<\/th>/);
   assert.doesNotMatch(source,/<td>\{record.make/);
   for(const label of ['Door No','Equipment category','Equipment group','Model','Serial / chassis no.']) assert.ok(source.includes(`<th>${label}</th>`));

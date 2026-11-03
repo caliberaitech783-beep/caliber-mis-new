@@ -137,9 +137,9 @@ test('In and Out report ships in the director bundle and the General Report tab'
   assert.equal(inOut.rows[1][column('closed')],'2');
   assert.equal(inOut.rows[1][column('net')],'-1');
   assert.equal(inOut.rows[0][column('pendingClose')],'2');
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const styles=readFileSync(new URL('../src/reports-workspace.css',import.meta.url),'utf8');
-  assert.match(source,/from "\.\.\/in-out-report\.mjs"/);
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const styles=readFileSync(new URL('../src/styles/reports-workspace.css',import.meta.url),'utf8');
+  assert.match(source,/from "\.(?:\.\.?\/)+(?:[\w-]+\/)*in-out-report\.mjs"/);
   assert.doesNotMatch(source,/category: "general", title: IN_OUT_REPORT_TITLE/,"the In and Out Report is no longer listed under General Report");
   assert.doesNotMatch(source,/InOutReportSummary/);
   assert.match(styles,/\.in-out-net\.positive/);

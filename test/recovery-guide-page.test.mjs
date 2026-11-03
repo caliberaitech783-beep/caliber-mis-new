@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const guide=readFileSync(new URL('../src/recovery-guide.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const topbar=readFileSync(new URL('../src/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const guide=readFileSync(new URL('../src/pages/help/recovery-guide.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const topbar=readFileSync(new URL('../src/styles/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('Recovery guide is an Administration page before Audit Trail, for Admin and Super Admin only',()=>{
   // The guide sits with the backup pages it links to; Pulse sync follows Audit Trail.

@@ -17,7 +17,7 @@ test("only explicit mobile menu opt-outs are hidden", () => {
 });
 
 test("user records independently control desktop and responsive mobile navigation", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const access = fs.readFileSync(new URL("../admin-access.mjs", import.meta.url), "utf8");
   assert.match(source, /Selected menus for each view/);
   assert.match(source, /view="desktop"/);

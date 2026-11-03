@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {access, readFile} from "node:fs/promises";
-import {userGuideForRole, userGuideStorageKey, userGuideVideo, userGuidesForRoles} from "../src/help-training.mjs";
+import {userGuideForRole, userGuideStorageKey, userGuideVideo, userGuidesForRoles} from "../src/utils/ui/help-training.mjs";
 
 test("role users receive only their department guide", () => {
   assert.equal(userGuideForRole("Production User")?.english, "/user-guides/production-user-guide-english.mp4");
@@ -53,18 +53,18 @@ test("department user guides list the full clip coverage", () => {
 });
 
 test("normal user header renders Help and Training", async () => {
-  const source = await readFile("src/main.jsx", "utf8");
+  const source = await readFile("src/app/App.jsx", "utf8");
   assert.match(source, /<HelpTraining role=\{mobileRole\} location=\{assignedLocation\} \/>/);
 });
 
 test("operational user header displays the Help and Training control as an icon only", async () => {
-  const styles = await readFile("src/help-training.css", "utf8");
+  const styles = await readFile("src/styles/help-training.css", "utf8");
   assert.match(styles, /\.normal>header \.help-training-trigger>span\{display:none\}/);
   assert.match(styles, /\.normal>header \.help-training-trigger\{width:39px;/);
 });
 
 test("manager header renders Help and Training only for manager accounts", async () => {
-  const source = await readFile("src/main.jsx", "utf8");
+  const source = await readFile("src/app/App.jsx", "utf8");
   assert.match(source, /adminPermissions\.adminLevel === "Manager" && <HelpTraining roles=\{adminPermissions\.managerRoles\} location=\{profileLocation\} \/>/);
 });
 

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const styles=readFileSync(new URL('../src/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const styles=readFileSync(new URL('../src/styles/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('each Operational Workspaces entry is a keyed menu item with an icon badge',()=>{
   assert.match(source,/operationalWorkspaceNav\.map\(\(\[name, Icon, role\]\) => <div className="nav-config-row" key=\{name\}><button role="menuitem" className=\{`workspace-menu-item\$\{active === name \? " active" : ""\}`\} data-workspace=\{String\(role\)\.split\(" "\)\[0\]\.toLowerCase\(\)\}/);
@@ -100,7 +100,7 @@ test('the top-level header buttons get glass badges in the header gradient tones
 });
 
 test('operational, manager and workspace navigation get the graphical treatment through data-nav attributes only',()=>{
-  const motion=readFileSync(new URL('../src/nav-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+  const motion=readFileSync(new URL('../src/styles/nav-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
   const header=source.slice(source.indexOf('<nav className="normal-header-nav">'),source.indexOf('</nav>',source.indexOf('<nav className="normal-header-nav">')));
   for(const [key,icon,label] of [['dashboard','LayoutDashboard',' Dashboard'],['directory','BookOpen',' Directory \\(CD\\)'],['reports','FileBarChart',' Reports'],['tickets','Ticket',' Tickets'],['transfers','ArrowRightLeft',' Vehicle Transfer']]){
     assert.match(header,new RegExp(`<button data-nav="${key}" className=\\{section === "[a-z]+" \\? "active" : ""\\}[\\s\\S]*?><${icon} \\/>${label}<\\/button>`),`${key} keeps the plain icon + label shape`);
@@ -117,7 +117,7 @@ test('operational, manager and workspace navigation get the graphical treatment 
   for(const key of ['active','idle','productionFirstTrip','history'])assert.match(manager,new RegExp(`<button data-nav="${key}" `),key);
   assert.match(source,/<button type="button" key=\{role\} data-nav="role" className=\{activeManagerRole===role\?"active":""\}/);
   const imports=[...source.matchAll(/import ["'](.+\.css)["'];/g)].map(m=>m[1]);
-  assert.ok(imports.indexOf('./nav-motion.css')>imports.indexOf('./brand-theme.css')&&imports.indexOf('./nav-motion.css')<imports.indexOf('./workspace-readability.css'),'loaded after the brand theme, before the pinned last five');
+  assert.ok(imports.indexOf('../styles/nav-motion.css')>imports.indexOf('../styles/brand-theme.css')&&imports.indexOf('../styles/nav-motion.css')<imports.indexOf('../styles/workspace-readability.css'),'loaded after the brand theme, before the pinned last five');
   assert.match(motion,/\.normal-header-nav button\[data-nav\] > svg:first-child \{[\s\S]*background: linear-gradient\(135deg, var\(--hn-a, #8b5cf6\), var\(--hn-b, #522e90\)\)/,'the icon itself is the badge');
   assert.match(motion,/\.normal-header-nav button\[data-nav="dashboard"\] \{ --hn-a: #8b5cf6; --hn-b: #522e90;/);
   assert.match(motion,/\.normal-header-nav button\[data-nav="transfers"\] \{ --hn-a: #f97373; --hn-b: #f04e53;/);

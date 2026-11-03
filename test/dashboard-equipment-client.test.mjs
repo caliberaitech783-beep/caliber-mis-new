@@ -3,8 +3,8 @@ import {readFileSync} from "node:fs";
 import test from "node:test";
 import {dashboardEquipmentScope, scopeDashboardEquipmentRecords} from "../dashboard-equipment-access.mjs";
 
-const source=readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
-const styles=readFileSync(new URL("../src/dashboard-concept-a.css",import.meta.url),"utf8");
+const source=readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
+const styles=readFileSync(new URL("../src/styles/dashboard-concept-a.css",import.meta.url),"utf8");
 
 test("dashboards load fleet records through the dedicated read-only endpoint",()=>{
   const hook=source.slice(source.indexOf("function useDashboardEquipment"),source.indexOf("function FleetDataState"));

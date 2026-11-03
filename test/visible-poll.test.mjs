@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
-import {startVisiblePoll} from "../src/visible-poll.mjs";
+import {startVisiblePoll} from "../src/services/ui/visible-poll.mjs";
 
 function fakePage(){
   const listeners={};
@@ -59,8 +59,8 @@ test("a failing poll does not stop later polls",async()=>{
 
 test("live feeds keep their cadence and reminders stay off the notification request path",()=>{
   const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
-  const main=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
-  const assist=fs.readFileSync(new URL("../src/remote-assistance.jsx",import.meta.url),"utf8");
+  const main=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
+  const assist=fs.readFileSync(new URL("../src/components/notifications/remote-assistance.jsx",import.meta.url),"utf8");
   assert.match(main,/startVisiblePoll\(load,3000\)/);
   assert.match(assist,/const ASSISTANCE_POLL_MS=2000;/);
   assert.match(assist,/startVisiblePoll\(poll,ASSISTANCE_POLL_MS,\{keepPolling:\(\)=>Boolean\(assistanceRef\.current\)\}\)/);

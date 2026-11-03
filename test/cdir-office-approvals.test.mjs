@@ -100,6 +100,6 @@ test('all nonadmin single and bulk master deletions are intercepted before direc
  const route=source.slice(source.indexOf("app.delete('/api/masters/:master/:id'"));
  assert.ok(route.indexOf('return requestCdirDeletion(req,res,next)')<route.indexOf('DELETE FROM master_records'));
  assert.ok(source.includes("if(deletionProtectedMaster(master)&&!cdirDirectAdministrator(req.session))return res.status(403)"));
- const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.ok(ui.includes('response.status===202'));assert.ok(ui.includes('deletionApprovalRequired ? "Request deletion"'));
 });

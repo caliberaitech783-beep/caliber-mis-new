@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 test('announcement history is authenticated, paginated and independent of acknowledgements and popup expiry',()=>{
   const route=server.slice(server.indexOf("app.get('/api/announcements/history'"),server.indexOf("app.get('/api/announcements/pending'"));
   assert.match(route,/history',requireSession/);
@@ -26,7 +26,7 @@ test('all desktop and operational navigation bars end with announcement history'
 });
 test('announcement archive is full-screen, readable and isolated from navigation colours',()=>{
   const component=client.slice(client.indexOf('function AnnouncementHistoryButton'),client.indexOf('function formatTwelveHourDateTime'));
-  const css=readFileSync(new URL('../src/user-sessions.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/user-sessions.css',import.meta.url),'utf8');
   assert.match(component,/open&&createPortal\(<Modal/);
   assert.match(component,/<\/Modal>,document.body\)/);
   assert.match(component,/className="announcement-archive-modal"/);

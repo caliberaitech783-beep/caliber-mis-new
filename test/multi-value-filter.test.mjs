@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { EMPTY_FILTER_VALUE, cellMatchesFilterValues, describeFilterValues, encodeFilterValues, filterValueSelected, parseFilterValues, toggleFilterValue } from "../src/multi-value-filter.mjs";
+import { EMPTY_FILTER_VALUE, cellMatchesFilterValues, describeFilterValues, encodeFilterValues, filterValueSelected, parseFilterValues, toggleFilterValue } from "../src/utils/ui/multi-value-filter.mjs";
 
 test("several column values combine into one filter string and back", () => {
   assert.equal(encodeFilterValues([]), "");

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {beginDownload,runDownloadNotice} from '../src/download-notice.mjs';
+import {beginDownload,runDownloadNotice} from '../src/services/ui/download-notice.mjs';
 
 function fakeDocument(){
   class Element{

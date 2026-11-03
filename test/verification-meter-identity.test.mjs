@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {requestMeterReadings,requestMeterTypeForRequest} from '../request-equipment.mjs';
 import {validateClosingMeterReadings} from '../request-workflow.mjs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const form=source.slice(source.indexOf('function VerifyRequestForm('),source.indexOf('function ProductionFirstTripForm('));
 const start=form.indexOf('        const closingMeterReadings =');
 const end=form.indexOf('\n      } catch',start);

@@ -28,8 +28,8 @@ test('GRN register uses the latest receipt status without multiplying item lines
 
 test('GRN report retains its permission protection and page after its IBOSS link is removed',()=>{
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const ui=fs.readFileSync(new URL('../src/grn-register.jsx',import.meta.url),'utf8');
+  const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const ui=fs.readFileSync(new URL('../src/pages/reports/grn-register.jsx',import.meta.url),'utf8');
   assert.match(server,/app\.get\('\/api\/reports\/grn-register',requireSession/);
   assert.match(server,/accessAllows\(permissions\.reportAccess,'GRN Register'\)/);
   assert.doesNotMatch(main,/const visibleIbossNav = [^\n]+\["GRN Register"/);

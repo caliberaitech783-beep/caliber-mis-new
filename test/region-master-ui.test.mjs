@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("region master renders WCL and NCL graphical tabs with site subtabs", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
   const regionSource = source.slice(source.indexOf("function RegionMasterPage"), source.indexOf("Generic = function GenericWithMasters"));
 
   assert.match(source, /function RegionMasterPage\(/);

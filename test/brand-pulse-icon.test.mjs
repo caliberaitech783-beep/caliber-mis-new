@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const css=readFileSync(new URL('../src/brand-theme.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/brand-theme.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const mail=readFileSync(new URL('../audit-log-export.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('the brand uses Caliber Pulse-II and the supplied logo everywhere the brand component is used',()=>{

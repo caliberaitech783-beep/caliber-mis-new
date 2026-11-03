@@ -4,11 +4,11 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
 import { fleetChartCounts } from "../dashboard-equipment-metrics.mjs";
-import { fleetBarHeightPercent } from "../src/fleet-bar-scale.mjs";
+import { fleetBarHeightPercent } from "../src/utils/dashboard/fleet-bar-scale.mjs";
 
-const source = readFileSync(new URL("../src/fleet-site-bars.jsx", import.meta.url), "utf8")
+const source = readFileSync(new URL("../src/components/dashboard/fleet-site-bars.jsx", import.meta.url), "utf8")
   .replace('import React from "react";', "")
-  .replace('import { fleetBarHeightPercent } from "./fleet-bar-scale.mjs";', "")
+  .replace('import { fleetBarHeightPercent } from "../../utils/dashboard/fleet-bar-scale.mjs";', "")
   .replace("export default function FleetSiteBars", "function FleetSiteBars");
 const code = (await transformWithOxc(source, "fleet-site-bars.jsx", { jsx: { runtime: "classic" } })).code;
 const FleetSiteBars = new Function("React", "fleetBarHeightPercent", `${code}; return FleetSiteBars;`)(React, fleetBarHeightPercent);

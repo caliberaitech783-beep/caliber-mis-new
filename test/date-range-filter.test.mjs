@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { dateKeyOf, describeDateRange, encodeDateRange, looksLikeDateColumn, matchesDateRange, parseDateRange } from "../src/date-range-filter.mjs";
+import { dateKeyOf, describeDateRange, encodeDateRange, looksLikeDateColumn, matchesDateRange, parseDateRange } from "../src/utils/ui/date-range-filter.mjs";
 
 test("date ranges round-trip through the single-string column filter value", () => {
   assert.equal(encodeDateRange("", ""), "");

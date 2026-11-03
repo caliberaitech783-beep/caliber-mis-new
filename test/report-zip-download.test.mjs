@@ -3,9 +3,9 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 test('reports UI supports selectable PDF and Excel downloads in one ZIP archive',()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const css=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
-  const polish=readFileSync(new URL('../src/report-schedule-polish.css',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/style.css',import.meta.url),'utf8');
+  const polish=readFileSync(new URL('../src/styles/report-schedule-polish.css',import.meta.url),'utf8');
   assert.match(source,/Download reports ZIP/);
   assert.match(source,/Download reports as ZIP/);
   assert.match(source,/type="checkbox" checked=\{selectedZipReports\.includes\(report\.title\)\}/);
@@ -27,8 +27,8 @@ test('reports UI supports selectable PDF and Excel downloads in one ZIP archive'
 });
 
 test('report ZIP dialog fills the viewport with scrollable content and pinned controls',()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const css=readFileSync(new URL('../src/report-schedule-polish.css',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/report-schedule-polish.css',import.meta.url),'utf8');
   assert.match(source,/className="overlay report-zip-overlay"/);
   assert.match(css,/\.overlay\.report-zip-overlay\s*\{\s*padding: 0;/);
   const modal=css.match(/\.overlay \.modal\.report-zip-modal\s*\{([^}]+)\}/)?.[1];
@@ -39,7 +39,7 @@ test('report ZIP dialog fills the viewport with scrollable content and pinned co
 });
 
 test('reports and schedule configuration are exposed to every signed-in profile with server-side scope',()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   assert.match(source,/section === "reports"/);
   assert.match(source,/<FileBarChart \/> Reports/);

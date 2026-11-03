@@ -5,7 +5,7 @@ import {breakdownMeterValue,breakdownMeterFields,latestBreakdownMeterValue,withB
 import {buildDepartmentReports} from '../department-reports.mjs';
 import {buildDirectorReportTables} from '../director-report-bundle.mjs';
 import {FLEET_ACTIVITY_COLUMNS,fleetActivityTable} from '../site-consolidated-report.mjs';
-import {hourlyBreakdownEvents} from '../src/hourly-breakdown.mjs';
+import {hourlyBreakdownEvents} from '../src/utils/ui/hourly-breakdown.mjs';
 
 const tipper={ref:'REQ-1',door:'T-12',site:'Pakri Barwadih',status:'Closed',equipmentGroup:'Tipper',complaint:'Brake failure',category:'Mechanical',
   start:'2026-09-20 08:00:00',acceptedAt:'2026-09-20 08:10:00',closedAt:'2026-09-20 14:00:00',verifiedAt:'2026-09-20 15:00:00',firstTripAt:'2026-09-20 14:30:00',
@@ -78,14 +78,14 @@ test('site activity report hides closing readings for cases still open at window
 test('hourly BD In shows opening readings and BD Out shows closing readings', () => {
   const events=hourlyBreakdownEvents([tipper],10,Date.parse('2026-09-20T15:00:00+05:30'));
   assert.deepEqual(events.map(event=>[event.direction,event.hmr,event.kmr]),[['Out','5126','80230'],['In','5120','80211']]);
-  const view=fs.readFileSync(new URL('../src/hourly-breakdown-view.jsx',import.meta.url),'utf8');
+  const view=fs.readFileSync(new URL('../src/components/ui/hourly-breakdown-view.jsx',import.meta.url),'utf8');
   assert.match(view,/<th>In\/Out<\/th><th>HMR<\/th><th>KMR<\/th>/);
 });
 
 test('dashboard breakdown tables always show opening HMR and KMR', () => {
-  const browser=fs.readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8');
+  const browser=fs.readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8');
   assert.match(browser,/<th>Model<\/th><th>Opening HMR<\/th><th>Opening KMR<\/th>\{showClosingMeters/);
-  const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(main,/\["openingHmr", "Opening HMR"\], \["openingKmr", "Opening KMR"\]/);
   assert.match(main,/\.\.\.breakdownMeterFields\(request, equipment \? \[equipment\] : \[\]\)/);
   assert.match(main,/workspaceReportTitles\.idle\} showMakeModel showReason showCreatedBy showTurnaroundTime showMeterData/);

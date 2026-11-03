@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {equipmentDoorNumber,requestsWithDoorNumbers} from '../equipment-door.mjs';
 import {requestEquipmentDetails} from '../request-equipment.mjs';
-import {equipmentMachineLabel} from '../src/dashboard-drilldown-model.mjs';
+import {equipmentMachineLabel} from '../src/utils/dashboard/dashboard-drilldown-model.mjs';
 import {fleetAssetRequestDetails} from '../dashboard-equipment-metrics.mjs';
 import {readFileSync} from 'node:fs';
 
@@ -32,9 +32,9 @@ test('BD sheet, fleet drilldowns and printable table use the master door label',
     assert.equal(row.door,record.equipmentName);
     assert.equal(equipmentMachineLabel(row),record.equipmentName);
   }
-  const ui=readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8');
   assert.match(ui,/equipmentMachineLabel\(record\)/);
-  const dashboard=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const dashboard=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.ok(dashboard.includes('door: requestEquipmentDetails(equipment || {}).door || request.door'));
 });
 test('imported fleet labels take priority over registration for new requests',()=>{

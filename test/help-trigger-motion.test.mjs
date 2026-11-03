@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const styles=readFileSync(new URL('../src/help-training.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const styles=readFileSync(new URL('../src/styles/help-training.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('the Help & Training trigger is an animated glass badge in every header that mounts it',()=>{
   assert.equal((source.match(/<HelpTraining /g)||[]).length,2,'operational header and Manager admin header');

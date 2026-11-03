@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {filterOemDelayedRows} from '../src/oem-delay-filter.mjs';
+import {filterOemDelayedRows} from '../src/utils/dashboard/oem-delay-filter.mjs';
 
 test('unsaved responsibility can be switched; saved responsibility stays locked in the general edit form', () => {
-  const ui=readFileSync(new URL('../src/maintenance-oem-choice.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/components/requests/maintenance-oem-choice.jsx',import.meta.url),'utf8');
   assert.ok(ui.includes('disabled={Boolean(request.oemResponsibility) && !canEdit}'));
   assert.ok(ui.includes('setSelected(value)'));
   assert.ok(ui.includes('type="hidden" name="oemResponsibility" value={selected}'));
@@ -24,12 +24,12 @@ test('explicit responsibility overrides legacy reasons without including closed 
   assert.deepEqual(filterOemDelayedRows([{requests}])[0].requests.map(r=>r.ref), ['oem','legacy']);
 });
 test('selection is exclusive, stays in the edit form and does not open daily updates', () => {
-  const source=readFileSync(new URL('../src/maintenance-oem-choice.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/components/requests/maintenance-oem-choice.jsx',import.meta.url),'utf8');
   assert.ok(source.includes('if (!request.acceptedAt) return null'));
   assert.ok(source.includes('checked={selected === value}'));
   assert.ok(source.includes('name="oemResponsibility"'));
   assert.doesNotMatch(source,/DailyRemarkForm|createPortal|onSave/);
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.ok(main.includes('oemResponsibility: form.get("oemResponsibility")'));
 });
 

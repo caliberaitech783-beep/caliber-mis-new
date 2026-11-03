@@ -6,7 +6,7 @@ import { masterAccessAllows } from "../admin-access.mjs";
 
 const data = JSON.parse(readFileSync(new URL("../public/cd/directory-data.json", import.meta.url), "utf8"));
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const html = readFileSync(new URL("../public/cd/caliber-directory.html", import.meta.url), "utf8");
 
 test("the directory file splits into the seven C-Dir masters", () => {
@@ -139,7 +139,7 @@ test("C-Dir Masters opens a clock face of icons that show their full names", () 
   assert.ok(clock.includes("const [openState, setOpen] = useState(false);"), "starts closed even on one of its pages");
   assert.ok(clock.includes("if (rect && rect.right > window.innerWidth - 8) setInside(true);"), "a half clock that would leave the screen opens inside the menu");
   assert.ok(source.includes("[...masterNav, ...cdirMasterNavItems].some(([master]) => master === name)"), "C-Dir master pages stay reachable");
-  const css = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
   assert.match(css, /\.cdir-clock-item \{[\s\S]*?transform: rotate\(var\(--angle\)\) translateY\(calc\(var\(--radius\) \* -1\)\) rotate\(calc\(var\(--angle\) \* -1\)\);/, "icons placed around a circle");
   assert.match(css, /\.cdir-clock-item::after \{\s*content: attr\(data-label\);/, "full name tooltip");
   assert.match(css, /\.cdir-clock-item:hover::after/);
@@ -153,12 +153,12 @@ test("the Admin menu ends with a Database half clock for the backup pages and Di
   const locks = menu.indexOf('active === "Admin locks"'), database = menu.indexOf('<ClockMenu label="Database" icon={Database} items={adminDatabaseNav} hours={adminDatabaseNav.map((_, index, all) => (22.5 + index * 135 / Math.max(1, all.length - 1)) / 30)}');
   assert.ok(locks > 0 && database > locks, "Database is the last Admin entry, after Audit Trail and Admin locks");
   assert.ok(source.includes('if(backupAdminPages.has(name)||databaseToolPages.has(name))return isAdministrator;'), "backup pages and Diagnostics keep their Admin-only access");
-  const css = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
   assert.match(css, /\.masters-dropdown \.cdir-clock\.half \{[\s\S]*?position: relative;/, "the half clock opens inside the menu, never off-screen");
 });
 
 test("Database opens beside the Admin menu and WhatsApp opens downward with WhatsApp in the centre", () => {
-  const css = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
   assert.match(css, /\.cdir-clock\.half\.beside \{\s*top: 50%;\s*left: calc\(100% \+ 10px\);/, "Database half clock opens to the right");
   assert.match(css, /\.admin-dropdown:has\(\.cdir-clock\.half\.beside\) \{ max-height: none; overflow: visible; \}/, "the Admin menu does not clip it");
   assert.match(css, /\.cdir-clock\.half\.down \{\s*--cx: 50%;\s*--cy: 48px;/, "WhatsApp centre at the top middle");

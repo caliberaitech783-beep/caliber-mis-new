@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { visibleInMaintenanceHistory } from "../src/maintenance-history.mjs";
+import { visibleInMaintenanceHistory } from "../src/utils/requests/maintenance-history.mjs";
 
 test("maintenance history shows every closed entry before and after MIS verification", () => {
   for (const closedBy of ["Anoop Paul", "maimaintenance manager", "Sanskar Manohare", "Other closer"]) {

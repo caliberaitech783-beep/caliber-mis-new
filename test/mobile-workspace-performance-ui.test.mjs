@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import test from "node:test";
 
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const shared = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
-const compactCss = readFileSync(new URL("../src/maintenance-mobile-compact.css", import.meta.url), "utf8");
-const tableCss = readFileSync(new URL("../src/table-actions.css", import.meta.url), "utf8");
-const phoneCss = readFileSync(new URL("../src/mobile-phone-optimization.css", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
+const compactCss = readFileSync(new URL("../src/styles/maintenance-mobile-compact.css", import.meta.url), "utf8");
+const tableCss = readFileSync(new URL("../src/styles/table-actions.css", import.meta.url), "utf8");
+const phoneCss = readFileSync(new URL("../src/styles/mobile-phone-optimization.css", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
 test("phone workspaces expose direct Columns, Actions, search/status and refresh controls", () => {
@@ -45,7 +45,7 @@ test("production dashboard, reports and first-trip workspace share the site-wide
 });
 
 test("the final phone layer keeps core actions visible while collapsing secondary chrome", () => {
-  assert.ok(main.indexOf('import "./mobile-phone-optimization.css"') > main.indexOf('import "./dashboard-spacing.css"'));
+  assert.ok(main.indexOf('import "../styles/mobile-phone-optimization.css"') > main.indexOf('import "../styles/dashboard-spacing.css"'));
   assert.match(phoneCss, /\.table-search-toolbar\[data-mobile-open="false"\][\s\S]*\.workflow-actions-slot \.shared-table-actions-toolbar > :is\(\.record-date-range, \.export-menu, \.secondary\)/);
   assert.match(phoneCss, /grid-template-columns:\s*minmax\(0, 1\.25fr\) repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(phoneCss, /:is\(\.mobile-columns-trigger, \.report-actions-trigger\)/);
@@ -65,7 +65,7 @@ test("phone report and ticket layouts retain every workflow in compact horizonta
 test("phone alerts are bounded and unchanged feeds avoid expensive workflow rerenders", () => {
   assert.match(phoneCss, /\.incoming-notification \.notification-message\.compact \.notification-details\s*\{[^}]*-webkit-line-clamp:\s*2/);
   assert.match(phoneCss, /\.incoming-notification-close\s*\{[^}]*min-width:\s*40px[^}]*min-height:\s*40px/);
-  const updateNotice=readFileSync(new URL('../src/site-update-notice.jsx',import.meta.url),'utf8');
+  const updateNotice=readFileSync(new URL('../src/components/ui/site-update-notice.jsx',import.meta.url),'utf8');
   assert.match(updateNotice, /setInterval\(check,adaptiveRefreshInterval\(window,60_000\)\)/);
   assert.match(main, /if \(current\.token === session\.token && current\.loaded && !current\.error\) return current/);
 });

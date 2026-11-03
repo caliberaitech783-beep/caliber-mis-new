@@ -16,8 +16,8 @@ test("renaming the display label leaves the stored access key untouched", () => 
 });
 
 test("navigation, breadcrumb, page title and access checkboxes render the label", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  assert.match(source, /import \{navigationLabel\} from "\.\.\/navigation-visibility\.mjs";/);
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  assert.match(source, /import \{navigationLabel\} from "\.(?:\.\.?\/)+(?:[\w-]+\/)*navigation-visibility\.mjs";/);
   assert.match(source, /Operations <ChevronRight \/> <b>\{navigationLabel\(active\)\}<\/b>/);
   // WhatsApp menu icons carry the navigation label as their name and tooltip.
   assert.match(source, /labelFor=\{navigationLabel\}/);

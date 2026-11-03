@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("operational header popovers stay above the dashboard toolbar and below modals at desktop widths", () => {
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
-  const dashboard = readFileSync(new URL("../src/dashboard-filter-bar.css", import.meta.url), "utf8");
-  const base = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
+  const dashboard = readFileSync(new URL("../src/styles/dashboard-filter-bar.css", import.meta.url), "utf8");
+  const base = readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
   const header = styles.match(/\.normal > header \{([^}]+)\}/)[1];
   const toolbar = dashboard.match(/\.mine-dashboard > \.dashboard-filter-bar \{([^}]+)\}/)[1];
   const overlay = base.match(/\.overlay\{([^}]+)\}/)[1];
@@ -17,8 +17,8 @@ test("operational header popovers stay above the dashboard toolbar and below mod
 });
 
 test("operational profile headers use left-led responsive navigation", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(source, /className="normal-header-actions"/);
   assert.match(source, /className="normal-header-user"/);
@@ -29,8 +29,8 @@ test("operational profile headers use left-led responsive navigation", () => {
 });
 
 test("wide operational headers reserve enough room for the Tickets tab before the timer", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   const navigation = source.slice(source.indexOf('<nav className="normal-header-nav">'), source.indexOf('</nav>', source.indexOf('<nav className="normal-header-nav">')));
   assert.ok(navigation.indexOf('<FileBarChart /> Reports') < navigation.indexOf('<Ticket /> Tickets'));

@@ -9,7 +9,7 @@ Read `docs/CLAUDE-CODE-WORKFLOW.md` and `docs/IMPLEMENTATION-HANDOFF.md` before 
 - Branch: `main`. Only validation CI is active in this repository; deployment workflows are archived under `docs/reference-workflows/*.disabled`.
 - Reference website: https://pulse-ll.cmll.in (the separate original application).
 - This repository has no authorized deployment target. Do not deploy to the original application.
-- Actual UI entry: `index.html` -> `src/main.jsx`. Some older README/workflow notes describe obsolete entry points and deployment arrangements.
+- Actual UI entry: `index.html` -> `src/main.jsx` -> `src/app/App.jsx`. See `docs/frontend-architecture.md` for the current folder layout. Some older README/workflow notes describe obsolete entry points and deployment arrangements.
 - React/Vite UI, Express backend (`server.mjs`), PostgreSQL, scan/OCR integrations.
 - Work from the repository root, not its `test` directory.
 

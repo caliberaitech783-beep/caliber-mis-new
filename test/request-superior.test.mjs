@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("superior is maintained on the user record and copied into new requests",()=>{
-  const source=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+  const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
   assert.match(source,/function MaintenanceForm/);
   assert.match(source,/"Users & employees": \[[\s\S]*\["superior", "Superior", "multi-text"\]/);

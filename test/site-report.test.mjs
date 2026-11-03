@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { groupReportRows, siteReportHtml, reportCount } from '../src/site-report.mjs';
+import { groupReportRows, siteReportHtml, reportCount } from '../src/utils/reports/site-report.mjs';
 
 const rows = [
   { site: 'NCL · Jayant', asset: 'j1', value: 'J1' },

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { movementRequestRows } from "../src/dashboard-card-actions.mjs";
+import { movementRequestRows } from "../src/utils/dashboard/dashboard-card-actions.mjs";
 import { BREAKDOWN_TYPE_LABELS, breakdownMovementForRange, breakdownTypeShare, dailyBreakdownMovement } from "../dashboard-breakdown-movement.mjs";
 
 const records = [

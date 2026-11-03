@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {TEMPLE_BELL_PARTIALS,TEMPLE_BELL_STRIKE_HZ,templeBellVoices,shouldChime,playTempleBell} from '../src/notification-chime.mjs';
+import {TEMPLE_BELL_PARTIALS,TEMPLE_BELL_STRIKE_HZ,templeBellVoices,shouldChime,playTempleBell} from '../src/services/notifications/notification-chime.mjs';
 
 const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const main=read('../src/main.jsx');
-const icons=read('../src/motion-icons.jsx');
-const motion=read('../src/motion-icons.css');
-const profile=read('../src/user-profile.css');
-const theme=read('../src/theme.css');
+const main=read('../src/app/App.jsx');
+const icons=read('../src/components/ui/motion-icons.jsx');
+const motion=read('../src/styles/motion-icons.css');
+const profile=read('../src/styles/user-profile.css');
+const theme=read('../src/styles/theme.css');
 
 test('the pulse icon keeps its path and a stationary endpoint dot',()=>{
   assert.match(icons,/export const PULSE_PATH = "M2 12h4\.5l2\.5-9 6 18 2\.5-9H22";/,'path starts at the left edge');
@@ -35,8 +35,8 @@ test('temple bell: bronze partials with long decays, rung only when unread grows
 });
 
 test('the bell, sign out, search, avatar and theme switch are wired and styled everywhere they appear',()=>{
-  assert.match(main,/import \{ PulseIcon, SearchScanIcon, BellRingIcon, DoorExitIcon \} from "\.\/motion-icons\.jsx";/);
-  assert.match(main,/import \{ playNotificationSound, loadNotificationSound, saveNotificationSound, NOTIFICATION_SOUNDS \} from "\.\/notification-chime\.mjs";/);
+  assert.match(main,/import \{ PulseIcon, SearchScanIcon, BellRingIcon, DoorExitIcon \} from "(?:\.\.?\/)+(?:[\w-]+\/)*motion-icons\.jsx";/);
+  assert.match(main,/import \{ playNotificationSound, loadNotificationSound, saveNotificationSound, NOTIFICATION_SOUNDS \} from "(?:\.\.?\/)+(?:[\w-]+\/)*notification-chime\.mjs";/);
   assert.match(main,/soundRef\.current = \{ play: \(\) => playNotificationSound\(bellSoundRef\.current\) \};/,'the incoming toast plays the chosen bell sound once per notification');
   assert.doesNotMatch(main,/createNotificationSound\(\)/,'the old two-note beep is gone');
   assert.match(main,/<button ref=\{triggerRef\} type="button" className=\{unread > 0 \? "ringing" : ""\} onClick=\{toggle\}[^>]*><BellRingIcon ringing=\{unread > 0\} \/>/);

@@ -4,10 +4,10 @@ import {readFileSync} from "node:fs";
 import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
-import {createDashboardRequestLoader} from "../src/dashboard-request-data.mjs";
+import {createDashboardRequestLoader} from "../src/utils/dashboard/dashboard-request-data.mjs";
 import {formatDisplayDateTime} from "../date-time-format.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const noticeSource = source.slice(source.indexOf("function ConnectionRecoveryNotice("), source.indexOf("function ManagerDashboard("));
 const {code} = await transformWithOxc(noticeSource, "notice.jsx", {jsx: {runtime: "classic"}});
 const Notice = new Function("React", "AlertTriangle", "RotateCcw", "formatDisplayDateTime", `${code}; return ConnectionRecoveryNotice;`)(React, () => null, () => null, formatDisplayDateTime);

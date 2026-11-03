@@ -25,7 +25,7 @@ import {completeScanTripDetails} from './scan-trip-completion.mjs';
 import {canAutoSaveScanCard} from './scan-auto-save.mjs';
 import {scanBatchReport,scanBatchExportTables} from './scan-batch-report.mjs';
 import {buildTableBundlePdf} from './table-export-pdf.mjs';
-import {manualScanIssues} from './src/scan-manual-fields.mjs';
+import {manualScanIssues} from './src/utils/scanning/scan-manual-fields.mjs';
 import {raw as rawBody} from 'express';
 import {parseCaptureTiming} from './public/scan-timing.mjs';
 import {geminiEnabled,MODEL} from './gemini-card-reader.mjs';

@@ -9,13 +9,13 @@ import * as requestAcceptance from '../request-acceptance.mjs';
 import * as equipment from '../request-equipment.mjs';
 import {normalizeEquipmentGroup} from '../equipment-group.mjs';
 import {requestsVisibleToMisWorkspace} from '../mis-request-visibility.mjs';
-import {requestStatusLabel} from '../src/request-status.mjs';
-import {defaultDurationSort} from '../src/duration-sort.mjs';
-import {dailyUpdatesExportText} from '../src/daily-updates-order.mjs';
-import DateInput from '../src/date-input.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
+import {defaultDurationSort} from '../src/utils/ui/duration-sort.mjs';
+import {dailyUpdatesExportText} from '../src/utils/ui/daily-updates-order.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 import {managerRoleSelection} from '../admin-access.mjs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const componentSource=source.slice(source.indexOf('function RequestRedFlagForm('),source.indexOf('function TripCardCell('))+'\n'+source.slice(source.indexOf('function MobileWorkflowTable('),source.indexOf('function RequestEditForm('))+'\n'+source.slice(source.indexOf('function Normal('),source.indexOf('function App('));
 const {code:compiled}=await transformWithOxc(componentSource,'mis-red-flag-components.jsx',{jsx:{runtime:'classic'},target:'es2022'});
 const {code:compiledEditor}=await transformWithOxc(source.slice(source.indexOf('function MeterReadingFields('),source.indexOf('function CloseRequestForm(')),'arrival-edit-component.jsx',{jsx:{runtime:'classic'},target:'es2022'});

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-const source = readFileSync(new URL('../src/shared-actions-table.jsx', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/components/ui/shared-actions-table.jsx', import.meta.url), 'utf8');
 const start = source.indexOf('  const brandOf =');
 const end = source.indexOf('  useEffect(', start);
 const select = new Function('availableRows', 'groupBySite', 'reportAsset', 'siteSummary', 'selectedSite', 'const reportSite = row => row.props.site;' + source.slice(start, end) + '; return {brandSummary, activeBrand, activeSite, brandOf, contextualBrand};');

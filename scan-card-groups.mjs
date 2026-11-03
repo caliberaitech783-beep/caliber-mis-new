@@ -1,5 +1,5 @@
 import {machineDiscrepancies} from './trip-card-rules.mjs';
-import {manualScanIssues} from './src/scan-manual-fields.mjs';
+import {manualScanIssues} from './src/utils/scanning/scan-manual-fields.mjs';
 
 export const ISSUE_CARD_GROUPS=[
  {id:'wrong-door',label:'Wrong door no.',description:'Missing or invalid door / linked vehicle'},

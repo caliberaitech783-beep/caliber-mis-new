@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
-const sharedTable = await readFile(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
-const styles = await readFile(new URL("../src/style.css", import.meta.url), "utf8");
+const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const sharedTable = await readFile(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
+const styles = await readFile(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
 test("dashboard replaces recent cases with a site-wise selectable breakdown trend", () => {
   assert.doesNotMatch(source, /<BreakdownTable rows=\{visibleBreakdowns\} showMakeModel showDateFilter rowLimit=\{5\} \/>/);

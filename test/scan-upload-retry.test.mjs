@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {uploadWithRetry,isTransientUploadError,UPLOAD_RETRY_DELAYS_MS} from '../src/scan-upload-retry.mjs';
+import {uploadWithRetry,isTransientUploadError,UPLOAD_RETRY_DELAYS_MS} from '../src/services/scanning/scan-upload-retry.mjs';
 
 test('only restart-shaped failures are retried',()=>{
  assert.ok(isTransientUploadError(Object.assign(new TypeError('Failed to fetch'))));

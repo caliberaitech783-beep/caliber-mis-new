@@ -4,7 +4,7 @@ import test from 'node:test';
 import {buildDirectorReportTables} from '../director-report-bundle.mjs';
 import {buildDepartmentReports} from '../department-reports.mjs';
 
-const client = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+const client = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
 const request = Object.freeze({
   ref: 'REQ-time-audit', status: 'Closed', site: 'Sasti OB',

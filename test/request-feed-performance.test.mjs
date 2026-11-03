@@ -56,7 +56,7 @@ test('a failed read is never handed to the next poll', async () => {
 });
 
 test('the requests route shares the feed and every write clears it', () => {
-  assert.match(server, /import \{createFeedCache\} from '\.\/request-feed-cache\.mjs';/);
+  assert.match(server, /import \{createFeedCache\} from '(?:\.\.?\/)+(?:[\w-]+\/)*request-feed-cache\.mjs';/);
   assert.match(server, /const requestFeedCache=createFeedCache\(\{ttlMs:30_000\}\);/);
   const guard = server.slice(server.indexOf('const requestFeedCache=createFeedCache('), server.indexOf('const port=Number('));
   assert.match(guard, /if\(req\.method!=='GET'&&req\.method!=='HEAD'\)\{/);

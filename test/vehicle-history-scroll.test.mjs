@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-const source = readFileSync(new URL('../src/vehicle-history-scroll.jsx', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/components/ui/vehicle-history-scroll.jsx', import.meta.url), 'utf8');
 test('top scrollbar is scoped to Vehicle History and hidden from print', () => {
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.match(main, /category === "vehicle-history" \? VehicleHistoryScroll : "div"/);
   assert.match(source, /hidden=\{!overflow\}/);
   assert.match(source, /aria-label="Scroll Vehicle History table horizontally"/);
-  const css = readFileSync(new URL('../src/vehicle-history-scroll.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/styles/vehicle-history-scroll.css', import.meta.url), 'utf8');
   assert.match(css, /@media print.*display: none !important/s);
 });
 test('both scroll directions synchronize without redundant assignments', () => {

@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { readApiJson } from "../src/api-response.mjs";
+import { readApiJson } from "../src/services/ui/api-response.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("Breakdown Master status tabs select and filter the table", () => {
   const breakdown = source.slice(
@@ -21,8 +21,8 @@ test("Breakdown Master status tabs select and filter the table", () => {
 
 test("same-count request updates refresh the operational dashboard data", () => {
   const normal = source.slice(source.indexOf("function Normal("), source.indexOf("function App("));
-  const loader = readFileSync(new URL("../src/dashboard-request-data.mjs", import.meta.url), "utf8");
-  const refresh = readFileSync(new URL("../src/request-refresh.mjs", import.meta.url), "utf8");
+  const loader = readFileSync(new URL("../src/utils/dashboard/dashboard-request-data.mjs", import.meta.url), "utf8");
+  const refresh = readFileSync(new URL("../src/services/requests/request-refresh.mjs", import.meta.url), "utf8");
   assert.match(normal, /createDashboardRequestLoader\(\{onState:setDashboardState\}\)/);
   assert.match(normal, /watchRequestRefresh\(\(\)=>loader\.load/);
   assert.match(normal, /stop\(\);loader\.cancel\(\)/);

@@ -4,8 +4,8 @@ import {readFileSync} from 'node:fs';
 import {matchesSmartSearch} from '../smart-search.mjs';
 
 test('dashboard icon searches cards rather than opening fleet records', () => {
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
-  const browser = readFileSync(new URL('../src/dashboard-record-browser.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
+  const browser = readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx', import.meta.url), 'utf8');
   assert.ok(main.includes('window.dispatchEvent(new Event("dashboard-smart-search"))'));
   assert.ok(main.includes('window.addEventListener("dashboard-smart-search", openSearch)'));
   assert.ok(main.includes('window.removeEventListener("dashboard-smart-search", openSearch)'));

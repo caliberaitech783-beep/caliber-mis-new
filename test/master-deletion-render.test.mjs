@@ -5,7 +5,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 test('populated Users & employees renders without an approval flag and C-Dir accepts it',async()=>{
   const start=source.indexOf('function MasterPage(');
   const end=source.indexOf('\nfunction ',start+1);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {withFleetDriverNames} from '../fleet-driver-names.mjs';
-import {vehicleFleetRows, vehicleCommonRemarkRows} from '../src/vehicle-repair-history.mjs';
+import {vehicleFleetRows, vehicleCommonRemarkRows} from '../src/utils/ui/vehicle-repair-history.mjs';
 
 const driver = {oracleEquipmentTno:'42', equipmentName:'E04 - MH34BZ2414', driverName:'Ravi Kumar', driverAt:'2026-09-25 10:00:00'};
 test('logbook drivers populate vehicles without breakdown or transfer history', () => {

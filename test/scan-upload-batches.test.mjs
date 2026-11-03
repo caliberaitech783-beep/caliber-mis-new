@@ -1,9 +1,9 @@
 import {MAX_SCAN_ENTRY_CARDS} from '../public/scan-entry-limit.mjs';
-import {createPdfUploadSession,transferScanGroups} from '../src/scan-upload-pipeline.mjs';
-import {uploadWithRetry} from '../src/scan-upload-retry.mjs';
+import {createPdfUploadSession,transferScanGroups} from '../src/services/scanning/scan-upload-pipeline.mjs';
+import {uploadWithRetry} from '../src/services/scanning/scan-upload-retry.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
 test('each file selection creates its own batch instead of appending to the previously viewed batch',async()=>{
- const src=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+ const src=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
  const start=src.indexOf('const upload=async event=>'),end=src.indexOf('\n const update=',start);assert.ok(start>=0&&end>start);
  const memberships=new Map([['earlier-batch',[]]]),urls=[],created=[],reviewVisits=[];const activeRef={current:'earlier-batch'},addonUploadRef={current:false};const noop=()=>{};
  let fixtureCards=2;let loads=0;const scope={SmartSelect: "select",uploadWithRetry,MAX_SCAN_ENTRY_CARDS,SCAN_UPLOAD_CONCURRENCY:3,createPdfUploadSession,transferScanGroups,openUploadPdf:async()=>{throw Error('PDF loader is mocked by page fixtures');},contextSaving:false,awaitingContext:false,contextReady:()=>true,expectedContext:{bookDate:"2026-10-30",location:"Sasti OC",cardShift:"I"},dirty:false,kind:'vehicle',reviewPage:true,navigateReview:open=>reviewVisits.push(open),pagesPerCard:1,batch:{id:'earlier-batch'},activeRef,addonUploadRef,uploadingRef:{current:false},uploadController:{current:null},uploadBase:{current:0},cards:[],uploadStarted:{current:0},selectedRevision:{current:null},contextGate:null,
@@ -32,8 +32,8 @@ test('each file selection creates its own batch instead of appending to the prev
 
 });
 test('PDF uploads expose elapsed timing and a real abort controller',()=>{
- const src=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
- assert.match(readFileSync(new URL('../src/scan-upload-timer.jsx',import.meta.url),'utf8'),/className="scan-upload-timer" role="timer"/);
+ const src=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
+ assert.match(readFileSync(new URL('../src/components/scanning/scan-upload-timer.jsx',import.meta.url),'utf8'),/className="scan-upload-timer" role="timer"/);
  assert.match(src,/Trip cards uploaded: \{uploadedCount\}\/\{uploadTotal\|\|'…'\}/);
  assert.match(src,/setUploadTotal\(Math\.ceil\(totalPages\/pagesPerCard\)\)/);
  assert.match(src,/\(uploading\|\|pending\.length>0\).*className="scan-abort" onClick=\{abortUpload\}>Abort/);
@@ -44,14 +44,14 @@ test('PDF uploads expose elapsed timing and a real abort controller',()=>{
  assert.match(server,/status IN\('queued','reading'\)/);
 });
 test('MIS header clock is kept on one line',()=>{
- const css=readFileSync(new URL('../src/erp-layout.css',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../src/styles/erp-layout.css',import.meta.url),'utf8');
  assert.match(css,/\.top>\.header-clock\{[^}]*flex-wrap:nowrap;white-space:nowrap/);
  assert.match(css,/grid-template-columns:auto minmax\(240px,1fr\) auto auto;grid-template-rows:auto/);
  assert.match(css,/\.top>\.header-clock\{[^}]*position:absolute;left:50%;transform:translateX\(-50%\)/);
  assert.match(css,/min-height:64px;padding:8px 20px/);
 });
 test('MIS sidebar uses larger navigation labels',()=>{
- const css=readFileSync(new URL('../src/erp-layout.css',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../src/styles/erp-layout.css',import.meta.url),'utf8');
  assert.match(css,/#admin-primary-navigation \.erp-group-toggle\{font-size:12px\}/);
  assert.match(css,/#admin-primary-navigation \.erp-page[^}]*font-size:14px/);
  assert.match(css,/#admin-primary-navigation \.erp-brand-copy strong\{font-size:19px\}/);
@@ -59,7 +59,7 @@ test('MIS sidebar uses larger navigation labels',()=>{
  assert.match(css,/\.erp-group-toggle\[aria-expanded=true\]\{background:transparent!important/);
 });
 test('scan workflow uses the compact requested controls',()=>{
- const src=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8'),css=readFileSync(new URL('../src/bulk-card-scanning.css',import.meta.url),'utf8');
+ const src=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8'),css=readFileSync(new URL('../src/styles/bulk-card-scanning.css',import.meta.url),'utf8');
  assert.match(src,/className="scan-workflow-row"><div className="scan-review-tabs">[\s\S]*className="scan-workflow-actions"/);
  assert.doesNotMatch(src,/GroqScanSettings/);
  assert.doesNotMatch(src,/Select PNG, JPG\/JPEG or PDF files/);

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {daysSinceLogin,loginActivityStatus,loginActivityRows,LOGIN_ACTIVITY_FILTERS} from '../src/login-activity.mjs';
+import {daysSinceLogin,loginActivityStatus,loginActivityRows,LOGIN_ACTIVITY_FILTERS} from '../src/utils/ui/login-activity.mjs';
 
-const view=readFileSync(new URL('../src/user-login-history.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const view=readFileSync(new URL('../src/pages/admin/user-login-history.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const now=new Date('2026-09-18T10:16:00+05:30');
 
 test('days since last login are counted on India calendar days',()=>{

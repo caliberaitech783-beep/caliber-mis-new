@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-const source=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
 
 test("Idle is available throughout fleet KPIs, filters, status editing and site reports",()=>{
   assert.match(source,/mine-site-road-view[\s\S]*<small>On road<\/small>/);

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { fleetBreakdownCaseCounts } from "../dashboard-equipment-metrics.mjs";
-import { fleetBreakdownCategory, fleetBreakdownRequests } from "../src/fleet-breakdown-drilldown.mjs";
+import { fleetBreakdownCategory, fleetBreakdownRequests } from "../src/utils/dashboard/fleet-breakdown-drilldown.mjs";
 
 const assets = [
   { door: "E1", category: "Equipment", currentLocation: "Sasti OB" },

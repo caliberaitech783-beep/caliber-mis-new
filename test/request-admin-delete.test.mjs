@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {requestDeletionBlocker,requestDeletable,requestStageLabel,requestDeletionSnapshot,normalizeDeletionReferences,REQUEST_BULK_DELETE_LIMIT} from '../request-deletion.mjs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('verified and Idle requests only for an Admin; every other unverified stage for both',()=>{
   const open={ref:'REQ-1',status:'Open'};
@@ -84,6 +84,6 @@ test('Admin sessions get Delete and Delete selected in every workspace table; Ma
   assert.match(client,/case "requestAction": return showReadOnlyAction \? <td className="row-actions">\{requestActions \? requestActions\(r\) : <span>Read only<\/span>\}<\/td> : null;/);
   assert.match(client,/deleteRequestsBulk = async \(references, reason\) => \{\s*const response = await fetch\("\/api\/requests\/bulk-delete", \{method: "POST"/);
   assert.equal((client.match(/onDeleteRequest=\{deleteRequest\} onDeleteRequests=\{deleteRequestsBulk\}/g)||[]).length,2);
-  const styles=readFileSync(new URL('../src/mobile-workflow.css',import.meta.url),'utf8');
+  const styles=readFileSync(new URL('../src/styles/mobile-workflow.css',import.meta.url),'utf8');
   assert.match(styles,/\.request-bulk-delete button\.danger\{color:#fff;background:#c9253d/);
 });

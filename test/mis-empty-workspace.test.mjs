@@ -5,7 +5,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 
-const source=readFileSync(new URL('../src/mis-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+const source=readFileSync(new URL('../src/components/layout/mis-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
 const {code}=await transformWithOxc(source,'mis-workspace.jsx',{jsx:{runtime:'classic'}});
 const Workspace=new Function('React',`${code};return MisWorkspace;`)(React);
 
@@ -23,7 +23,7 @@ test('MIS home is an empty workspace with branding and a working sign-out contro
 
 test('the live entry opens the full MIS app with a separate MIS credential login',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- const app=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const app=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(html,/src="\/src\/main.jsx"/);
  assert.match(app,/useMisSharedSignIn\(session,\{autoStart:true,paused:sharedSignedOut\}\)/);
  assert.match(app,/<MisSharedLogin error=\{sharedSignIn.error\}/);

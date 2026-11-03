@@ -29,9 +29,9 @@ test('purchase order query binds dates, includes the full final day and joins ea
 
 test('purchase order retains authenticated Oracle data after its IBOSS link is removed',()=>{
   const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const oracle=fs.readFileSync(new URL('../oracle-db.mjs',import.meta.url),'utf8');
-  const ui=fs.readFileSync(new URL('../src/purchase-order-report.jsx',import.meta.url),'utf8');
+  const ui=fs.readFileSync(new URL('../src/pages/reports/purchase-order-report.jsx',import.meta.url),'utf8');
   assert.match(server,/app\.get\('\/api\/reports\/purchase-order',requireSession/);
   assert.match(server,/accessAllows\(permissions\.reportAccess,'Purchase Order'\)/);
   assert.doesNotMatch(main,/const visibleIbossNav = [^\n]+\["Purchase Order"/);

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const client=readFileSync(new URL('../src/backup-administration.jsx',import.meta.url),'utf8');
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const client=readFileSync(new URL('../src/pages/admin/backup-administration.jsx',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('stores backup metadata separately and never stores archive payloads in PostgreSQL',()=>{
   assert.match(server,/CREATE TABLE IF NOT EXISTS backup_runs/);

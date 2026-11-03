@@ -2,8 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
 
 test("Close request form is directly beside Idle Vehicles in the Maintenance workspace", () => {
   assert.match(source, />Idle Vehicles<\/button>}\s*{showRequestsMenu&&isMaintenance&&canSeeRequestMenu\("Close request form"\)&&<button[^\n]*>Close request form<\/button>}/);

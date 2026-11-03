@@ -7,11 +7,11 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import {continueManualRemark,advanceLogBookField,focusNextLogBookField,isEmptyTripPlaceholder,advanceEquipmentLogBookField} from '../src/log-book-enter-navigation.mjs';
+import {continueManualRemark,advanceLogBookField,focusNextLogBookField,isEmptyTripPlaceholder,advanceEquipmentLogBookField} from '../src/utils/logbooks/log-book-enter-navigation.mjs';
 import {blankTrip,nextTripEntry} from '../trip-entry.mjs';
 import * as rules from '../trip-card-rules.mjs';
 import {canonicalSiteName} from '../site-location.mjs';
-import {missingAssetMessage} from '../src/log-book-asset-options.mjs';
+import {missingAssetMessage} from '../src/utils/logbooks/log-book-asset-options.mjs';
 
 function control(name, overrides={}) {
   return {name,tagName:'INPUT',type:'text',value:'value',readOnly:false,tabIndex:0,dataset:{},
@@ -74,7 +74,7 @@ test('Enter on untouched next row focuses Save, while partial rows are retained 
 });
 
 // Exercise the actual JSX handlers/state and submitted payload without live records.
-const source=readFileSync(new URL('../src/log-book-form.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/logbooks/log-book-form.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'log-book-form.jsx',{jsx:{runtime:'classic'}});
 const all=(tree,predicate)=>{const found=[];const visit=node=>{if(Array.isArray(node))return node.forEach(visit);if(!React.isValidElement(node))return;if(predicate(node))found.push(node);visit(node.props.children)};visit(tree);return found};
 function harness(){

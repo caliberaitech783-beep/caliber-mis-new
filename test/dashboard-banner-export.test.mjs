@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
 
-const source = readFileSync(new URL("../src/dashboard-filter-bar.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
+const source = readFileSync(new URL("../src/components/dashboard/dashboard-filter-bar.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
 const { code } = await transformWithOxc(source, "dashboard-filter-bar.jsx", { jsx: { runtime: "classic" } });
 
 function harness() {
@@ -36,7 +36,7 @@ test("the collapsed banner keeps the whole-dashboard Export beside its eye toggl
   assert.ok(order.indexOf("dashboard-banner-action") === order.indexOf("dashboard-banner-toggle") - 1, "placed just before the toggle");
   assert.equal(action(render({ children: "filters" })), undefined, "nothing without an action");
   assert.equal(action(render({ children: "filters", collapsedAction: exportMenu, inDialog: true })), undefined, "never in the dashboard dialog");
-  const css = readFileSync(new URL("../src/dashboard-section-export.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../src/styles/dashboard-section-export.css", import.meta.url), "utf8");
   assert.match(css, /\.dashboard-filter-bar > \.dashboard-banner-action \{ position: absolute; top: 2px; right: 44px;/);
   assert.match(css, /@media print \{\s*\.mine-dashboard :is\(\.mine-section-export, \.dashboard-banner-export\) \{ display: none !important; \}/);
 });

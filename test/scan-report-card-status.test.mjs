@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {scanReportCardStatus} from '../src/scan-report-card-status.mjs';
+import {scanReportCardStatus} from '../src/utils/scanning/scan-report-card-status.mjs';
 const draft={doorText:'S/14',bookDate:'2026-10-19',location:'Test site',assetId:'1',employeeId:'2',shiftId:'3',shiftHours:8,openingHmr:0,closingHmr:6,openingKmr:0,closingKmr:50,timeMode:'with',trips:[{equipmentName:'V12',loadingTime:'01:03',unloadingTime:'01:12',tripCount:1}],scanMachineSummary:[{equipmentName:'V12',tripCount:1}]};
 const card={id:'c1',status:'review',draft,checks:{errors:[]}};
 test('complete, processing, saved, failed and rejected cards stay distinct',()=>{

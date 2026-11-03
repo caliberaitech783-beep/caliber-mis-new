@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createPdfUploadSession,transferScanGroups} from '../src/scan-upload-pipeline.mjs';
+import {createPdfUploadSession,transferScanGroups} from '../src/services/scanning/scan-upload-pipeline.mjs';
 import {scanValidationClient} from '../scan-validation-cache.mjs';
 import {readFileSync} from 'node:fs';
 
@@ -54,7 +54,7 @@ test('master validation reads share one database request but remain fresh across
 });
 
 test('overlapping background batch polls coalesce; an explicit refresh reads after the in-flight poll',async()=>{
- const source=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
  const line=source.split('\n').find(line=>line.startsWith(' const load=async(id,fresh=true)'));
  assert.ok(line);
  let requests=0,release,rows=[];const gate=new Promise(resolve=>release=resolve),noop=()=>{};

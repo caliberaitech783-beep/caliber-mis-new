@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
-import { availabilityRequestsForDate } from "../src/dashboard-availability.mjs";
+import { availabilityRequestsForDate } from "../src/utils/dashboard/dashboard-availability.mjs";
 import { dashboardFleetSnapshot } from "../dashboard-fleet-snapshot.mjs";
 import { liveEquipmentMetrics, liveEquipmentRoadStatus } from "../dashboard-equipment-metrics.mjs";
 import { recordBelongsToSite } from "../site-location.mjs";
@@ -79,7 +79,7 @@ test("legacy timestamps and incomplete history do not fabricate dated requests",
 
 // Evaluate the dashboard's actual calculations and render its unchanged JSX
 // section, so a disconnected date prop or a card using the old totals fails.
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const calculations = source.slice(source.indexOf("  const availabilityDate ="), source.indexOf("  const breakdownSummaryEndKey ="));
 const siteCalculation = source.match(/  const availabilityCountBySite = [\s\S]*?\n  \}\)\);/)[0];
 const viewStart = source.indexOf('<div className="mine-site-road-view">');

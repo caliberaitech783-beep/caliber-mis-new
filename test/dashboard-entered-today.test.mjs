@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {activeTodayBreakdowns} from '../src/dashboard-today-breakdowns.mjs';
-const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+import {activeTodayBreakdowns} from '../src/utils/dashboard/dashboard-today-breakdowns.mjs';
+const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 const day = '2026-09-30';
 const row = (ref, status, extra = {}) => ({ref,status,start:day+' 09:00:00',...extra});
 test('today badge excludes old, closed, verified, on-road and idle requests', () => {

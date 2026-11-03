@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {chooseScanEntry,rememberScanEntry,recallScanEntry,describeScanEntry,entryCancelled,scanEntryStorageKey} from '../src/scan-entry-recovery.mjs';
+import {chooseScanEntry,rememberScanEntry,recallScanEntry,describeScanEntry,entryCancelled,scanEntryStorageKey} from '../src/services/scanning/scan-entry-recovery.mjs';
 
 const memory=()=>{const map=new Map();return {getItem:k=>map.has(k)?map.get(k):null,setItem:(k,v)=>map.set(k,String(v)),removeItem:k=>map.delete(k)};};
 

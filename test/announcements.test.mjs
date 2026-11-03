@@ -13,8 +13,8 @@ import {
 } from '../announcement.mjs';
 
 const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
-const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
-const styles = readFileSync(new URL('../src/user-sessions.css', import.meta.url), 'utf8');
+const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const styles = readFileSync(new URL('../src/styles/user-sessions.css', import.meta.url), 'utf8');
 const routeOf = (start) => server.slice(server.indexOf(start), server.indexOf('\napp.', server.indexOf(start) + start.length));
 
 test('announcement text is trimmed, required and capped at 2,000 characters', () => {
@@ -117,7 +117,7 @@ test('announcements may carry one validated image served separately from the pol
   assert.match(server, /app\.get\('\/api\/announcements\/:announcementId\/image',requireSession/);
   assert.match(server, /\(a\.image_data<>''\) AS "hasImage"/);
   assert.doesNotMatch(server.slice(server.indexOf("app.get('/api/announcements/pending'"), server.indexOf("app.get('/api/announcements/:announcementId/image'")), /a\.image_data AS/);
-  const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.match(source, /onPaste=\{pasteImage\}/);
   assert.match(source, /JSON\.stringify\(\{message:text,image\}\)/);
   assert.match(source, /current\.hasImage&&<AnnouncementImage/);

@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("every master table exposes the shared all-parameter filter panel", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/sortable-table.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/sortable-table.css", import.meta.url), "utf8");
   const equipment = source.slice(source.indexOf("function Equipment("), source.indexOf("function MaintenanceForm"));
   const masters = source.slice(source.indexOf("function MasterPage("), source.indexOf("function MasterLoader"));
 

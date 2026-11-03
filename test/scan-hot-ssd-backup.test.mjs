@@ -5,7 +5,7 @@ import {PGlite} from '@electric-sql/pglite';
 import {randomUUID} from 'node:crypto';
 import {manualBackupWindow,registerScanBackup,DAY} from '../scan-backup.mjs';
 import {scanBlobConfig,createScanBlobStorage,imageHash} from '../scan-blob-storage.mjs';
-import {copyBackup,verifiedFile,sha256} from '../src/scan-backup-files.mjs';
+import {copyBackup,verifiedFile,sha256} from '../src/services/scanning/scan-backup-files.mjs';
 import {misPageAllowed,misRequestAllowed} from '../mis-application-access.mjs';
 import {registerBulkCardScanning} from '../bulk-card-scanning.mjs';
 

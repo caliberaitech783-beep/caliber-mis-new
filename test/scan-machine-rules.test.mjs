@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {identifyCardMachine,cardMachineKey,matchCardMachine,normalizeScanEquipmentRows,scanEquipmentMatchIssues,scannedEquipmentName,siteEquipmentOptions,compactScanEquipmentReferences} from '../scan-machine-rules.mjs';
 import {linkedScanEquipment} from '../scan-fleet-door.mjs';
 import {extractCard} from '../scan-extraction.mjs';
-import {manualScanIssues} from '../src/scan-manual-fields.mjs';
+import {manualScanIssues} from '../src/utils/scanning/scan-manual-fields.mjs';
 
 const site='Jayant OC';
 const machine=(id,door,kind='equipment',location=site)=>({id,door,kind,site:location});

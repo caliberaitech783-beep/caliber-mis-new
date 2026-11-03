@@ -30,7 +30,7 @@ test('includes earlier receipts for selected POs, but does not classify older un
 });
 test('merged report requires report access and opens through Admin IBOSS',()=>{
  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
- const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(server,/app\.get\('\/api\/reports\/po-grn-reconciliation',requireSession/);
  assert.match(server,/accessAllows\(permissions\.reportAccess,'PO-GRN Reconciliation'\)/);
  assert.match(main,/renderedActive === "PO-GRN Reconciliation" \? \(\s*<PoGrnReconciliation/);

@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 
-const hookSource=readFileSync(new URL('../src/mis-shared-signin.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export function','function');
+const hookSource=readFileSync(new URL('../src/pages/auth/mis-shared-signin.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export function','function');
 const {code:hookCode}=await transformWithOxc(hookSource,'shared-signin.jsx',{jsx:{runtime:'classic'}});
 async function runHook(search){
   const requests=[],redirects=[],events=[],effects=[];
@@ -31,7 +31,7 @@ test('only a completed shared-sign-in callback exchanges the server-held handoff
 });
 
 test('a fresh MIS page shows sign-in even when browser storage contains a previous session',async()=>{
-  const entry=readFileSync(new URL('../src/mis-entry.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/createRoot\([\s\S]*$/,'');
+  const entry=readFileSync(new URL('../src/app/mis-entry.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace(/createRoot\([\s\S]*$/,'');
   const {code}=await transformWithOxc(entry,'mis-entry.jsx',{jsx:{runtime:'classic'}});
   const Login=()=>null,Workspace=()=>null;
   let options;

@@ -1,4 +1,4 @@
-import {requestStatusLabel} from './src/request-status.mjs';
+import {requestStatusLabel} from './src/utils/requests/request-status.mjs';
 
 const HOUR_MS = 60 * 60 * 1000;
 

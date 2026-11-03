@@ -6,7 +6,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
 import {formatDisplayDateTime} from '../date-time-format.mjs';
 
-const source=readFileSync(new URL('../src/breakdown-reason-history.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/requests/breakdown-reason-history.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'reason.jsx',{jsx:{runtime:'classic'}});
 function render(state,reference='REQ-1'){
   let index=0;
@@ -29,7 +29,7 @@ test('history distinguishes loading, failure and missing historical data',()=>{
   assert.doesNotMatch(render(null,'—'),/Loading reasons/);
 });
 test('reason history uses a bounded popup without changing the full-screen timeline',()=>{
-  const css=readFileSync(new URL('../src/breakdown-reason-history.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/breakdown-reason-history.css',import.meta.url),'utf8');
   assert.match(source,/className="request-timeline-modal breakdown-reason-history-modal"/);
   assert.match(source,/overlayClassName="breakdown-reason-history-overlay"/);
   assert.match(css,/width: min\(960px, 100%\)/);
@@ -40,7 +40,7 @@ test('reason history uses a bounded popup without changing the full-screen timel
   assert.doesNotMatch(source,/window\.open|location\.(?:href|assign)|navigate\(/);
 });
 test('clickable BD reasons wrap within their column without changing other timeline links',()=>{
-  const css=readFileSync(new URL('../src/breakdown-reason-history.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/breakdown-reason-history.css',import.meta.url),'utf8');
   assert.match(source,/className="request-timeline-link breakdown-reason-history-link"/);
   const rule=css.match(/\.request-timeline-link\.breakdown-reason-history-link\s*\{([^}]+)\}/)[1];
   assert.match(rule,/white-space: pre-wrap/);

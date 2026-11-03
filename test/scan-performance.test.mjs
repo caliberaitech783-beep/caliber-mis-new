@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {captureTiming,parseCaptureTiming,scanTimingLabel} from '../public/scan-timing.mjs';
-import {scanBatchMetrics} from '../src/scan-batch-metrics.mjs';
+import {scanBatchMetrics} from '../src/utils/scanning/scan-batch-metrics.mjs';
 const valid={doorText:'S/14',bookDate:'2026-10-19',location:'Jayant OC',assetId:'1',employeeId:'2',shiftId:'3',shiftHours:8,openingHmr:0,closingHmr:6,openingKmr:0,closingKmr:50,aFormNo:'75',timeMode:'with',trips:[{rowNumber:1,equipmentName:'V12',loadingTime:'1:03',unloadingTime:'1:12',tripCount:1}],scanMachineSummary:[{equipmentName:'V12',tripCount:1}],meterReviewFields:['openingHmr'],extractionReviewFields:['trips']};
 test('capture duration uses job timestamps, freezes at completion and keeps scan/import wording distinct',()=>{
  const job={mode:'scanner',pages:14,created_at:'2026-10-24T08:00:00Z',completed_at:'2026-10-24T08:01:35Z'};const timing=captureTiming(job,Date.parse('2026-10-24T09:00:00Z'));assert.equal(scanTimingLabel(timing),'14 pages scanned in 1 min 35 sec');assert.equal(scanTimingLabel({...timing,mode:'folder'}),'14 pages imported in 1 min 35 sec');

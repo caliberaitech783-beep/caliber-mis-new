@@ -4,16 +4,16 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import * as ledger from '../src/daily-bd-balance.mjs';
-import {dashboardCountScale} from '../src/dashboard-count-scale.mjs';
-import {recordedBreakdownRangeLength} from '../src/dashboard-breakdown-forecast.mjs';
+import * as ledger from '../src/utils/dashboard/daily-bd-balance.mjs';
+import {dashboardCountScale} from '../src/utils/dashboard/dashboard-count-scale.mjs';
+import {recordedBreakdownRangeLength} from '../src/utils/dashboard/dashboard-breakdown-forecast.mjs';
 import {recordBelongsToSite} from '../site-location.mjs';
 import {formatDisplayDate} from '../date-time-format.mjs';
-import {dailyBdBalanceExport} from '../src/dashboard-section-export.mjs';
-import DateInput from '../src/date-input.mjs';
+import {dailyBdBalanceExport} from '../src/utils/dashboard/dashboard-section-export.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 import {timestampMatchesShift} from '../shift-report-time.mjs';
 
-const source = readFileSync(new URL('../src/daily-bd-balance-chart.jsx', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, '').replace('export default function', 'function');
+const source = readFileSync(new URL('../src/components/dashboard/daily-bd-balance-chart.jsx', import.meta.url), 'utf8').replace(/^import .*;\r?\n/gm, '').replace('export default function', 'function');
 const {code} = await transformWithOxc(source, 'daily-bd-balance-chart.jsx', {jsx: {runtime: 'classic'}});
 const find = (tree, predicate) => {
   const found = [];

@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const css = fs.readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
-const readabilityCss = fs.readFileSync(new URL("../src/dashboard-readability.css", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
+const readabilityCss = fs.readFileSync(new URL("../src/styles/dashboard-readability.css", import.meta.url), "utf8");
 
 test("the OEM breakdown panel is measured against the screen instead of scrolling the page", () => {
   assert.match(source, /function oemChartPlotSpace\(article\)/, "the dashboard measures the room left for the plot");
@@ -80,7 +80,7 @@ test("breakdown mode keeps total counts and green segments on one common scale",
   assert.match(source, /setFleetChartMode\(mode\)/);
   assert.match(css, /\.mine-fleet-breakdown-segment\s*\{[^}]*background: var\(--fleet-breakdown\);/);
   assert.match(css, /\.mine-fleet-chart-legend i\.breakdown\s*\{[^}]*background: var\(--fleet-breakdown\);/);
-  const bars = fs.readFileSync(new URL("../src/fleet-site-bars.jsx", import.meta.url), "utf8");
+  const bars = fs.readFileSync(new URL("../src/components/dashboard/fleet-site-bars.jsx", import.meta.url), "utf8");
   assert.match(bars, /const totalHeight = fleetBarHeightPercent\(total, scale\);/);
   assert.match(bars, /const breakdownShare = total \? breakdown \/ total \* 100 : 0;/);
   assert.match(bars, /Math\.max\(1, nonNegativeCount\(axisMax\), total\)/);

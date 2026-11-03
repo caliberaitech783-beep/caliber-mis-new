@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const topbar=readFileSync(new URL('../src/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const topbar=readFileSync(new URL('../src/styles/topbar.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('every backup page opens from the Administration menu, for Admin and Super Admin only',()=>{
   const nav=main.match(/const adminNav = \[[\s\S]*?\];/)[0];

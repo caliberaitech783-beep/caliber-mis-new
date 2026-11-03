@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {logBookAssets,missingAssetMessage} from '../src/log-book-asset-options.mjs';
+import {logBookAssets,missingAssetMessage} from '../src/utils/logbooks/log-book-asset-options.mjs';
 test('manual doors match site aliases, accept unassigned assets, and exclude other sites or categories',()=>{
  const assets=[{id:'1',kind:'vehicle',site:'Dhoptala OC (2nd)'},{id:'2',kind:'vehicle',site:'Sasti OC'},{id:'3',kind:'equipment',site:'Dhoptala OB'},{id:'4',kind:'vehicle',site:''}];
  assert.deepEqual(logBookAssets({assets},'vehicle','Dhoptala OC').map(r=>r.id),['1','4']);

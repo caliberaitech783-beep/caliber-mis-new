@@ -48,7 +48,7 @@ test('HR User can open every directory master on desktop and mobile without othe
 
 test('HR header hides operational workspaces and allows the requested pages',async()=>{
  const {readFileSync}=await import('node:fs');
- const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.ok(source.includes('permissions.adminLevel !== "Manager" && ![\'HR User\',\'HR Manager\'].includes(session?.assignedRole)'));
  assert.ok(source.includes("if(session?.assignedRole==='HR User')return ['Dashboard','Reports','Tickets','CD'"));
  assert.ok(source.includes('<AnnouncementHistoryButton token={authToken} />'));

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {parseIstTimestamp as at} from '../ai-feeder.mjs';
-import {pulseElapsed, pulseCaseTiming} from '../src/info-pulse-timing.mjs';
+import {pulseElapsed, pulseCaseTiming} from '../src/utils/ui/info-pulse-timing.mjs';
 
 const now = at('2026-09-10 12:00:00');
 const fields = (request, types = []) => Object.fromEntries(pulseCaseTiming({request, issues: types.map(type => ({type}))}, now).map(field => [field.label, field.value ?? field.date]));

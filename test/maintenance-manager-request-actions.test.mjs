@@ -4,7 +4,7 @@ import test from "node:test";
 import { managerRoleSelection } from "../admin-access.mjs";
 
 const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const slice = (text, start, end) => text.slice(text.indexOf(start), text.indexOf(end, text.indexOf(start)));
 
 const guards = new Function("managerRoleSelection", `${slice(server, "function requirePermission(", "async function requireSuper(")}

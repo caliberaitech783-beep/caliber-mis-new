@@ -3,10 +3,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
-import { watchVisibleMasterRefresh } from "../src/master-refresh.mjs";
-import { filterRecordsByDate } from "../src/record-date-range.mjs";
+import { watchVisibleMasterRefresh } from "../src/services/ui/master-refresh.mjs";
+import { filterRecordsByDate } from "../src/utils/ui/record-date-range.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const componentSource = source.slice(source.indexOf("function TicketPage("), source.indexOf("function AiFeederPanel("));
 const code = (await transformWithOxc(componentSource, "TicketPage.jsx", {jsx: {runtime: "classic"}})).code;
 const Null = () => null;

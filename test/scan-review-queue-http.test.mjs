@@ -1,7 +1,7 @@
 import {prepareVlbFixture} from './operational-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import express from 'express';import {PGlite} from '@electric-sql/pglite';import {randomUUID} from 'node:crypto';
 import {registerBulkCardScanning} from '../bulk-card-scanning.mjs';import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
-import {remainingScanCards,scanReviewPosition} from '../src/scan-review-queue.mjs';
+import {remainingScanCards,scanReviewPosition} from '../src/utils/scanning/scan-review-queue.mjs';
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations
 test('matching complete cards save automatically; explicit correction reduces ten uploaded cards from six remaining to five',async t=>{

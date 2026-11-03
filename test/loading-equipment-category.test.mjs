@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {assetBookKind} from '../equipment-kind.mjs';
 import {validateTripEquipment} from '../trip-equipment-validation.mjs';
 import {normalizeScanEquipmentRows,scanEquipmentMatchIssues,selectTripEquipment,siteEquipmentOptions} from '../scan-machine-rules.mjs';
-import {scanFieldIssues} from '../src/scan-field-review.mjs';
+import {scanFieldIssues} from '../src/utils/scanning/scan-field-review.mjs';
 const raw=[
  {id:'1802',equipmentName:'T11 - MH34BZ2638',category:'VEHICLE',currentLocation:'Dhoptala OC (2nd)'},
  {id:'2339',equipmentName:'T22 - MH34BZ7681',category:'VEHICLE',currentLocation:'Dudhichua OC'},

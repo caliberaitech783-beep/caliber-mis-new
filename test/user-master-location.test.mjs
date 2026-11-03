@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { userMasterLocation } from "../src/user-master-location.mjs";
+import { userMasterLocation } from "../src/utils/people/user-master-location.mjs";
 
 test("user master location prefers a saved work location over report sites", () => {
   assert.equal(userMasterLocation({site:" Sasti OB ", location:"Other", managerSites:"Jayant OB"}), "Sasti OB");
@@ -19,7 +19,7 @@ test("desktop users display report sites without changing their permissions or a
 });
 
 test("location display, filtering, sorting and export share the same user-only resolver", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /exportColumns = fields\?\.map[^\n]*name === "Users & employees" && key === "site" \? userMasterLocation\(record\)/);
   assert.match(source, /masterValue = \(record, key\) => \{\s*if \(name === "Users & employees" && key === "site"\) return userMasterLocation\(record\)/);
   assert.match(source, /useSortableRows\(filteredRows, "", \(record, key\) => \{\s*if \(name === "Users & employees" && key === "site"\) return userMasterLocation\(record\)/);

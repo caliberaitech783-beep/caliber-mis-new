@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import {adaptiveRefreshInterval} from '../src/mobile-performance.mjs';
+import {adaptiveRefreshInterval} from '../src/utils/ui/mobile-performance.mjs';
 
-const source=readFileSync(new URL('../src/site-update-notice.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/ui/site-update-notice.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace('export default function','function'),'site-update-notice.jsx',{jsx:{runtime:'classic'}});
 const nodes=(tree,predicate)=>{const found=[];const visit=node=>{if(Array.isArray(node))return node.forEach(visit);if(!React.isValidElement(node))return;if(predicate(node))found.push(node);visit(node.props.children)};visit(tree);return found};
 

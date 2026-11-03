@@ -8,11 +8,11 @@ import React from 'react';
 import { transformWithOxc } from 'vite';
 import * as equipment from '../request-equipment.mjs';
 import { recordsForSite } from '../site-location.mjs';
-import { indiaWorkflowDateTimeParts } from '../src/workflow-clock.mjs';
+import { indiaWorkflowDateTimeParts } from '../src/utils/ui/workflow-clock.mjs';
 import { submitMaintenanceRequest } from '../request-submit.mjs';
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
-const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const formStart = source.indexOf('function MaintenanceForm(');
 const formSource = source.slice(formStart, source.indexOf('\n}\n', formStart) + 3);
 const speechSource = source.slice(source.indexOf('const speechLanguages ='), source.indexOf('function readMeterEvidence('));

@@ -27,7 +27,7 @@ test("Equipment Master Oracle synchronization is manual only", () => {
 test("request forms fetch and persist Oracle logbook driver names", () => {
   const oracle = fs.readFileSync(new URL("../oracle-db.mjs", import.meta.url), "utf8");
   const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-  const client = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(oracle, /equipmentlogbookdetail/i);
   assert.match(oracle, /vehiclelogbookdetail/i);
   assert.match(oracle, /cmpl\.employee/i);

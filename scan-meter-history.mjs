@@ -1,5 +1,5 @@
 import {meterRuleIssues} from './trip-card-rules.mjs';
-import {scanFieldIssues} from './src/scan-field-review.mjs';
+import {scanFieldIssues} from './src/utils/scanning/scan-field-review.mjs';
 import {formatDisplayDateTime} from './date-time-format.mjs';
 
 const keys=['openingHmr','closingHmr','openingKmr','closingKmr','shiftHours'];

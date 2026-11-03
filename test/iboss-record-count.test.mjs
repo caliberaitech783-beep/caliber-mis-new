@@ -4,8 +4,8 @@ import {ACCOUNT_VIEWS} from '../iboss-accounts.mjs';
 import {accountPageQuery} from '../iboss-account-pages.mjs';
 import {dashboardMetric,DASHBOARD_METRICS} from '../iboss-dashboard.mjs';
 import {companyScopedSql} from '../iboss-company-scope.mjs';
-import {createAccountPageLoader} from '../src/iboss-account-loader.mjs';
-import {recordCountLabel} from '../src/iboss-record-count.mjs';
+import {createAccountPageLoader} from '../src/services/accounts/iboss-account-loader.mjs';
+import {recordCountLabel} from '../src/utils/accounts/iboss-record-count.mjs';
 test('counts wrap the same filtered source without pagination or pagination binds',()=>{
  for(const key of Object.keys(ACCOUNT_VIEWS)){
   const q=accountPageQuery(key,'2026-04-01','2026-09-30',3,'2685');

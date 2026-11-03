@@ -5,7 +5,7 @@ import { telegramConfiguration, telegramPurposeEnabled, telegramPlainText, sendT
 import { normalizeWhatsAppReportSettings } from "../whatsapp-report-settings.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const env = { TELEGRAM_BOT_TOKEN: "123:secret-token", TELEGRAM_DEFAULT_CHAT_ID: "-5550689740" };
 
 function recordingFetch(result = { message_id: 7 }) {
@@ -150,7 +150,7 @@ test("Personal Telegram copies follow WhatsApp recipients and hierarchy reports"
 });
 
 test("Every user can connect Telegram from the profile panel", () => {
-  const profile = readFileSync(new URL("../src/user-profile.jsx", import.meta.url), "utf8");
+  const profile = readFileSync(new URL("../src/pages/people/user-profile.jsx", import.meta.url), "utf8");
   assert.ok(profile.includes("<TelegramConnect token={apiToken} />"));
   assert.equal((source.match(/apiToken={authToken}/g) || []).length, 2);
   assert.ok(profile.includes("fetch(\"/api/telegram/link\", { method: \"POST\", headers })"));
@@ -197,7 +197,7 @@ test("Telegram can be required at login, with exempt users", async () => {
 });
 
 test("The login gate blocks unconnected users and admins manage exemptions", () => {
-  const gate = readFileSync(new URL("../src/telegram-gate.jsx", import.meta.url), "utf8");
+  const gate = readFileSync(new URL("../src/components/notifications/telegram-gate.jsx", import.meta.url), "utf8");
   assert.match(gate, /const blocking = Boolean\(state\?\.required && !state\?\.linked\);/);
   assert.match(gate, /Connect Telegram to continue/);
   assert.match(gate, /play\.google\.com\/store\/apps\/details\?id=org\.telegram\.messenger/);

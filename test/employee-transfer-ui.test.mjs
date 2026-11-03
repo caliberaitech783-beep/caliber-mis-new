@@ -4,12 +4,12 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 import {formatDisplayDate,formatDisplayDateTime} from '../date-time-format.mjs';
 import {CDIR_MASTER_FIELDS,CDIR_MASTERS} from '../cdir-masters.mjs';
 import {employeeTransferAccess,employeeTransferVisible} from '../employee-transfer.mjs';
 
-const source=readFileSync(new URL('../src/employee-transfer.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function');
+const source=readFileSync(new URL('../src/pages/people/employee-transfer.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function');
 const {code}=await transformWithOxc(source,'employee-transfer.jsx',{jsx:{runtime:'classic'}});
 test('rendered transfer form autopopulates details and passes each register/history to shared export controls',()=>{
  const record={id:1,transferNo:'ET-1',empId:'E001',name:'EMPLOYEE',source:'Majri OC',destination:'Jayant OC',status:'Awaiting source approval',effectiveDate:'2026-10-09',outgoing:true,incoming:false,canApprove:true,history:[{action:'Requested',by:'HR',at:'2026-10-08T10:00:00Z'}],before:{name:'EMPLOYEE',site:'Majri OC'},proposed:{name:'EMPLOYEE',site:'Jayant OC'},proposedContact:{contact:'9123456789'}};

@@ -50,6 +50,6 @@ test('route requires session, preserves site scope, and UI has independent accou
   assert.match(server,/app.get\('\/api\/reports\/bd-ageing',requireSession,bdAgeingReportHandler/);
   const route=server.split("app.get('/api/reports/bd-ageing'")[1].split("app.get('/api/requests'")[0];
   assert.match(route,/currentDashboardAuthorization/); assert.match(route,/scopeInfoPulseRequests/); assert.match(route,/archived_at IS NULL/);
-  const ui=readFileSync(new URL('../src/bd-ageing-report.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/pages/reports/bd-ageing-report.jsx',import.meta.url),'utf8');
   assert.match(ui,/if \(!allowed\) return/); assert.match(ui,/AbortController/);
 });

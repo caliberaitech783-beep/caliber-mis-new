@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {printColumnOptions,selectedPrintColumns,nextPrintLayout,normalizePrintLayoutName,printLayoutStorageKey,removePrintLayout,openSmartPrint,printFitScale,printPageSize,PRINT_PAGE_SIZES,normalizePageRanges,normalizePrintOptions,loadPrintOptions,savePrintOptions,PRINT_DUPLEX_OPTIONS,DEFAULT_PRINT_OPTIONS,compactDailyUpdatesForPrint,compactSmartPrintColumns} from '../src/smart-print.mjs';
+import {printColumnOptions,selectedPrintColumns,nextPrintLayout,normalizePrintLayoutName,printLayoutStorageKey,removePrintLayout,openSmartPrint,printFitScale,printPageSize,PRINT_PAGE_SIZES,normalizePageRanges,normalizePrintOptions,loadPrintOptions,savePrintOptions,PRINT_DUPLEX_OPTIONS,DEFAULT_PRINT_OPTIONS,compactDailyUpdatesForPrint,compactSmartPrintColumns} from '../src/services/reports/smart-print.mjs';
 test('only chosen headings and values reach print in table order',()=>{
  const columns=[{label:'Door',value:r=>r.door},{label:'Private',value:()=>{throw Error('Excluded value read');}},{label:'Status',value:r=>r.status}];
  const options=printColumnOptions(columns);

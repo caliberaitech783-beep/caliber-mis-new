@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import * as model from '../src/report-period-model.mjs';
+import * as model from '../src/utils/reports/report-period-model.mjs';
 import {reportRowsWithinRange} from '../report-date-range.mjs';
-import DateInput from '../src/date-input.mjs';
+import DateInput from '../src/utils/ui/date-input.mjs';
 
 test('all preset ranges use Monday weeks, inclusive fortnight and calendar boundaries',()=>{
   const expected={today:['2026-09-09','2026-09-09'],yesterday:['2026-09-08','2026-09-08'],last7:['2026-09-03','2026-09-09'],thisWeek:['2026-09-07','2026-09-09'],lastWeek:['2026-08-31','2026-09-06'],fortnight:['2026-08-27','2026-09-09'],last30:['2026-08-11','2026-09-09'],thisMonth:['2026-09-01','2026-09-09'],lastMonth:['2026-08-01','2026-08-31'],thisQuarter:['2026-07-01','2026-09-09'],thisYear:['2026-01-01','2026-09-09']};
@@ -29,7 +29,7 @@ test('AM/PM and full final-minute boundaries preserve inclusive date filtering',
   assert.equal(model.periodBounds('2026-09-09','2026-09-09','13:00','12:59'),null);
   assert.equal(model.periodBounds('2026-02-30','2026-03-01','00:00','23:59'),null);
 });
-const source=readFileSync(new URL('../src/report-period-filter.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/reports/report-period-filter.jsx',import.meta.url),'utf8');
 const code=(await transformWithOxc(source.replace(/^import .*;\r?$/gm,'').replaceAll('export default function ','function ').replaceAll('export function ','function '),'period.jsx',{jsx:{runtime:'classic'}})).code;
 function harness(componentName='ReportPeriodDialog') {
   let index=0;const slots=[],applied=[],closed=[];
@@ -83,7 +83,7 @@ test('two calendar clicks select an ordered range and disable Apply for unfinish
   assert.deepEqual(app.applied[0],['2026-09-03T00:00:00','2026-09-08T23:59:59.999']);
 });
 test('shared date toolbar and popup are used for every selected report',()=>{
-  const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   assert.match(main,/selectedReport && <ReportPeriodFilter from=\{reportFrom\} to=\{reportTo\}/);
   assert.doesNotMatch(main,/type="datetime-local" value=\{reportFrom\}/);
   assert.match(source,/element.showModal\(\)/);

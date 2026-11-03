@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 test("shared print actions customize columns before printing", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.ok(source.includes('onClick={() => openSmartPrint'));
   assert.ok(source.includes('<span>Smart Print</span>'));
   const start = source.indexOf('  const printReport = () => {');

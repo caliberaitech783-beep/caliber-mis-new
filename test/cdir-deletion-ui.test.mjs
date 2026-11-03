@@ -8,7 +8,7 @@ import {formatDisplayDateTime} from '../date-time-format.mjs';
 import {employeeTransferAccess,employeeTransferSiteAllowed} from '../employee-transfer.mjs';
 
 test('deletion register renders scoped decisions and exports snapshot/history through shared controls',async()=>{
- const source=readFileSync(new URL('../src/cdir-deletion.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+ const source=readFileSync(new URL('../src/pages/admin/cdir-deletion.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(source,'cdir-deletion.jsx',{jsx:{runtime:'classic'}});
  const row={id:1,requestNo:'CD-DEL-1',name:'EMPLOYEE',empId:'E001',site:'Corporate Office, Nagpur',status:'Pending',canApprove:true,reason:'Duplicate',record:{name:'EMPLOYEE',empId:'E001'},history:[{action:'Requested',by:'HR',at:'2026-10-09T10:00:00Z'}]};
  const slots=[{token:'fixture',loading:false,targets:[{id:2,master:'C-Dir Employee master',empId:'E001',name:'EMPLOYEE',site:row.site}],records:[row]},'Pending','','',true,false,'','',row,null];let cursor=0,sections=[];

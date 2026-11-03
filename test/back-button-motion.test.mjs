@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const css=readFileSync(new URL('../src/back-button-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/back-button-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('every back button gets the graphical badge: crumb page back, modal back arrows, hourly breakdown back',()=>{
   const imports=[...source.matchAll(/import ["'](.+\.css)["'];/g)].map(m=>m[1]);
-  assert.ok(imports.indexOf('./back-button-motion.css')>imports.indexOf('./user-sessions.css')&&imports.indexOf('./back-button-motion.css')<imports.indexOf('./workspace-readability.css'),'after the modal back base styles, before the pinned last five');
+  assert.ok(imports.indexOf('../styles/back-button-motion.css')>imports.indexOf('../styles/user-sessions.css')&&imports.indexOf('../styles/back-button-motion.css')<imports.indexOf('../styles/workspace-readability.css'),'after the modal back base styles, before the pinned last five');
   assert.match(source,/className="page-back"/,'admin crumb back button');
   assert.ok((source.match(/className="modal-back-button"/g)||[]).length>=4,'modal headers');
   assert.match(css,/\.crumb \.page-back,\s*\.modal-back-button \{[^}]*background: linear-gradient\(135deg, #a855f7, #6b2fa8\) !important;/);

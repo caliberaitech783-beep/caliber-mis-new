@@ -2,7 +2,7 @@ import {prepareVlbFixture} from './operational-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import express from 'express';import {PGlite} from '@electric-sql/pglite';import {randomUUID} from 'node:crypto';
 import {registerBulkCardScanning} from '../bulk-card-scanning.mjs';import {LOG_BOOK_SCHEMA} from '../log-book.mjs';
-import {manualScanIssues} from '../src/scan-manual-fields.mjs';
+import {manualScanIssues} from '../src/utils/scanning/scan-manual-fields.mjs';
 process.env.VLB_TWO_STAGE_BATCHES='0';
 
 // Card 39 on 2 Nov 2026: the operator picked "TPC50- 05008" from the loading-equipment dropdown and the

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {extractCard} from '../scan-extraction.mjs';
 import {markedShiftEvidence,manualTripShiftPatch} from '../trip-card-rules.mjs';
-import {scanFieldIssues} from '../src/scan-field-review.mjs';
+import {scanFieldIssues} from '../src/utils/scanning/scan-field-review.mjs';
 import {cardPrompt} from '../gemini-card-reader.mjs';
 import {checkScanCard} from '../bulk-card-scanning.mjs';
 test('new Trip Cards derive hours from all five checked options, ignoring conflicting printed hours',()=>{

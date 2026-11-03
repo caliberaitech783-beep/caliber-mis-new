@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 test("admin navigation and user forms use the same access allowlists", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const server = await readFile(new URL("../server.mjs", import.meta.url), "utf8");
 
   assert.match(source, /visibleMasterNav = masterNav\.filter/);
@@ -15,7 +15,7 @@ test("admin navigation and user forms use the same access allowlists", async () 
 });
 
 test("WhatsApp delivery settings has one administrator entry in Reports", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /\["Report Setting", Settings\]/);
   assert.match(source, /if \(name === "Report Setting"\) name = "Reports"/);
   assert.doesNotMatch(source, /active === "Report Setting"[\s\S]*?<WhatsAppReportSettingsDialog/);

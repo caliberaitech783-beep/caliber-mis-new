@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {pulseCaseReasons, pulseDailyUpdates, pulseSeverityCounts} from '../src/info-pulse-reasons.mjs';
+import {pulseCaseReasons, pulseDailyUpdates, pulseSeverityCounts} from '../src/utils/ui/info-pulse-reasons.mjs';
 
 test('the overdue reason is the most recent recorded daily delay reason, not the complaint', () => {
   const row = {request: {complaint: 'Engine overheats', dailyRemarks: [

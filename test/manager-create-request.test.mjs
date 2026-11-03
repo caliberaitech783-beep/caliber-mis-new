@@ -8,7 +8,7 @@ import {transformWithOxc} from 'vite';
 import {recordsForSite} from '../site-location.mjs';
 
 test('manager form forwards Jayant and multi-site assignments to the existing equipment filter',async()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const body=source.slice(source.indexOf('function ManagerCreateRequestForm('),source.indexOf('function ManagerDashboard('));
   const {code}=await transformWithOxc(body,'ManagerCreateRequestForm.jsx',{jsx:{runtime:'classic'}});
   const Form=new Function('React','useMasterRecords','MaintenanceForm',`${code}; return ManagerCreateRequestForm;`)(React,()=>[[],null,true],()=>null);

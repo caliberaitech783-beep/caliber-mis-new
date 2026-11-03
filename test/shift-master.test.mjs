@@ -29,7 +29,7 @@ test('Shift Master accepts workbook headers, normalizes time, and validates effe
 });
 
 test('Shift Master is wired into navigation, CRUD, seed data, and Equipment Master exposes only targeted ERP sync',()=>{
-  const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
   assert.match(client,/\["Shift Master", Clock, "shift"\]/);
   assert.match(client,/"Shift Master": \[/);

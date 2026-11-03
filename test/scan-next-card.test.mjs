@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {nextScanReviewCard,scanReviewNeighbours} from '../src/scan-next-card.mjs';
-import {remainingScanCards} from '../src/scan-review-queue.mjs';
+import {nextScanReviewCard,scanReviewNeighbours} from '../src/utils/scanning/scan-next-card.mjs';
+import {remainingScanCards} from '../src/utils/scanning/scan-review-queue.mjs';
 import {applySavedScanCard} from '../scan-batch-report.mjs';
 const card=(id,status='review')=>({id,status,ordinal:Number(id)});
 test('next correction follows the visible queue and skips completed or processing cards',()=>{
@@ -13,7 +13,7 @@ test('next correction follows the visible queue and skips completed or processin
  assert.equal(nextScanReviewCard([rows[0],rows[5]],'1',[rows[0],card('6','posted')]),null);
  assert.equal(nextScanReviewCard([rows[0],rows[5]],'1',[rows[0]]),null);
 });
-const source=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
 const handler=source.split('\n').find(line=>line.startsWith(' const review=async')).trim().replace(/^const review=/,'').replace(/;$/,'');
 function harness({fail=false,postFail=false,autosaving=false,last=false,contextBlocked=false}={}){
  const current=card('1'),next=card('2'),visible=last?[current]:[current,next],events=[];

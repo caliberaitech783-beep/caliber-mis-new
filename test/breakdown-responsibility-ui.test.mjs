@@ -9,9 +9,9 @@ const compile=async(file,name)=>{
   const source=readFileSync(new URL(file,import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace(/export default function/g,'function').replace(/export function/g,'function');
   return (await transformWithOxc(source,name+'.jsx',{jsx:{runtime:'classic'}})).code+`; return ${name};`;
 };
-const historyCode=await compile('../src/breakdown-responsibility-history.jsx','BreakdownResponsibilityHistory');
-const choiceCode=await compile('../src/maintenance-oem-choice.jsx','MaintenanceOemChoice');
-const editCode=await compile('../src/responsibility-request-edit-form.jsx','ResponsibilityRequestEditForm');
+const historyCode=await compile('../src/components/requests/breakdown-responsibility-history.jsx','BreakdownResponsibilityHistory');
+const choiceCode=await compile('../src/components/requests/maintenance-oem-choice.jsx','MaintenanceOemChoice');
+const editCode=await compile('../src/components/requests/responsibility-request-edit-form.jsx','ResponsibilityRequestEditForm');
 function nodes(tree,predicate){
   const out=[];
   const visit=n=>{if(Array.isArray(n))return n.forEach(visit);if(!React.isValidElement(n))return;if(predicate(n))out.push(n);visit(n.props.children);};visit(tree);return out;

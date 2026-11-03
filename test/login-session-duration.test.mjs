@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sessionTimeSummary,formatSessionDuration} from '../src/login-session-duration.mjs';
+import {sessionTimeSummary,formatSessionDuration} from '../src/utils/ui/login-session-duration.mjs';
 const from='2026-09-14T12:00:00Z',to='2026-09-15T12:00:00Z';
 const session=(createdAt,lastSeenAt)=>({createdAt,lastSeenAt});
 test('durations clip to the 24-hour window and merge overlapping devices without double counting',()=>{

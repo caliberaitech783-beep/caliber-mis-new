@@ -2,12 +2,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const css = fs.readFileSync(new URL("../src/mobile-phone-optimization.css", import.meta.url), "utf8");
-const filterCss = fs.readFileSync(new URL("../src/dashboard-filter-bar.css", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/mobile-phone-optimization.css", import.meta.url), "utf8");
+const filterCss = fs.readFileSync(new URL("../src/styles/dashboard-filter-bar.css", import.meta.url), "utf8");
 
 test("the dashboard phone pass stays in the established mobile layer", () => {
-  assert.ok(source.includes('import "./mobile-phone-optimization.css"'));
+  assert.ok(source.includes('import "../styles/mobile-phone-optimization.css"'));
   assert.ok(!source.includes('mobile-dashboard-responsive.css'));
   assert.match(css, /Final dashboard phone pass/);
 });

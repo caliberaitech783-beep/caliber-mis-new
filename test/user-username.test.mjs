@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {duplicateUsername,lockUsernamesForWrite,normalizeUsername,USERNAME_WRITE_LOCK_KEY} from '../user-username.mjs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 test('username matching is exact after trimming and ignores letter case',()=>{
   assert.equal(normalizeUsername('  Sanskar  '),'sanskar');

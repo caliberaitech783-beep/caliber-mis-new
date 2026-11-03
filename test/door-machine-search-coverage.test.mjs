@@ -1,8 +1,9 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source=name=>readFileSync(new URL('../src/'+name,import.meta.url),'utf8');
+const source=name=>readFileSync(frontendSourceUrl(name),'utf8');
 
 test('every editable door and machine workflow uses a searchable selector',()=>{
  const scan=source('bulk-card-scanning.jsx');

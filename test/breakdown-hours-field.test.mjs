@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import React from 'react';import {readFileSync} from 'node:fs';import {transformWithOxc} from 'vite';
-const source=readFileSync(new URL('../src/breakdown-hours-field.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+const source=readFileSync(new URL('../src/components/logbooks/breakdown-hours-field.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
 const {code}=await transformWithOxc(source,'breakdown-hours-field.jsx',{jsx:{runtime:'classic'}});
 const Field=new Function('React',code+';return BreakdownHoursField')(React);
 const nodes=tree=>React.Children.toArray(tree.props.children);

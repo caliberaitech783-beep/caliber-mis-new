@@ -5,7 +5,7 @@ import {recordsForSite} from '../site-location.mjs';
 import {isProductionFirstTripPending} from '../info-pulse-data.mjs';
 import {requestWithEquipmentMasterDetails} from '../request-equipment.mjs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const normal=source.slice(source.indexOf('function Normal('),source.indexOf('function App('));
 const queueCode=normal.slice(normal.indexOf('  const productionFirstTripSourceRows='),normal.indexOf('  const createLockedByFirstTrip='));
 const base={site:'Sasti OB',status:'Closed',start:'2026-09-24 08:00:00',closedAt:'2026-09-24 09:00:00'};

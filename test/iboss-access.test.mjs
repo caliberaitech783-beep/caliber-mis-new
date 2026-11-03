@@ -35,7 +35,7 @@ test('all Accounts endpoints and navigation share the eligibility gate',()=>{
  assert.match(section,/currentUserRecord\(req.session\)/);
  assert.match(section,/resolveMobileAccess\(\{user,portal:/);
  assert.match(section,/accountSectionAllowed/);
- const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(main,/filter\(\(\)=>ibossAccountsAllowed\(session,viewPermissions\)\)/);
  assert.match(main,/\["Accounts","Accounts Masters","Accounts Transactions"\].includes\(name\)\) return ibossAccountsAllowed/);
 });

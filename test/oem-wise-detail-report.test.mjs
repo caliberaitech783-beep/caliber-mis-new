@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {oemDetailReportRows, oemEquipmentLabel} from '../src/oem-dashboard-filters.mjs';
-import {groupReportRows} from '../src/site-report.mjs';
+import {oemDetailReportRows, oemEquipmentLabel} from '../src/utils/dashboard/oem-dashboard-filters.mjs';
+import {groupReportRows} from '../src/utils/reports/site-report.mjs';
 
 test('OEM equipment labels separate tippers and machines without repeating the make',()=>{
   assert.equal(oemEquipmentLabel({make:'VOLVO',group:'VOLVO TIPPERS'}),'VOLVO TIPPERS');

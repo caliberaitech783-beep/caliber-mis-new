@@ -12,7 +12,7 @@ test('scanner start routes reject missing selections before accessing scanner, f
  assert.equal(queries,0);
 });
 test('feeder and folder buttons cannot start without selections, including direct handler calls',async()=>{
- let source=readFileSync(new URL('../src/local-scanner-panel.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(source,'local-scanner.jsx',{jsx:{runtime:'classic'}});
+ let source=readFileSync(new URL('../src/components/scanning/local-scanner-panel.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(source,'local-scanner.jsx',{jsx:{runtime:'classic'}});
  const calls=[],errors=[];const scope={SmartSelect: "select",React,parseScanContext,useState:initial=>[initial,value=>{if(typeof value==='string')errors.push(value)}],useRef:v=>({current:v}),useEffect:()=>{},ScanLine:'svg',FolderOpen:'svg',RefreshCw:'svg',Download:'svg',organizationScanners:()=>[],scannerConnectionMessage:()=>'',chooseConnectedScanner:()=>'',readScannerResponse:async r=>r.json(),fetch:async(url,options)=>{calls.push({url,body:JSON.parse(options.body)});return {json:async()=>({id:'test-job'})}}};
  const C=new Function(...Object.keys(scope),code+';return WindowsScannerPanel;')(...Object.values(scope));
  function buttons(node,result=[]){if(!React.isValidElement(node))return result;if(node.type==='button')result.push(node);for(const n of React.Children.toArray(node.props.children))buttons(n,result);return result;}

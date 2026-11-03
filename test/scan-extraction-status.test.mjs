@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
-const source=readFileSync(new URL('../src/scan-extraction-status.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/components/scanning/scan-extraction-status.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function'),'scan-extraction-status.jsx',{jsx:{runtime:'classic'}});
 const nodes=(tree,predicate)=>{const result=[];const visit=node=>{if(Array.isArray(node))return node.forEach(visit);if(!React.isValidElement(node))return;if(predicate(node))result.push(node);visit(node.props.children)};visit(tree);return result;};
 function harness(storage=new Map(),initial=100000){
@@ -34,15 +34,15 @@ test('batch switching and invalid stored timestamps cannot show another batch el
  app.storage.set('caliberScanExtractionStart:two','Infinity');
  tree=app.render({batchId:'two',pending:1,total:1,uploading:false});assert.equal(nodes(tree,node=>node.props.role==='timer')[0].props.children,'0 sec');
  assert.equal(app.formatExtractionTime(125),'2 min 05 sec');assert.equal(app.formatExtractionTime(-1),'0 sec');
- const page=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+ const page=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
  assert.equal((page.match(/<ScanExtractionStatus /g)||[]).length,1);
- assert.match(readFileSync(new URL('../src/scan-upload-timer.jsx',import.meta.url),'utf8'),/Uploading PDFs · Time taken: \{formatExtractionTime\(uploadElapsed\)\}/);
+ assert.match(readFileSync(new URL('../src/components/scanning/scan-upload-timer.jsx',import.meta.url),'utf8'),/Uploading PDFs · Time taken: \{formatExtractionTime\(uploadElapsed\)\}/);
  assert.match(page,/Time taken: '\+formatExtractionTime\(\(performance\.now\(\)-uploadStarted\.current\)\/1000\)/);
  assert.ok(!page.includes('You can review completed cards while'));
 });
 
 test('scan review uses searchable site doors and the paper summary heading',()=>{
- const page=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+ const page=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
  assert.match(page,/\['doorText','Door number','door'\]/);
  assert.match(page,/type==='door'\?\(options\?\.assets\|\|\[\]\)\.filter/);
  assert.match(page,/<h4>Machine-wise summary<\/h4>/);

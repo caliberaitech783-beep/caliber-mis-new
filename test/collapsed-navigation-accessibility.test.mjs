@@ -8,7 +8,7 @@ import { isSessionViewOnlyUser } from "../user-session-access.mjs";
 import { canViewBdAgeingReport } from "../bd-ageing-report.mjs";
 import { ibossAccountsAllowed } from "../iboss-access.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const sideSource = source.slice(source.indexOf("function Side("), source.indexOf("function formatTwelveHourDateTime("));
 const {code} = await transformWithOxc(sideSource, "side-navigation.jsx", {jsx: {runtime: "classic"}});
 const Null = () => null;

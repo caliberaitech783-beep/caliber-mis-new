@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("login uses one account form and lets the saved user type choose the workspace", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
   const login=source.slice(source.indexOf("function Login"),source.indexOf("function Side"));
@@ -16,7 +16,7 @@ test("login uses one account form and lets the saved user type choose the worksp
 });
 
 test("login password opens the full keyboard instead of the iOS telephone keypad", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const passwordInput = source.match(/<input id="login-password"[\s\S]*?\/>/)?.[0] || "";
   assert.match(passwordInput, /type=\{showPassword \? "text" : "password"\}/);
   assert.doesNotMatch(passwordInput, /inputMode="(?:tel|numeric|decimal)"/);
@@ -25,7 +25,7 @@ test("login password opens the full keyboard instead of the iOS telephone keypad
 });
 
 test("Enter moves from the login user name to the password and the form submits the login", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const login = source.slice(source.indexOf("function Login"), source.indexOf("function Side"));
 
   assert.match(login, /const passwordInputRef = useRef\(null\)/);
@@ -35,7 +35,7 @@ test("Enter moves from the login user name to the password and the form submits 
 });
 
 test("login and reset usernames do not autocapitalize on mobile", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   for (const id of ["login-username", "reset-username"]) {
     const input = source.match(new RegExp(`<input id="${id}"[\\s\\S]*?\\/>`))?.[0] || "";
     assert.match(input, /autoCapitalize="none"/);
@@ -45,7 +45,7 @@ test("login and reset usernames do not autocapitalize on mobile", () => {
 
 test("mobile layout supports iPhone safe areas and dynamic viewport height", () => {
   const html = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
-  const css = fs.readFileSync(new URL("../src/mobile-compat.css", import.meta.url), "utf8");
+  const css = fs.readFileSync(new URL("../src/styles/mobile-compat.css", import.meta.url), "utf8");
   assert.match(html, /name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/);
   assert.match(css, /env\(safe-area-inset-top\)/);
   assert.match(css, /100dvh/);
@@ -54,7 +54,7 @@ test("mobile layout supports iPhone safe areas and dynamic viewport height", () 
 });
 
 test("mobile dialogs support touch dismissal and accessibility", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /onPointerDown=\{\(e\) => e\.target === e\.currentTarget && close\(\)\}/);
   assert.match(source, /role="dialog" aria-modal="true"/);
   assert.match(source, /type="button" onClick=\{close\} aria-label="Close dialog"/);
@@ -62,7 +62,7 @@ test("mobile dialogs support touch dismissal and accessibility", () => {
 });
 
 test("the login screen does not jump on phones: no dynamic viewport height and no keyboard on load", () => {
-  const css = fs.readFileSync(new URL("../src/mobile-compat.css", import.meta.url), "utf8");
+  const css = fs.readFileSync(new URL("../src/styles/mobile-compat.css", import.meta.url), "utf8");
   const ruleBody = (selector) => css.split(selector).slice(1).map((part) => part.slice(0, part.indexOf("}")));
   for (const selector of ["\n.login {", ".login-visual {", ".login > main {"]) {
     const bodies = ruleBody(selector);
@@ -70,7 +70,7 @@ test("the login screen does not jump on phones: no dynamic viewport height and n
     for (const body of bodies) assert.ok(!body.includes("dvh"), selector + " must not use the dynamic viewport height");
   }
   assert.ok(ruleBody("\n.app,").some((body) => body.includes("100dvh")), "the signed-in shells keep the dynamic height");
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.ok(source.includes('const coarsePointerDevice = () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(hover: none) and (pointer: coarse)").matches;'));
   const username = source.slice(source.indexOf('id="login-username"'), source.indexOf('htmlFor="login-password"'));
   assert.ok(username.includes("autoFocus={!coarsePointerDevice()}"), "username is only auto-focused on desktop");

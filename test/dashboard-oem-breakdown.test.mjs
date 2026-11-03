@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
-import { buildOemBreakdownRows, buildOemBreakdownChart, selectOemBreakdownRows, createOemBreakdownSelection, oemDateRangeError } from "../src/oem-breakdown-model.mjs";
+import { buildOemBreakdownRows, buildOemBreakdownChart, selectOemBreakdownRows, createOemBreakdownSelection, oemDateRangeError } from "../src/utils/dashboard/oem-breakdown-model.mjs";
 
 const now = Date.parse("2026-09-14T12:00:00+05:30");
 const equipment = [
@@ -172,14 +172,14 @@ test("OEM BD uses the production status snapshot and does not revive stale impor
 });
 
 test("OEM dashboard sits between Total and Breakdown and shares the existing filters and complete request table", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.ok(source.includes('[["total", "Total"], ["oem", "OEM BD"], ["breakdown", "Breakdown"]]'));
   assert.ok(source.includes('const oemFrom = oemLive ? "" : dashboardFrom;'));
   assert.ok(source.includes('const oemTo = oemLive ? "" : dashboardTo;'));
   assert.ok(source.includes('regions: fleetRegionInsights, oem: dashboardOem'));
   assert.ok(source.includes('<SmartSelect aria-label="OEM"'));
   assert.match(source, /<OemBreakdownDetails[^>]+selection=\{oemDrilldown\}/);
-  const details = readFileSync(new URL("../src/oem-breakdown-details.jsx", import.meta.url), "utf8");
+  const details = readFileSync(new URL("../src/components/dashboard/oem-breakdown-details.jsx", import.meta.url), "utf8");
   assert.ok(details.includes('<DashboardRecordBrowser'));
   assert.ok(details.includes('requestRecords={!selection.fleetOnly}'));
   assert.ok(details.includes('showDateFilter={false} showRowNumbers'));

@@ -13,7 +13,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 
 const root=path.dirname(fileURLToPath(new URL('../package.json',import.meta.url)));
-const sources=readdirSync(path.join(root,'src')).filter(name=>/\.(jsx|mjs)$/.test(name)).map(name=>'src/'+name);
+const sources=readdirSync(path.join(root,'src'),{recursive:true}).filter(name=>/\.(jsx|mjs)$/.test(name)).map(name=>'src/'+name);
 // Replaced by Vite at build time (vite.config.mjs `define`).
 const buildTimeDefines=new Set(['__CALIBER_APP_VERSION__']);
 

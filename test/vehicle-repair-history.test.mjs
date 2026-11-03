@@ -11,7 +11,7 @@ import {
   vehicleHistoryKey,
   vehicleRepairHistoryOptions,
   vehicleRepairHistoryRows,
-} from "../src/vehicle-repair-history.mjs";
+} from "../src/utils/ui/vehicle-repair-history.mjs";
 
 const requests = [
   {ref: "REQ-1", door: " V-173 ", start: "2026-08-01 09:00", closedAt: "2026-08-01 12:00", status: "Closed", maintenanceWork: "Changed hose"},

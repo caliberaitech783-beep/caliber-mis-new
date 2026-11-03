@@ -4,7 +4,7 @@ import test from 'node:test';
 import {cdirDirectoryForViewer,cdirViewerContext} from '../cdir-access.mjs';
 
 const html=fs.readFileSync(new URL('../public/cd/caliber-directory.html',import.meta.url),'utf8');
-const client=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const client=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 
 const sites=[
   {id:'sasti-oc',label:'Sasti OC',dataKey:'SASTI',group:'WCL'},
@@ -64,14 +64,14 @@ test('C-Dir expanded filters stay in document flow and use responsive grids',()=
 });
 
 test('C-Dir is a native application page and does not render the legacy iframe',()=>{
-  const component=fs.readFileSync(new URL('../src/caliber-directory-page.jsx',import.meta.url),'utf8');
-  const css=fs.readFileSync(new URL('../src/caliber-directory-page.css',import.meta.url),'utf8');
+  const component=fs.readFileSync(new URL('../src/pages/people/caliber-directory-page.jsx',import.meta.url),'utf8');
+  const css=fs.readFileSync(new URL('../src/styles/caliber-directory-page.css',import.meta.url),'utf8');
   assert.doesNotMatch(client,/src="\/cd\/caliber-directory\.html/);
   assert.doesNotMatch(component,/<iframe\b/);
-  assert.match(client,/import CaliberDirectoryPage from "\.\/caliber-directory-page\.jsx"/);
+  assert.match(client,/import CaliberDirectoryPage from "(?:\.\.?\/)+(?:[\w-]+\/)*caliber-directory-page\.jsx"/);
   assert.match(client,/<CaliberDirectoryPage token=\{session\?\.token \|\| authToken\}/);
   assert.match(client,/<CdirModule token=\{session\?\.token \|\| authToken\}/);
-  const module=fs.readFileSync(new URL('../src/employee-transfer.jsx',import.meta.url),'utf8');
+  const module=fs.readFileSync(new URL('../src/pages/people/employee-transfer.jsx',import.meta.url),'utf8');
   assert.match(module,/className="cdir-module-tabs"/);
   assert.match(module,/'directory','Directory'[\s\S]*?'tenure','Employee Tenure Report'/);
   assert.match(module,/<CaliberDirectoryPage token=\{token\}/);
@@ -135,7 +135,7 @@ test('office, General User, manager and unassigned accounts can view every direc
       assert.deepEqual(cdirDirectoryForViewer(directory,viewer),directory);
     }
   }
-  const component=fs.readFileSync(new URL('../src/caliber-directory-page.jsx',import.meta.url),'utf8');
+  const component=fs.readFileSync(new URL('../src/pages/people/caliber-directory-page.jsx',import.meta.url),'utf8');
   assert.match(component,/rootScopeKey='all'/);
   assert.doesNotMatch(component,/My access/);
 });

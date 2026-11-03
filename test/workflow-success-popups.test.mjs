@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = fs.readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = fs.readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
 test("successful workflow actions show the requested popup notifications", () => {
   assert.match(source, /await onCreate\(request\);[\s\S]*?setCreatedRequestRef\("Request Submitted"\)/);

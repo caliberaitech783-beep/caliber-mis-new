@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { userMasterRole } from "../src/user-master-role.mjs";
+import { userMasterRole } from "../src/utils/people/user-master-role.mjs";
 
 test("User Master displays each saved department manager role", () => {
   for (const managerRole of ["Project Manager", "Production Manager", "Maintenance Manager", "MIS Manager"]) {
@@ -28,7 +28,7 @@ test("User Master displays specific operational user roles and retains admin aut
 });
 
 test("User Master role rendering, filtering, sorting and exports use the same resolver", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /exportColumns = fields\?\.map[^\n]*name === "Users & employees" && key === "userType" \? userMasterRole\(record\)/);
   assert.match(source, /masterValue = \(record, key\) => \{[\s\S]*?if \(name === "Users & employees" && key === "userType"\)\s*return userMasterRole\(record\)/);
   assert.match(source, /useSortableRows\(filteredRows, "", \(record, key\) => \{[^}]*key === "userType"\) return userMasterRole\(record\)/);

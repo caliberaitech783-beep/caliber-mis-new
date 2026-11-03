@@ -3,8 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 test("MIS sign-in sits beneath the ERP logo without external application links", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = await readFile(new URL("../src/user-sessions.css", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../src/styles/user-sessions.css", import.meta.url), "utf8");
 
   const proofRow = source.match(/<div className="login-application-links">[\s\S]*?<\/div>/);
   assert.ok(proofRow, "expected the login-proof row in the blue panel");
@@ -30,7 +30,7 @@ test("MIS sign-in sits beneath the ERP logo without external application links",
 });
 
 test("accident reporting stays reachable when the proof row is hidden on phones", async () => {
-  const styles = await readFile(new URL("../src/style.css", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
   // The 900px breakpoint hides .login-proof; a later rule must bring it back
   // with only the accident link showing, or field users lose the entry point.

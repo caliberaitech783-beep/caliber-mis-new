@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {responseTotalBytes,transferPercent,transferLabel,trackedBody} from '../src/transfer-progress.mjs';
+import {responseTotalBytes,transferPercent,transferLabel,trackedBody} from '../src/utils/ui/transfer-progress.mjs';
 
-const client=readFileSync(new URL('../src/backup-administration.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const css=readFileSync(new URL('../src/backup-administration.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const client=readFileSync(new URL('../src/pages/admin/backup-administration.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/backup-administration.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('percent is whole, capped at 99 until the last byte, and unknown without a size',()=>{
   assert.equal(transferPercent(0,1000),0);

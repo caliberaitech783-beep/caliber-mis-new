@@ -6,7 +6,7 @@ import {transformWithOxc} from "vite";
 import {liveEquipmentMetrics, liveEquipmentRoadStatus} from "../dashboard-equipment-metrics.mjs";
 import {recordBelongsToSite} from "../site-location.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const component = source.slice(source.indexOf("function RegionMasterPage("), source.indexOf("Generic = function GenericWithMasters"));
 const {code} = await transformWithOxc(component, "RegionMaster.jsx", {jsx: {runtime: "classic"}});
 const descendants = (node, test) => Array.isArray(node) ? node.flatMap((child) => descendants(child, test))

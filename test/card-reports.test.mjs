@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import React from 'react';import {transformWithOxc} from 'vite';
-const source=readFileSync(new URL('../src/card-reports.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/reports/card-reports.jsx',import.meta.url),'utf8');
 const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function'),'card-reports.jsx',{jsx:{runtime:'classic'}});
 const nodes=(tree,type)=>{const rows=[];const visit=n=>{if(Array.isArray(n))return n.forEach(visit);if(!React.isValidElement(n))return;if(n.type===type)rows.push(n);visit(n.props.children)};visit(tree);return rows};
 function harness(){const slots=[];let cursor=0;const useState=init=>{const i=cursor++;if(!(i in slots))slots[i]=typeof init==='function'?init():init;return[slots[i],v=>slots[i]=typeof v==='function'?v(slots[i]):v]};const app=new Function('React','useState','useEffect',code+';return {CardReportGallery,OriginalCard,filterCardBatches}')(React,useState,()=>{});return {...app,render:cards=>{cursor=0;return app.CardReportGallery({batch:{name:'Selected batch',created_at:'2026-10-28'},cards,token:'test'})}};}

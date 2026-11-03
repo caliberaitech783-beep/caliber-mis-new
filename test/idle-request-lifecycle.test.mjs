@@ -110,7 +110,7 @@ test('MIS verification saves optional trip-card remarks and rejects oversized re
 });
 
 test('MIS trip-card remark is optional and below the upload in the shared verification form',()=>{
-  const client=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const client=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const form=client.slice(client.indexOf('function VerifyRequestForm('),client.indexOf('function ProductionFirstTripForm('));
   assert.ok(form.indexOf('name="firstTripRemark"')>form.indexOf('name="firstTripCardImage"'));
   assert.match(form,/<textarea name="firstTripRemark"[^>]*maxLength=\{2000\}/);

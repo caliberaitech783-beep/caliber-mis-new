@@ -4,15 +4,15 @@ import {readFileSync} from "node:fs";
 import React from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import {transformWithOxc} from "vite";
-import * as model from "../src/dashboard-drilldown-model.mjs";
+import * as model from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
 import {REGION_DATA} from "../region-scope.mjs";
 import {calculateBreakdownMinutes, formatBreakdownDaysHours} from "../breakdown-duration.mjs";
-import {requestStatusSortRank} from "../src/request-status.mjs";
-import {filterRecordsByDate} from "../src/record-date-range.mjs";
+import {requestStatusSortRank} from "../src/utils/requests/request-status.mjs";
+import {filterRecordsByDate} from "../src/utils/ui/record-date-range.mjs";
 import {formatDisplayDateTime} from "../date-time-format.mjs";
-import {tableModel, dateColumnsFirst, tableExportModel} from "../src/table-actions-model.mjs";
+import {tableModel, dateColumnsFirst, tableExportModel} from "../src/utils/ui/table-actions-model.mjs";
 
-const source = readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8")
+const source = readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8")
   .replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
 const {code} = await transformWithOxc(source, "record-browser.jsx", {jsx: {runtime: "classic"}});
 const descendants = (node, test) => Array.isArray(node) ? node.flatMap((child) => descendants(child, test))

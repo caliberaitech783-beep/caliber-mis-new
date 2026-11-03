@@ -18,8 +18,8 @@ test("smart search matches every token across fields in any order", () => {
 });
 
 test("every active portal search is wired to the shared smart matcher", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  assert.match(source, /import \{ matchesSmartSearch \} from "\.\.\/smart-search\.mjs"/);
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  assert.match(source, /import \{ matchesSmartSearch \} from "\.(?:\.\.?\/)+(?:[\w-]+\/)*smart-search\.mjs"/);
   assert.doesNotMatch(source, /Object\.values\([^)]*\)\.join\(" "\)\.toLowerCase\(\)\.includes/);
   assert.match(source, /data-smart-search/);
   assert.match(source, /aria-label="Focus page smart search"/);

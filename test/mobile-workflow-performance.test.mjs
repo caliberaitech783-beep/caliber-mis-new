@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("mobile workflow tables render large result sets in batches", () => {
   assert.match(source, /const WORKFLOW_INITIAL_RENDER_ROWS = 100;/);

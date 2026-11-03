@@ -8,7 +8,7 @@ import {isIdleVehicleRequest} from '../request-idle.mjs';
 import { submitMaintenanceRequest } from "../request-submit.mjs";
 import { parseRequestTimelineTimestamp, validateRequestTimelineChange } from "../request-timeline.mjs";
 
-const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 const request = { ref: "REQ-100", door: "D36-Z0164", chassis: "CH-100", site: "Sasti OB", complaint: "Engine noise", meterType: "HMR" };
 const saved = { ...request, status: "Open", requesterLogin: "production" };

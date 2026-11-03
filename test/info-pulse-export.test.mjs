@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {buildInfoPulseBreakdowns} from '../info-pulse-data.mjs';
 import {formatDisplayDateTime} from '../date-time-format.mjs';
-import {pulseBreakdownRows} from '../src/info-pulse-timing.mjs';
-import {pulseExportColumns} from '../src/info-pulse-export.mjs';
-import {printColumnOptions} from '../src/smart-print.mjs';
+import {pulseBreakdownRows} from '../src/utils/ui/info-pulse-timing.mjs';
+import {pulseExportColumns} from '../src/utils/reports/info-pulse-export.mjs';
+import {printColumnOptions} from '../src/services/reports/smart-print.mjs';
 
 const NOW = Date.parse('2026-09-16T11:00:00+05:30');
 const LABELS = ['Site', 'Equipment / Vehicle', 'Equipment group', 'Request ref', 'Status', 'Standing tier', 'Breakdown reason', 'Delay reason', 'Delay reason recorded', 'Standing since', 'Down for', 'ETC', 'ETC status', 'Daily updates', 'Latest daily update'];

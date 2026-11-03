@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
 
 test("all dashboard families expose Print, PDF, and Excel for their scoped KPI data", () => {
   assert.match(source, /const dashboardKpiExportColumns = \[/);

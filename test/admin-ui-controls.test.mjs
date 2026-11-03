@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const tableStyles = readFileSync(new URL("../src/table-actions.css", import.meta.url), "utf8");
+const tableStyles = readFileSync(new URL("../src/styles/table-actions.css", import.meta.url), "utf8");
 
 test("employee rows place Change password before Edit and normalize identity fields", () => {
   const master = source.slice(source.indexOf("function MasterPage("), source.indexOf("function MasterLoader("));

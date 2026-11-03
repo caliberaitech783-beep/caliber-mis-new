@@ -4,7 +4,7 @@ import test from "node:test";
 import {requestEquipmentMeterType, requestMeterTypeForRequest, requestMeterTypesForRequest, requestMeterReadings, requestMeterReadingLabel} from "../request-equipment.mjs";
 import {validMeterEvidenceDataUrl, validMeterReading, validMeterReadings} from "../request-workflow.mjs";
 
-const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
 
 test("vehicles use KMR and equipment uses HMR", () => {

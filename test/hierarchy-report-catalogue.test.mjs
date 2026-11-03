@@ -38,9 +38,9 @@ test('older hierarchy ticks and scheduled titles map onto their catalogue equiva
 });
 
 test('the hierarchy master and server use the shared catalogue',()=>{
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  assert.match(source,/from "\.\.\/hierarchy-report-catalogue\.mjs"/);
+  assert.match(source,/from "\.(?:\.\.?\/)+(?:[\w-]+\/)*hierarchy-report-catalogue\.mjs"/);
   assert.match(source,/const hierarchyReportGroups = HIERARCHY_REPORT_GROUPS;/);
   assert.match(source,/const hierarchyReportCodes = HIERARCHY_REPORT_CODES;/);
   assert.match(server,/hierarchyAccessAllowsReport\(hierarchyRule\.reportAccess,title\)/);

@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const css = fs.readFileSync(new URL("../src/dashboard-concept-a.css", import.meta.url), "utf8");
-const client = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("../src/styles/dashboard-concept-a.css", import.meta.url), "utf8");
+const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("Total Fleet leads the Tracking Vehicle Throughput panel", () => {
   const featureRow = client.indexOf('className="mine-dashboard-feature-row"');

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {throughputSectionExport} from '../src/dashboard-section-export.mjs';
+import {throughputSectionExport} from '../src/utils/dashboard/dashboard-section-export.mjs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const declaration=(name,next)=>source.slice(source.indexOf(`  const ${name} =`),source.indexOf(`  const ${next} =`,source.indexOf(`  const ${name} =`)));
 const availableRegions=[{code:'WCL',sites:['Sasti OC','Majri OC']},{code:'NCL',sites:['Jayant OC']}];
 const recordBelongsToSite=(record,site)=>record.site===site;
@@ -36,7 +36,7 @@ test('site and shift predicates are combined before dashboard exports receive re
   assert.deepEqual(rows.map(r=>r.id),[1]);
 });
 test('PDF, Excel and print models always reuse final table selection, independent of numbering or grouping',()=>{
-  const shared=readFileSync(new URL('../src/shared-actions-table.jsx',import.meta.url),'utf8');
+  const shared=readFileSync(new URL('../src/components/ui/shared-actions-table.jsx',import.meta.url),'utf8');
   assert.match(shared,/\n  for \(const data of new Set\(\[exportData, printData, smartPrintData\]\)\) if \(data\) data.rows = selectedRows;/);
   assert.doesNotMatch(shared,/data.rows = rendered/);
   assert.match(source,/const stagePipelineRequests = locationBreakdowns.filter/);

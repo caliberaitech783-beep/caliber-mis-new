@@ -1,8 +1,9 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const read=name=>readFileSync(new URL(`../src/${name}`,import.meta.url),'utf8');
+const read=name=>readFileSync(frontendSourceUrl(name),'utf8');
 const css=read('dashboard-readability.css').replace(/\/\*[\s\S]*?\*\//g,'');
 const client=read('main.jsx');
 const managerScroll=read('manager-scroll.css');
@@ -14,8 +15,8 @@ const rule=selector=>{
 
 test('dashboard readability loads before the final dashboard spacing overrides for every role',()=>{
   const imports=[...client.matchAll(/import ["'](.+\.css)["'];/g)].map(match=>match[1]);
-  assert.deepEqual(imports.slice(-5),['./dashboard-readability.css','./dashboard-spacing.css','./mobile-phone-optimization.css','./dashboard-night.css','./no-motion.css']);
-  assert.equal(imports.filter(path=>path==='./dashboard-readability.css').length,1);
+  assert.deepEqual(imports.slice(-5),['../styles/dashboard-readability.css','../styles/dashboard-spacing.css','../styles/mobile-phone-optimization.css','../styles/dashboard-night.css','../styles/no-motion.css']);
+  assert.equal(imports.filter(path=>path==='../styles/dashboard-readability.css').length,1);
   assert.match(css,/:is\(\.mine-dashboard, \.manager-dashboard\)\s*\{/);
   const normal=client.slice(client.indexOf('function Normal('),client.indexOf('function App('));
   assert.match(normal,/section===?"dashboard"[\s\S]*?<MisDashboard/);

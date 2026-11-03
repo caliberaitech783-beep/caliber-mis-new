@@ -2,14 +2,14 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import React from "react";
-import { tableModel, requestColumnsInWorkflowOrder, closedTimeAfterStartedColumns } from "../src/table-actions-model.mjs";
+import { tableModel, requestColumnsInWorkflowOrder, closedTimeAfterStartedColumns } from "../src/utils/ui/table-actions-model.mjs";
 
 const h = React.createElement;
 const Header = () => null;
 const header = (cells) => tableModel(h("thead", {}, h("tr", {}, cells.map(([sortKey, label]) => sortKey ? h(Header, { key: sortKey, sortKey, label }) : h("th", { key: label }, label))))).columns;
 const labels = (columns) => columns.map((column) => column.label);
-const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
 
 test("the closing time column moves after Started and its ETC whatever the columns are called", () => {
   const plain = header([[null, "Job reference"], [null, "Started"], [null, "Days of breakdown"], [null, "Closing time"], [null, "Door no."]]);
@@ -51,7 +51,7 @@ test("maintenance closed history tables show the closing time right after Starte
 
 test("every maintenance closed history view asks for the closing time beside Started", () => {
   assert.match(shared, /if \(closedTimeAfterStarted\) closedTimeAfterStartedColumns\(columns\);/);
-  assert.match(main, /import \{ closedTimeAfterStartedColumns, ensureJobReferenceVisibleKeys \} from "\.\/table-actions-model\.mjs";/);
+  assert.match(main, /import \{ closedTimeAfterStartedColumns, ensureJobReferenceVisibleKeys \} from "(?:\.\.?\/)+(?:[\w-]+\/)*table-actions-model\.mjs";/);
   // Workspace "Closed history" tab (Maintenance, MIS and General users share the workflow table).
   assert.match(main, /tab === "history"[^\n]*<MobileWorkflowTable rows=\{historyRows\}[^\n]*showClosedAt=\{isMaintenance \|\| isMis\} closedAtLabel=\{closedHistoryClosingLabel\}[^\n]*closedTimeAfterStarted \{\.\.\.adminDeleteProps\} \/>/);
   // Production users see the breakdown table version of the same history.

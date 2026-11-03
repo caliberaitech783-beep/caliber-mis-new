@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {transformWithOxc} from 'vite';
-import {reconciliationBanks} from '../src/iboss-reconciliation-banks.mjs';
+import {reconciliationBanks} from '../src/utils/accounts/iboss-reconciliation-banks.mjs';
 const rows=[
  {ACCOUNT_CODE:'1',ACCOUNT_NAME:'Pending bank',UNRECONCILED_COUNT:3,UNCLEAR_DR:100},
  {ACCOUNT_CODE:'2',ACCOUNT_NAME:'Cleared bank',RECONCILED_COUNT:4},
@@ -28,7 +28,7 @@ test('bank status filters include partial banks, exclude no activity, and combin
  assert.deepEqual(reconciliationBanks([]),[]);
 });
 test('bank list renders selected status, counts, amounts and bank detail actions',async()=>{
- const source=fs.readFileSync(new URL('../src/iboss-bank-reconciliation.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
+ const source=fs.readFileSync(new URL('../src/pages/accounts/iboss-bank-reconciliation.jsx',import.meta.url),'utf8').replace(/^import .*;\r?$/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(source,'component.jsx',{jsx:{runtime:'classic'}});
  const Component=new Function('React','reconciliationBanks',`const SmartSelect="select";${code};return ReconciliationControls;`)(React,reconciliationBanks);
  const ReportSection=({title,rows,columns,emptyMessage})=>React.createElement('table',{'aria-label':title},React.createElement('tbody',null,rows.length?rows.map((row,i)=>React.createElement('tr',{key:i},columns.map(c=>React.createElement('td',{key:c.key},c.render?.(row)??c.value(row))))):React.createElement('tr',null,React.createElement('td',null,emptyMessage))));

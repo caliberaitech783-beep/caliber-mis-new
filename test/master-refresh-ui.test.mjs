@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { watchVisibleMasterRefresh } from "../src/master-refresh.mjs";
-import { watchRequestRefresh, REQUEST_CHANGE_STORAGE_KEY } from "../src/request-refresh.mjs";
-import { readApiJson } from "../src/api-response.mjs";
+import { watchVisibleMasterRefresh } from "../src/services/ui/master-refresh.mjs";
+import { watchRequestRefresh, REQUEST_CHANGE_STORAGE_KEY } from "../src/services/requests/request-refresh.mjs";
+import { readApiJson } from "../src/services/ui/api-response.mjs";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const hook = source.slice(source.indexOf("function useMasterRecords("), source.indexOf("function MetaWhatsAppSetup("));
 const dashboardHook = source.slice(source.indexOf("function useDashboardEquipment("), source.indexOf("function FleetDataState("));
 const settle = () => new Promise(resolve => setImmediate(resolve));

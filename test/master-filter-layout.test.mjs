@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 test("master filter values retain readable row spacing", async () => {
-  const css = await readFile(new URL("../src/sortable-table.css", import.meta.url), "utf8");
+  const css = await readFile(new URL("../src/styles/sortable-table.css", import.meta.url), "utf8");
   const rule = css.match(/\.column-filter-values button\{([^}]*)\}/)?.[1] ?? "";
 
   assert.match(rule, /min-height:32px/);

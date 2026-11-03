@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {equipmentGroupValue,normalizeEquipmentGroup} from '../equipment-group.mjs';
-import {drilldownView,equipmentGroupLabel} from '../src/dashboard-drilldown-model.mjs';
+import {drilldownView,equipmentGroupLabel} from '../src/utils/dashboard/dashboard-drilldown-model.mjs';
 import {requestEquipmentDetails,requestEquipmentGroupOptionLabel,requestEquipmentGroupOptions,requestEquipmentRecordsForGroup} from '../request-equipment.mjs';
 import {buildDepartmentReports} from '../department-reports.mjs';
 

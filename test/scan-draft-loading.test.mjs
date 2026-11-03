@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 test('OCR completion replaces the reading draft without autosaving stale empty values',async()=>{
- const file=new URL('../src/bulk-card-scanning.jsx',import.meta.url);
+ const file=new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url);
  let source=readFileSync(file,'utf8');
  const scope={SmartSelect: "select",};
  for(const match of source.matchAll(/^import \{([^}]+)\} from '([^']+\.mjs)';/gm)){

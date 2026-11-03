@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildDailyBdBalance, dailyBdRecordsForMetric} from '../src/daily-bd-balance.mjs';
+import {buildDailyBdBalance, dailyBdRecordsForMetric} from '../src/utils/dashboard/daily-bd-balance.mjs';
 import {matchesBreakdownMovement} from '../dashboard-breakdown-movement.mjs';
 
 test('balance cards separate idle and ideal from active requests, including drilldowns', () => {

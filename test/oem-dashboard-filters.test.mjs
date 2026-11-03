@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { oemFiltersForSelection, oemRowsForLocation, groupOemRecordsBySite } from '../src/oem-dashboard-filters.mjs';
-import { buildOemBreakdownRows, buildOemBreakdownChart, createOemBreakdownSelection } from '../src/oem-breakdown-model.mjs';
+import { oemFiltersForSelection, oemRowsForLocation, groupOemRecordsBySite } from '../src/utils/dashboard/oem-dashboard-filters.mjs';
+import { buildOemBreakdownRows, buildOemBreakdownChart, createOemBreakdownSelection } from '../src/utils/dashboard/oem-breakdown-model.mjs';
 
 const regions = [{ code: 'WCL', sites: ['Sasti OB', 'Majri OB'] }, { code: 'NCL', sites: ['Jayant OB'] }];
 const equipment = [

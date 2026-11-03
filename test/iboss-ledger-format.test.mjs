@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {splitLedgerBalance,ledgerFooter} from '../src/iboss-ledger-format.mjs';
+import {splitLedgerBalance,ledgerFooter} from '../src/utils/accounts/iboss-ledger-format.mjs';
 test('ERP credit opening is included once: account 6057 screenshot totals',()=>{
  assert.deepEqual(ledgerFooter({OPENING_BALANCE:65033.12,DEBITAMOUNT:616248.88,CREDITAMOUNT:551215.76}),{periodDebit:616248.88,periodCredit:551215.76,totalDebit:616248.88,totalCredit:616248.88});
 });

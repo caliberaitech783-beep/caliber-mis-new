@@ -5,7 +5,7 @@ import { PURGEABLE_TABLES, deadRowShare, diskState, sharePercent, tableLabel } f
 import { HOUSEKEEPING_CATEGORIES } from "../data-housekeeping.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("tables get plain names, unknown ones a readable fallback", () => {
   assert.equal(tableLabel("audit_events"), "Audit Trail");

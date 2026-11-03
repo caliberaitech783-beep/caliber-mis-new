@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';
-import EditableDateInput,{parseTypedDate,typedDateDisplay,typedDateRange} from '../src/iboss-editable-date.mjs';
+import EditableDateInput,{parseTypedDate,typedDateDisplay,typedDateRange} from '../src/utils/accounts/iboss-editable-date.mjs';
 test('typed dashboard dates support day-first numbers, month names and ISO without rollover',()=>{
  for(const text of ['30-09-2026','30/09/2026','30-Sep-2026','2026-09-30','30-09-26'])assert.equal(parseTypedDate(text),'2026-09-30');
  for(const text of ['31-09-2026','29-02-2025','00-10-2026','10-13-2026','1',''])assert.equal(parseTypedDate(text),'');

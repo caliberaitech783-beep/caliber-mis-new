@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("master API failures show an explicit retry state instead of authoritative empty data", () => {
   const hook = source.slice(source.indexOf("function useMasterRecords"), source.indexOf("function MetaWhatsAppSetup"));

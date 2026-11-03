@@ -11,7 +11,7 @@ import {resolveMobileAccess} from '../mobile-access.mjs';
 import {siteReportMessageContext,recipientReportMessage} from '../whatsapp-message-format.mjs';
 
 const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
 const OPEN_BD=DIRECTOR_REPORT_TITLES[0];
 const CLOSING_BD=DIRECTOR_REPORT_TITLES[1];
 const at1905Ist=new Date('2026-09-11T13:35:00Z');

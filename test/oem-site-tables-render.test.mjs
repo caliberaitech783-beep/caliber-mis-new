@@ -1,32 +1,33 @@
-import { groupReportRows, reportSite, reportAsset, reportCount, splitReportSite, siteReportHtml } from "../src/site-report.mjs";
-import { orderOemDetailColumns } from "../src/oem-detail-columns.mjs";
-import { pulseDelayReason } from "../src/info-pulse-reasons.mjs";
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
+import { groupReportRows, reportSite, reportAsset, reportCount, splitReportSite, siteReportHtml } from "../src/utils/reports/site-report.mjs";
+import { orderOemDetailColumns } from "../src/utils/dashboard/oem-detail-columns.mjs";
+import { pulseDelayReason } from "../src/utils/ui/info-pulse-reasons.mjs";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import React from "react";
-import { defaultDurationSort } from "../src/duration-sort.mjs";
+import { defaultDurationSort } from "../src/utils/ui/duration-sort.mjs";
 import { createPortal } from "react-dom";
 import { renderToStaticMarkup } from "react-dom/server";
 import { transformWithOxc } from "vite";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Eye, EyeOff, ListFilter, RotateCcw, Search } from "lucide-react";
-import * as drilldown from "../src/dashboard-drilldown-model.mjs";
-import * as tableModel from "../src/table-actions-model.mjs";
-import * as recordDates from "../src/record-date-range.mjs";
-import * as dateRanges from "../src/date-range-filter.mjs";
-import { groupOemRecordsBySite, oemDetailReportRows, oemEquipmentLabel } from "../src/oem-dashboard-filters.mjs";
+import * as drilldown from "../src/utils/dashboard/dashboard-drilldown-model.mjs";
+import * as tableModel from "../src/utils/ui/table-actions-model.mjs";
+import * as recordDates from "../src/utils/ui/record-date-range.mjs";
+import * as dateRanges from "../src/utils/ui/date-range-filter.mjs";
+import { groupOemRecordsBySite, oemDetailReportRows, oemEquipmentLabel } from "../src/utils/dashboard/oem-dashboard-filters.mjs";
 import { matchesSmartSearch } from "../smart-search.mjs";
 import { calculateBreakdownMinutes, formatBreakdownDaysHours } from "../breakdown-duration.mjs";
-import { requestStatusSortRank } from "../src/request-status.mjs";
+import { requestStatusSortRank } from "../src/utils/requests/request-status.mjs";
 import { formatDisplayDateTime } from "../date-time-format.mjs";
-import { dailyUpdatesExportText } from "../src/daily-updates-order.mjs";
+import { dailyUpdatesExportText } from "../src/utils/ui/daily-updates-order.mjs";
 import { breakdownMeterColumns } from "../breakdown-meter-columns.mjs";
 
 // Compile the real JSX components in memory, using the repository's render-test
 // harness. This does not run the site build or touch the preview's app version.
 const names = { "oem-breakdown-details": "OemBreakdownDetails", "dashboard-record-browser": "DashboardRecordBrowser", "shared-actions-table": "SharedActionsTable", "record-date-range": "RecordDateRange" };
 const compiled = Object.fromEntries(await Promise.all(Object.entries(names).map(async ([file, name]) => {
-  const source = readFileSync(new URL(`../src/${file}.jsx`, import.meta.url), "utf8")
+  const source = readFileSync(frontendSourceUrl(file + '.jsx'), "utf8")
     .replace(/^import .*;\r?\n/gm, "").replace("export default function", "function");
   const { code } = await transformWithOxc(source, `${file}.jsx`, { jsx: { runtime: "classic" } });
   return [file, `${code}; return ${name};`];

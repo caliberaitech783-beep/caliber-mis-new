@@ -5,7 +5,7 @@ import {PGlite} from '@electric-sql/pglite';
 import {randomUUID} from 'node:crypto';
 import {registerVlbBatches} from '../vlb-batches.mjs';
 import {syncVlbBatchRecord} from '../vlb-batch-policy.mjs';
-import {vlbEntryContext,vlbEntryFields,sameVlbEntryContext} from '../src/vlb-entry-context.mjs';
+import {vlbEntryContext,vlbEntryFields,sameVlbEntryContext} from '../src/utils/logbooks/vlb-entry-context.mjs';
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations
 test('selected batch fixes manual and scan context with the effective site shift',()=>{
@@ -17,7 +17,7 @@ test('selected batch fixes manual and scan context with the effective site shift
 
 test('manual and scan entry keep the site and batch popup on one row and auto-fetch one open site batch',async()=>{
  const fs=await import('node:fs');const React=(await import('react')).default;const {transformWithOxc}=await import('vite');
- const source=fs.readFileSync(new URL('../src/vlb-create-batch.jsx',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../src/pages/logbooks/vlb-create-batch.jsx',import.meta.url),'utf8');
  const compiled=source.replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export function','function');
  const {code}=await transformWithOxc(compiled,'vlb-create-batch.jsx',{jsx:{runtime:'classic'}});
  const openVlbEntryBatches=new Function('React','canonicalSiteName',code+';return openVlbEntryBatches')(React,(await import('../site-location.mjs')).canonicalSiteName);
@@ -25,7 +25,7 @@ test('manual and scan entry keep the site and batch popup on one row and auto-fe
  assert.deepEqual(openVlbEntryBatches([closed,other,open],'Jayant OC').map(batch=>batch.id),['open']);
  assert.match(source,/entryMatching\.length!==1/,'auto-fetch waits for exactly one open batch');
  assert.match(source,/\[entryMode,selection\.site,batchStatusReady,batches\]/,'auto-fetch reruns when the asynchronous batch list arrives');
- const css=fs.readFileSync(new URL('../src/vlb-create-batch.css',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../src/styles/vlb-create-batch.css',import.meta.url),'utf8');
  assert.match(css,/\.vlb-entry-batch-picker \.vlb-batch-setup\{[^}]*justify-content:flex-start[^}]*flex-wrap:nowrap/);
  assert.match(css,/\.vlb-entry-batch-picker \.vlb-batch-notice\{[^}]*display:flex[^}]*align-items:center/);
 });
@@ -61,7 +61,7 @@ test('empty batches accept repeated manual and scan cards; every user gets one o
 
 test('batch selection opens the requested editor directly without an intermediate action screen',async()=>{
  const fs=await import('node:fs');const React=(await import('react')).default;const {renderToStaticMarkup}=await import('react-dom/server');const {transformWithOxc}=await import('vite');
- const source=fs.readFileSync(new URL('../src/vlb-entry-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export const','const').replaceAll('export function','function');
+ const source=fs.readFileSync(new URL('../src/components/logbooks/vlb-entry-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export const','const').replaceAll('export function','function');
  const {code}=await transformWithOxc(source,'vlb-entry-workspace.jsx',{jsx:{runtime:'classic'}});
  const batch={id:randomUUID(),name:'Jayant 31 Oct S1',site:'Jayant OB',report_date:'2026-12-31',shift:'S1',closed_at:null,canClose:true,canContinue:true};
  const nodes=(tree,predicate)=>{const found=[];const walk=n=>{if(Array.isArray(n))return n.forEach(walk);if(!React.isValidElement(n))return;if(predicate(n))found.push(n);walk(n.props.children)};walk(tree);return found};
@@ -78,7 +78,7 @@ test('batch selection opens the requested editor directly without an intermediat
 
 test('ELB manual and scan sit behind the site batch picker and open only once VLB is locked',async()=>{
  const fs=await import('node:fs');const React=(await import('react')).default;const {renderToStaticMarkup}=await import('react-dom/server');const {transformWithOxc}=await import('vite');
- const source=fs.readFileSync(new URL('../src/vlb-entry-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export const','const').replaceAll('export function','function');
+ const source=fs.readFileSync(new URL('../src/components/logbooks/vlb-entry-workspace.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replaceAll('export default function','function').replaceAll('export const','const').replaceAll('export function','function');
  const {code}=await transformWithOxc(source,'vlb-entry-workspace.jsx',{jsx:{runtime:'classic'}});
  const nodes=(tree,predicate)=>{const found=[];const walk=n=>{if(Array.isArray(n))return n.forEach(walk);if(!React.isValidElement(n))return;if(predicate(n))found.push(n);walk(n.props.children)};walk(tree);return found};
  const vlbOpen={id:randomUUID(),name:'Sasti 18 Dec S1',site:'Sasti OC',report_date:'2026-12-18',shift:'S1',closed_at:null,twoStage:true,stage:'vlb_open'};

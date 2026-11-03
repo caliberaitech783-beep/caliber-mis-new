@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dailyCountChange, formatCountDelta, indiaCountDayWindow, resolveCountTrend } from "../src/fleet-count-trend.mjs";
+import { dailyCountChange, formatCountDelta, indiaCountDayWindow, resolveCountTrend } from "../src/utils/dashboard/fleet-count-trend.mjs";
 import { dashboardFleetSnapshot } from "../dashboard-fleet-snapshot.mjs";
 import { fleetChartCounts } from "../dashboard-equipment-metrics.mjs";
 import * as access from "../dashboard-equipment-access.mjs";
@@ -76,7 +76,7 @@ test("the dashboard endpoint gives the same result on both devices for the same 
 });
 
 test("the fleet total reads the server count while the badge shows today's active requests", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const dashboard = source.slice(source.indexOf("function Dashboard("), source.indexOf("function BreakdownTable"));
   assert.match(source, /setBreakdownCountChange\(change\)/);
   assert.match(source, /Date\.parse\(nextCountDayAt\) - Date\.now\(\)/);

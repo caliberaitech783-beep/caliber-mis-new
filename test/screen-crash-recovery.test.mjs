@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {buildClientErrorReport,shouldReport,resetClientErrorReporting,installGlobalErrorReporting} from '../src/client-error-report.mjs';
+import {buildClientErrorReport,shouldReport,resetClientErrorReporting,installGlobalErrorReporting} from '../src/services/reports/client-error-report.mjs';
 
 const read=file=>fs.readFileSync(new URL('../'+file,import.meta.url),'utf8');
 
@@ -46,25 +46,25 @@ test('window errors and unhandled rejections are captured once per window',()=>{
 });
 
 test('the application error boundary reports every render failure and panels recover on their own',()=>{
- const boundary=read('src/lazy-feature.jsx');
+ const boundary=read('src/components/ui/lazy-feature.jsx');
  assert.match(boundary,/componentDidCatch\(error, info\)[\s\S]*reportClientError\(error, \{ kind: isLazyChunkFailure\(error\) \? "chunk" : "render", componentStack: info\?\.componentStack/);
  assert.match(boundary,/componentDidUpdate\(previousProps\)[\s\S]*previousProps\.resetKey !== this\.props\.resetKey/);
  assert.match(boundary,/this\.props\.onDismiss &&/);
- const main=read('src/main.jsx');
+ const main=read('src/app/App.jsx');
  assert.match(main,/configureClientErrorReporting\(\{ getToken: \(\) => authToken \}\)/);
  assert.match(main,/installGlobalErrorReporting\(/);
 });
 
 test('the scan page reopens the entry after a refresh, lists the entries of the VLB batch, retries card uploads through a restart and fences each panel',()=>{
- const page=read('src/bulk-card-scanning.jsx');
+ const page=read('src/pages/scanning/bulk-card-scanning.jsx');
  assert.match(page,/chooseScanEntry\(rows,\{remembered:recallScanEntry\(localStorage,kind,vlbBatch\.id\)\}\);if\(entry\)void selectBatch\(entry\.id\)/);
  assert.match(page,/rememberScanEntry\(localStorage,kind,vlbBatch\.id,d\.batch\.id\)/);
  assert.match(page,/className="scan-entry-list" aria-label="Scan entries for this batch"/);
  assert.match(page,/if\(Array\.isArray\(d\.duplicates\)\)setDuplicates\(d\.duplicates\);if\(!Array\.isArray\(d\.cards\)\)d\.cards=\[\]/);
  assert.match(page,/uploadWithRetry\(\(\)=>api\('\/api\/scan-batches\/'\+entryId\+'\/cards'/);
  for(const panel of ['ScanEquipmentReviewDialog','ScanDuplicateList','ScanBatchReport'])assert.match(page,new RegExp('<ApplicationErrorBoundary compact[\\s\\S]{0,400}?><'+panel),panel+' is fenced');
- const workspace=read('src/vlb-entry-workspace.jsx');
+ const workspace=read('src/components/logbooks/vlb-entry-workspace.jsx');
  assert.match(workspace,/if\(batch\?\.id&&batch\.id===previous\)return;/,'re-selecting the same VLB batch keeps the scan entry in the address');
- const css=read('src/bulk-card-scanning.css');
+ const css=read('src/styles/bulk-card-scanning.css');
  assert.match(css,/\.scan-entry-list button\[aria-pressed="true"\]/);
 });

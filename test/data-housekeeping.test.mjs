@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { HOUSEKEEPING_CATEGORIES, housekeepingCategory, purgeRequestError } from "../data-housekeeping.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("only logs, delivery history, notifications and old media can be purged", () => {
   assert.deepEqual(HOUSEKEEPING_CATEGORIES.map((category) => category.key), ["audit", "activity", "deliveries", "notifications", "media"]);

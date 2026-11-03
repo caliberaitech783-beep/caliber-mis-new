@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const main=read('../src/main.jsx');
-const noMotion=read('../src/no-motion.css');
-const recordBrowser=read('../src/dashboard-record-browser.jsx');
-const icons=read('../src/motion-icons.jsx');
+const main=read('../src/app/App.jsx');
+const noMotion=read('../src/styles/no-motion.css');
+const recordBrowser=read('../src/components/dashboard/dashboard-record-browser.jsx');
+const icons=read('../src/components/ui/motion-icons.jsx');
 const directory=read('../public/cd/caliber-directory.html');
 
 test('the application permanently resolves CSS motion without changing component styling',()=>{
-  assert.match(main,/import "\.\/dashboard-night\.css";\nimport "\.\/no-motion\.css";/,'the no-motion layer loads after the application styles');
+  assert.match(main,/import "(?:\.\.?\/)+(?:[\w-]+\/)*dashboard-night\.css";\nimport "(?:\.\.?\/)+(?:[\w-]+\/)*no-motion\.css";/,'the no-motion layer loads after the application styles');
   assert.match(noMotion,/:root \*,\n:root \*::before,\n:root \*::after \{/);
   assert.match(noMotion,/animation-duration: 0s !important;/);
   assert.match(noMotion,/animation-iteration-count: 1 !important;/);

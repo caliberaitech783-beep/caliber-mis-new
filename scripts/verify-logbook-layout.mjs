@@ -5,7 +5,7 @@ import {createServer} from 'node:http';
 import {build} from 'esbuild';
 import {chromium} from 'playwright';
 
-const source=readFileSync('src/bulk-card-scanning.jsx','utf8');
+const source=readFileSync('src/pages/scanning/bulk-card-scanning.jsx','utf8');
 const start=source.indexOf("    <div className={'scan-trip-row scan-trip-entry'");
 const end=source.indexOf('\n   )}',start);
 assert.ok(start>0&&end>start,'Scan trip fixture must use the current component markup');
@@ -15,9 +15,9 @@ const fixture=`
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Trash2} from 'lucide-react';
-import SmartSelect from './src/smart-select.jsx';
-import LogBookForm from './src/log-book-form.jsx';
-import {SavedLogBookDetails} from './src/saved-log-books.jsx';
+import SmartSelect from './src/components/ui/smart-select.jsx';
+import LogBookForm from './src/pages/logbooks/log-book-form.jsx';
+import {SavedLogBookDetails} from './src/pages/logbooks/saved-log-books.jsx';
 import {compactLogBookLabel,tripSerialNumber} from './log-book-labels.mjs';
 const params=new URLSearchParams(location.search),mode=params.get('mode')||'scan';
 const fields=${fieldDefinition};

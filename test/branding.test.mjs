@@ -3,9 +3,9 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("application chrome uses the approved Caliber transformation branding", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const manifest = fs.readFileSync(new URL("../public/site.webmanifest", import.meta.url), "utf8");
-  const theme = fs.readFileSync(new URL("../src/brand-theme.css", import.meta.url), "utf8");
+  const theme = fs.readFileSync(new URL("../src/styles/brand-theme.css", import.meta.url), "utf8");
   const logo = new URL("../public/pulse-ii-icon.png", import.meta.url);
 
   assert.equal(source.includes(">NC<"), false);

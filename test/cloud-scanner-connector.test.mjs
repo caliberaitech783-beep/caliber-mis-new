@@ -2,10 +2,10 @@ import {MAX_SCAN_ENTRY_CARDS} from '../public/scan-entry-limit.mjs';
 import {parseScanContext} from '../scan-batch-context.mjs';
 import {parseCaptureTiming,scanTimingLabel} from '../public/scan-timing.mjs';
 import {sniffScanImageType} from '../public/scan-image-type.mjs';
-import {checkScannerAvailability,SCANNER_UNAVAILABLE} from '../src/scanner-availability.mjs';
+import {checkScannerAvailability,SCANNER_UNAVAILABLE} from '../src/utils/scanning/scanner-availability.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync}from'node:fs';import React from 'react';import{transformWithOxc}from'vite';import{misDatabaseConfig}from'../mis-database-config.mjs';
 test('scanner bridge rejects untrusted origin/window/nonce and uploads trusted pages to review only',async()=>{
- const src=readFileSync(new URL('../src/cloud-scanner-panel.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(src,'cloud-scanner.jsx',{jsx:{runtime:'classic'}});
+ const src=readFileSync(new URL('../src/components/scanning/cloud-scanner-panel.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');const {code}=await transformWithOxc(src,'cloud-scanner.jsx',{jsx:{runtime:'classic'}});
  const effects=[],requests=[],messages=[];let listener,nonce,opened,review;
  const popup={closed:false,location:{href:""},close:()=>{},postMessage:(v,origin)=>messages.push({v,origin})};
  const window={location:{origin:'https://pulse-ll.cmll.in'},addEventListener:(_,f)=>listener=f,removeEventListener:()=>{},open:url=>{opened=url;return popup}};

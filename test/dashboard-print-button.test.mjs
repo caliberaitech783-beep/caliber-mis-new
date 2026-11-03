@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 test('dashboard print uses the current table view and precedes Actions', () => {
-  const shared = readFileSync(new URL('../src/shared-actions-table.jsx', import.meta.url), 'utf8');
-  const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
-  const browser = readFileSync(new URL('../src/dashboard-record-browser.jsx', import.meta.url), 'utf8');
+  const shared = readFileSync(new URL('../src/components/ui/shared-actions-table.jsx', import.meta.url), 'utf8');
+  const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
+  const browser = readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx', import.meta.url), 'utf8');
   assert.match(shared, /printTitle = ""/);
   assert.match(shared, /printTitle \? exportData \|\| tableExportModel\(dataRows, columns, visible, localFilters, sort\)/);
   assert.ok(shared.indexOf('<ExportMenu printOnly') < shared.indexOf('<Menu resetLabel'));

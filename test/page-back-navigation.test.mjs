@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 test("shared page header tracks and returns to the previous application page", async () => {
-  const source = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
   assert.match(source, /const pageHistory = useRef\(\[LOGIN_LANDING_PAGE\]\)/);
   assert.match(source, /pageHistory\.current\.push\(name\)/);

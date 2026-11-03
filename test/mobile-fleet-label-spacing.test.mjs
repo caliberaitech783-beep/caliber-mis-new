@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 test('mobile fleet chart reserves label space separately from region totals',()=>{
-  const css=readFileSync(new URL('../src/dashboard-readability.css',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/dashboard-readability.css',import.meta.url),'utf8');
   const mobile=css.slice(css.indexOf('/* Mobile site details'));
   assert.match(mobile,/@media \(max-width: 700px\)/);
   assert.match(mobile,/height: 390px; min-height: 390px/);

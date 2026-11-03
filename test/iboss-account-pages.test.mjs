@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {accountPageQuery,accountPageResult,accountPageNumber,ACCOUNT_PAGE_SIZE} from '../iboss-account-pages.mjs';
 import {ACCOUNT_VIEWS} from '../iboss-accounts.mjs';
-import {createAccountPageLoader} from '../src/iboss-account-loader.mjs';
+import {createAccountPageLoader} from '../src/services/accounts/iboss-account-loader.mjs';
 test('every Accounts master, transaction and report uses bounded bound-variable pagination',()=>{
  for(const key of Object.keys(ACCOUNT_VIEWS)){
   const result=accountPageQuery(key,'2026-04-01','2026-10-03',2);assert.equal(result.binds.bdms_page_start,1000);assert.equal(result.binds.bdms_page_end,1501);assert.match(result.sql,/ROWNUM<=:bdms_page_end/);assert.match(result.sql,/BDMS_PAGE_ROW>:bdms_page_start/);assert.match(result.sql,/ORDER BY BDMS_PAGE_ROW$/);

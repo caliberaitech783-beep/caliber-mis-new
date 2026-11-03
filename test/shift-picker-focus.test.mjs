@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
 
 test('Shift picker opens on keyboard focus and commits arrow/Enter selection',async()=>{
- const source=readFileSync(new URL('../src/searchable-select.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+ const source=readFileSync(new URL('../src/components/ui/searchable-select.jsx',import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
  const {code}=await transformWithOxc(source,'searchable-select.jsx',{jsx:{runtime:'classic'}});
  const slots=[];let cursor=0,value='',selected,prevented=false;
  const useState=initial=>{const index=cursor++;if(!(index in slots))slots[index]=initial;return[slots[index],next=>{slots[index]=typeof next==='function'?next(slots[index]):next}]};

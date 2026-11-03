@@ -4,17 +4,17 @@ import {readFileSync} from 'node:fs';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 
 test('all profile navigation options wrap rather than clipping the last button',()=>{
-  const css=read('src/topbar.css');
+  const css=read('src/styles/topbar.css');
   assert.match(css,/\.normal-header-nav \{[^}]*flex-wrap: wrap;[^}]*overflow: visible/);
   assert.match(css,/\.app > aside nav \{[^}]*flex-wrap: wrap/);
   assert.match(css,/\.app > aside nav > \.masters-menu \{[^}]*flex: 0 0 auto/);
   assert.match(css,/\.app > aside nav > \.masters-menu > \.nav-config-row > button \{[^}]*overflow: hidden/);
-  assert.match(read('src/mobile-workflow.css'),/grid-template-columns: repeat\(auto-fit, minmax\(130px, 1fr\)\)/);
-  assert.match(read('src/user-sessions.css'),/\.accounts-user-workspace > header nav\{[^}]*flex-wrap:wrap/);
+  assert.match(read('src/styles/mobile-workflow.css'),/grid-template-columns: repeat\(auto-fit, minmax\(130px, 1fr\)\)/);
+  assert.match(read('src/styles/user-sessions.css'),/\.accounts-user-workspace > header nav\{[^}]*flex-wrap:wrap/);
 });
 
 test('header shine stays removed and desktop menu text uses compact sizes',()=>{
-  const css=read('src/topbar.css');
+  const css=read('src/styles/topbar.css');
   assert.match(css,/\.normal > header \.normal-header-nav > button\[data-nav\]::before \{\s*content: none;\s*animation: none;\s*transition: none;/);
   assert.match(css,/\.accounts-user-workspace > header > nav \{ --navigation-label-size: 14px; \}/);
   assert.match(css,/@media \(max-width: 1600px\) \{[\s\S]*?--navigation-label-size: 12px;/);
@@ -24,12 +24,12 @@ test('header shine stays removed and desktop menu text uses compact sizes',()=>{
 });
 
 test('mobile navigation labels override the generic hidden header spans',()=>{
-  assert.match(read('src/topbar.css'),/\.normal > header \.normal-header-nav > button > \.nav-label \{\s*display: inline;[^}]*white-space: normal;[^}]*overflow-wrap: anywhere;/);
-  assert.match(read('src/main.jsx'),/data-nav="announcements"[^\r\n]*<span className="nav-label">Announcements<\/span>/);
+  assert.match(read('src/styles/topbar.css'),/\.normal > header \.normal-header-nav > button > \.nav-label \{\s*display: inline;[^}]*white-space: normal;[^}]*overflow-wrap: anywhere;/);
+  assert.match(read('src/app/App.jsx'),/data-nav="announcements"[^\r\n]*<span className="nav-label">Announcements<\/span>/);
 });
 
 test('wrapped admin and manager navigation reserves its actual height and cleans up',()=>{
-  const source=read('src/main.jsx');
+  const source=read('src/app/App.jsx');
   const start=source.indexOf('  useEffect(() => {',source.indexOf('function Side('));
   const effect=source.slice(start,source.indexOf('  },[]);',start)+9);
   let height=76, callback, cleanup, disconnected=false,writes=0,reads=0;

@@ -84,9 +84,9 @@ test('director lifecycle reports distinguish idle, manager approval and MIS veri
 
 test('Director report API and all-user schedule popup are wired into server and reports UI',()=>{
   const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
-  const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
-  const css=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
-  const schedulePolish=readFileSync(new URL('../src/report-schedule-polish.css',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../src/styles/style.css',import.meta.url),'utf8');
+  const schedulePolish=readFileSync(new URL('../src/styles/report-schedule-polish.css',import.meta.url),'utf8');
   assert.match(server,/published_reports/);
   assert.match(server,/published_reports_short_code_idx/);
   assert.match(server,/WHATSAPP_SETTING_KEY='meta_whatsapp'/);

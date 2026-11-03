@@ -1,10 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
-const source=readFileSync(new URL('../src/bulk-card-scanning.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/scanning/bulk-card-scanning.jsx',import.meta.url),'utf8');
 test('the Equipment review button opens its dialog even while the batch context gate is blocked',()=>{
  assert.match(source,/onClick=\{\(\)=>setFleetOpenId\(card\.id\)\}>Equipment review</);
  assert.match(source,/\{fleetDialogCard&&<ApplicationErrorBoundary compact[\s\S]{0,400}?><ScanEquipmentReviewDialog /,'the equipment review dialog opens inside its own error boundary');
 });
-const dialog=readFileSync(new URL('../src/scan-equipment-review-dialog.jsx',import.meta.url),'utf8');
+const dialog=readFileSync(new URL('../src/components/scanning/scan-equipment-review-dialog.jsx',import.meta.url),'utf8');
 test('the equipment review dialog is not frozen by the shared autosave busy flag',()=>{
  assert.match(source,/<ScanEquipmentReviewDialog [^>]*busy=\{fleetBusy\}/,'the dialog follows its own fleetBusy flag, not the batch-wide busy flag that autosave holds');
  assert.match(source,/const resolveFleet=async\(card,action\)=>\{[^\n]*setFleetBusy\(true\)/,'fleet actions set fleetBusy');

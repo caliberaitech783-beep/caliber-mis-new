@@ -1,13 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { buildOrganisationChart, buildReportingLines, chartDesignationKey, chartPerson, organisationDetail, peopleAtSite, personSites, CHART_DESIGNATIONS, ORGANISATION_PAGES, ORGANISATION_PAGE_NAMES } from "../src/organisation-chart.mjs";
+import { buildOrganisationChart, buildReportingLines, chartDesignationKey, chartPerson, organisationDetail, peopleAtSite, personSites, CHART_DESIGNATIONS, ORGANISATION_PAGES, ORGANISATION_PAGE_NAMES } from "../src/utils/people/organisation-chart.mjs";
 import { flowDesignationForUser } from "../hierarchy-report-flow.mjs";
 import { resolveMobileAccess } from "../mobile-access.mjs";
 import { masterAccessAllows } from "../admin-access.mjs";
 
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
-const view = readFileSync(new URL("../src/organisation-chart.jsx", import.meta.url), "utf8");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const view = readFileSync(new URL("../src/pages/people/organisation-chart.jsx", import.meta.url), "utf8");
 
 const users = [
   { login: "mohit", employee: "Mohit Chadda", userType: "Super User", adminLevel: "Super Admin", designation: "Director" },

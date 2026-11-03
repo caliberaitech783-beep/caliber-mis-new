@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const source=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
 
 test("request lifecycle has reason/status columns, closed history, and stakeholder notifications",()=>{
-  const mobileStyles=fs.readFileSync(new URL("../src/mobile-workflow.css",import.meta.url),"utf8");
+  const mobileStyles=fs.readFileSync(new URL("../src/styles/mobile-workflow.css",import.meta.url),"utf8");
   const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
   const access=fs.readFileSync(new URL("../mobile-access.mjs",import.meta.url),"utf8");
   assert.match(source,/showReason \? \[\["complaint", "BD reason"\]\]/);

@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import React from "react";
-import { dailyUpdatesExportRows, dailyUpdatesExportRowsFromText, dailyUpdatesExportText } from "../src/daily-updates-order.mjs";
-import { tableModel } from "../src/table-actions-model.mjs";
-import { prepareDailyUpdatesLayout, prepareXlsxExportSheets } from "../src/xlsx-daily-updates.mjs";
+import { dailyUpdatesExportRows, dailyUpdatesExportRowsFromText, dailyUpdatesExportText } from "../src/utils/ui/daily-updates-order.mjs";
+import { tableModel } from "../src/utils/ui/table-actions-model.mjs";
+import { prepareDailyUpdatesLayout, prepareXlsxExportSheets } from "../src/utils/reports/xlsx-daily-updates.mjs";
 
 test("daily updates export includes every saved update and all of its details", () => {
   const text = dailyUpdatesExportText([
@@ -109,9 +109,9 @@ test("rich table cells use their explicit complete export value", () => {
 });
 
 test("Excel and print output preserve and wrap multiline daily updates", async () => {
-  const main = await readFile(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = await readFile(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const pdf = await readFile(new URL("../table-export-pdf.mjs", import.meta.url), "utf8");
-  const browser = await readFile(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
+  const browser = await readFile(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
   const mainRemarks = (main.match(/dailyUpdatesExportText\(row\.dailyRemarks, \{ category: row\.category \}\)/g) || []).length;
   assert.match(main, /xml:space="preserve"/);
   assert.match(main, /<alignment wrapText="1" vertical="top"\/>/);

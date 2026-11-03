@@ -1,5 +1,12 @@
 # Caliber MIS
 
+This checkout is **caliber-mis-new**. The active React/Vite entry is `index.html` → `src/main.jsx` → `src/app/App.jsx`. See [Frontend structure](docs/frontend-architecture.md) for folder responsibilities and [Screen coverage](docs/FRONTEND-COVERAGE.md) for inspection limitations.
+
+Use `npm run local:preview` and open `http://127.0.0.1:4176/preview.html` for the isolated synthetic preview. This repository has validation CI only; it has no configured deployment target. Deployment and authentication notes below are inherited reference material, not instructions to deploy this repository.
+
+## Inherited application notes
+
+
 MIS opens at an explicit sign-in page on every new page load. Sign in with Pulse opens Pulse's existing username-and-password form using `login=1`, including when Pulse is already signed in. After successful authentication, Pulse returns to the empty MIS workspace. MIS does not restore saved browser sessions or automatically start sign-in. The authenticated home contains only a Caliber MIS heading, sign-out control and blank workspace for future features. `index.html` loads `src/mis-entry.jsx`; the inherited Pulse dashboard, menus and background services are not mounted. The separate MIS database remains in place.
 
 The canonical MIS address is `https://pulse-ll.cmll.in`. The previous `pulseii.cmll.in` DNS/certificate binding remains available and forwards browser pages and sign-in callbacks to the canonical address. Existing health/version endpoints remain directly readable on the old hostname.

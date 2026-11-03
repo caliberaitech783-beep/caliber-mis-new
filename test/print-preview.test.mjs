@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {describePrintJob,showPrintPreview} from '../src/print-preview.mjs';
+import {describePrintJob,showPrintPreview} from '../src/services/reports/print-preview.mjs';
 
 class Element {
   constructor(tag){this.tag=tag;this.children=[];this.listeners={};}

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { backupDiagnostic, deliveryDiagnostic, diagnosticState, formatBytes, runDiagnostic, runDiagnostics } from "../system-diagnostics.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 
 test("each check reports ok, warn, fail or off and never hangs", async () => {
   assert.equal((await runDiagnostic({ key: "a", label: "A", run: async () => ({ detail: "fine" }) })).status, "ok");

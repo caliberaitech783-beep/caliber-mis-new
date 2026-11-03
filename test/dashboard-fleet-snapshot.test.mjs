@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {dashboardFleetSnapshot} from '../dashboard-fleet-snapshot.mjs';
 import {liveEquipmentMetrics, fleetChartCounts} from '../dashboard-equipment-metrics.mjs';
-import {dailyCountChange,indiaCountDayWindow} from '../src/fleet-count-trend.mjs';
+import {dailyCountChange,indiaCountDayWindow} from '../src/utils/dashboard/fleet-count-trend.mjs';
 import * as access from '../dashboard-equipment-access.mjs';
 
 const assets = Object.freeze([

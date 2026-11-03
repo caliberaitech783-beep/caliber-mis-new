@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { visibleInProductionHistory } from "../src/production-history.mjs";
-import { visibleInMaintenanceHistory } from "../src/maintenance-history.mjs";
-import { visibleInMisRequests, visibleInMisHistory } from "../src/mis-history.mjs";
+import { visibleInProductionHistory } from "../src/utils/ui/production-history.mjs";
+import { visibleInMaintenanceHistory } from "../src/utils/requests/maintenance-history.mjs";
+import { visibleInMisRequests, visibleInMisHistory } from "../src/utils/ui/mis-history.mjs";
 import { requestsVisibleToMisWorkspace } from "../mis-request-visibility.mjs";
 
 const historyVisible = [visibleInProductionHistory, visibleInMaintenanceHistory];
@@ -38,7 +38,7 @@ test("persisted historical references follow the explicit MIS exclusions", () =>
     assert.equal(visibleInMisRequests(row), true);
   }
   assert.deepEqual(requestsVisibleToMisWorkspace([{ref:"REQ-1787759984730",status:"Closed"}],true),[{ref:"REQ-1787759984730",status:"Closed"}]);
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /const requestRows=useMemo\(\(\)=>siteRequests\.map\(\(request\)=>requestWithEquipmentMasterDetails\(request,equipmentRecords\)\),\[siteRequests,equipmentRecords\]\);/);
   assert.doesNotMatch(source, /visibleInOperationalUserRequests/);
   assert.match(source, /const siteRequests=useMemo\(\(\)=>!embedded&&isMaintenance\?recordsForSite\(requests,assignedLocation\):misWorkspaceRequests,\[embedded,isMaintenance,requests,assignedLocation,misWorkspaceRequests\]\);/);

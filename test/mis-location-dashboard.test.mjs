@@ -4,7 +4,7 @@ import test from "node:test";
 import {assignedUserSiteName} from "../site-location.mjs";
 
 test("MIS users and managers use location-scoped requests, TAT, and partitioned first-trip KPIs",()=>{
-  const source=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+  const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
   const manager=source.slice(source.indexOf("function ManagerDashboard"),source.indexOf("function Dashboard"));
   assert.match(server,/if\(req\.session\.role==='normal'\)\{[\s\S]*scopedSite=userSiteScope\(operationalUser\)/);
@@ -49,7 +49,7 @@ test("MIS users and managers use location-scoped requests, TAT, and partitioned 
 });
 
 test("MIS request and history tables preserve their intended workflow timestamp order", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(source, /startedFirst = false, [^)]*onEdit, onDelete, onClose, onVerify, onProductionFirstTrip, onMisFlag, onRemark \}\) \{/);
   assert.ok(source.includes('...(startedFirst ? [startedColumn, etcColumn, ...(showIdleDate ? [idleDateColumn] : []), ...closedByColumns, ...verifiedColumns] : [...verifiedColumns, ...closedByColumns, startedColumn, etcColumn, ...(showIdleDate ? [idleDateColumn] : [])]),'));
   assert.match(source, /\{startedFirst \? <>\{startedHeader\(\)\}\{closedByHeader\(\)\}\{verifiedHeaders\(\)\}<\/> : <>\{verifiedHeaders\(\)\} \{closedByHeader\(\)\}\{startedHeader\(\)\}<\/>\}/);

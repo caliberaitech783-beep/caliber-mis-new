@@ -34,7 +34,7 @@ test('department managers retain edit while only the assigned site PM can delete
 });
 test('pending correction endpoints lock the row, validate edits and retain deletion history',async()=>{
   const server=await readFile(new URL('../server.mjs',import.meta.url),'utf8');
-  const view=await readFile(new URL('../src/request-corrections.jsx',import.meta.url),'utf8');
+  const view=await readFile(new URL('../src/components/requests/request-corrections.jsx',import.meta.url),'utf8');
   assert.match(server,/app\.patch\('\/api\/request-corrections\/:id',requireSession,managePendingCorrection\)/);
   assert.match(server,/app\.delete\('\/api\/request-corrections\/:id',requireSession,managePendingCorrection\)/);
   const handler=server.slice(server.indexOf('async function managePendingCorrection'),server.indexOf("app.patch('/api/request-corrections/:id/review'"));

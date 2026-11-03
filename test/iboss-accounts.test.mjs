@@ -19,8 +19,8 @@ test('records retain account code leading zeros, signed amounts and null metadat
 });
 test('Accounts endpoint is session and report permission protected; UI loads live Oracle views',()=>{
  const server=fs.readFileSync(new URL('../server.mjs',import.meta.url),'utf8');
- const ui=fs.readFileSync(new URL('../src/iboss-accounts.jsx',import.meta.url),'utf8');
- const main=fs.readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const ui=fs.readFileSync(new URL('../src/pages/accounts/iboss-accounts.jsx',import.meta.url),'utf8');
+ const main=fs.readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  assert.match(server,/app\.get\('\/api\/reports\/iboss-accounts\/:view',requireSession/);
  assert.match(server,/if\(!await accountsMergeAllowed\(req\)\)/);
  assert.match(server,/accountView\(req\.params\.view\)/);

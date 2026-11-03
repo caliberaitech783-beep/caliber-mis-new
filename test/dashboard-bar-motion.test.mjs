@@ -2,15 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const source=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const css=readFileSync(new URL('../src/dashboard-bar-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const source=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/dashboard-bar-motion.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('the dashboard filter bar stylesheet loads before readability and the final no-motion policy',()=>{
   const imports=[...source.matchAll(/import ["'](.+\.css)["'];/g)].map(m=>m[1]);
-  const at=imports.indexOf('./dashboard-bar-motion.css');
-  assert.ok(at>imports.indexOf('./dashboard-concept-a.css')&&at>imports.indexOf('./brand-theme.css')&&at>imports.indexOf('./nav-motion.css'));
-  assert.ok(at<imports.indexOf('./workspace-readability.css'));
-  assert.deepEqual(imports.slice(-6),['./workspace-readability.css','./dashboard-readability.css','./dashboard-spacing.css','./mobile-phone-optimization.css','./dashboard-night.css','./no-motion.css']);
+  const at=imports.indexOf('../styles/dashboard-bar-motion.css');
+  assert.ok(at>imports.indexOf('../styles/dashboard-concept-a.css')&&at>imports.indexOf('../styles/brand-theme.css')&&at>imports.indexOf('../styles/nav-motion.css'));
+  assert.ok(at<imports.indexOf('../styles/workspace-readability.css'));
+  assert.deepEqual(imports.slice(-6),['../styles/workspace-readability.css','../styles/dashboard-readability.css','../styles/dashboard-spacing.css','../styles/mobile-phone-optimization.css','../styles/dashboard-night.css','../styles/no-motion.css']);
 });
 
 test('the bar keeps its size and brand mark: only decoration, hover and motion are added',()=>{

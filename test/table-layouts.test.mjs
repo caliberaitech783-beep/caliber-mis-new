@@ -4,10 +4,10 @@ import { readFileSync } from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { transformWithOxc } from "vite";
-import * as model from "../src/table-layouts.mjs";
-import * as tableModel from "../src/table-actions-model.mjs";
-import { defaultDurationSort } from "../src/duration-sort.mjs";
-import { primaryRecordDateColumn } from "../src/record-date-range.mjs";
+import * as model from "../src/utils/ui/table-layouts.mjs";
+import * as tableModel from "../src/utils/ui/table-actions-model.mjs";
+import { defaultDurationSort } from "../src/utils/ui/duration-sort.mjs";
+import { primaryRecordDateColumn } from "../src/utils/ui/record-date-range.mjs";
 import { reportTime12 } from "../report-time-format.mjs";
 
 const columns = ["door", "status", "model"].map(key => ({ key, label: key }));
@@ -84,7 +84,7 @@ async function harness(source, component, bindings) {
 }
 
 test("column dialog controls save, rename and update a selected layout without applying unsaved draft edits", async () => {
-  const source = readFileSync(new URL("../src/table-layouts.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replaceAll("export function", "function");
+  const source = readFileSync(new URL("../src/components/ui/table-layouts.jsx", import.meta.url), "utf8").replace(/^import .*;\r?\n/gm, "").replaceAll("export function", "function");
   const render = await harness(source, "TableLayoutControls", model);
   const storage = memory(), store = { layouts: [], error: "", change(action) { const result = model.changeTableLayout(storage, "key", columns, action); this.layouts = result.layouts; return result.selectedId; } };
   let draftKeys = ["status", "door"], props = () => ({ store, draftKeys, defaultKeys: columns.map(c => c.key), onSelect: keys => { draftKeys = keys; } });
@@ -106,7 +106,7 @@ test("column dialog controls save, rename and update a selected layout without a
 });
 
 test("switching a shared table layout immediately projects headings, rows and exports in saved order", async () => {
-  const source = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   const h = React.createElement;
   const children = [h("thead", {}, h("tr", {}, h("th", {}, "Door"), h("th", {}, "Status"), h("th", {}, "Model"))), h("tbody", {}, h("tr", {}, h("td", {}, "D-1"), h("td", {}, "Open"), h("td", {}, "M-1")))];
   const { sections, columns: tableColumns } = tableModel.tableModel(children);
@@ -135,7 +135,7 @@ test("Shift can move back or be hidden without misaligning rows and exports", as
   const storage = memory();
   globalThis.localStorage = { ...storage, removeItem: key => storage.data.delete(key) };
   t.after(() => { if (previousStorage === undefined) delete globalThis.localStorage; else globalThis.localStorage = previousStorage; });
-  const source = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   const h = React.createElement;
   const { sections, columns } = tableModel.tableModel([
     h("thead", {}, h("tr", {}, h("th", {sortKey: "requestShift"}, "Shift"), h("th", {sortKey: "door"}, "Door"))),
@@ -163,7 +163,7 @@ test("Shift can move back or be hidden without misaligning rows and exports", as
 });
 
 test("Reports tables apply the same saved column order through their controlled view", async () => {
-  const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   let capturedKey;
   const render = await harness(main.slice(main.indexOf("function ReportTable("), main.indexOf("function parseCsv(")), "ReportTable", {
     useRequestShiftData:()=>({shifts:[]}),requestShiftColumns:columns=>columns,

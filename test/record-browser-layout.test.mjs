@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-const jsx=readFileSync(new URL('../src/dashboard-record-browser.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const css=readFileSync(new URL('../src/dashboard-record-browser.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const oemJsx=readFileSync(new URL('../src/oem-breakdown-details.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const oemCss=readFileSync(new URL('../src/oem-breakdown-details.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const jsx=readFileSync(new URL('../src/components/dashboard/dashboard-record-browser.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const css=readFileSync(new URL('../src/styles/dashboard-record-browser.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const oemJsx=readFileSync(new URL('../src/components/dashboard/oem-breakdown-details.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const oemCss=readFileSync(new URL('../src/styles/oem-breakdown-details.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('Search fleet sits beside date filters and Site chips sit beside the Region chips',()=>{
   assert.match(jsx,/style=\{\{ gridTemplateRows: hideHierarchyFilters \? "minmax\(0, 1fr\)" : "auto minmax\(0, 1fr\)" \}\}>\s*\{!hideHierarchyFilters && <details/,'no separate search row above the filters');

@@ -9,17 +9,17 @@ import {formatDisplayDateTime} from '../date-time-format.mjs';
 import {normalizeEquipmentGroup} from '../equipment-group.mjs';
 import * as requestAcceptance from '../request-acceptance.mjs';
 import * as equipment from '../request-equipment.mjs';
-import {defaultDurationSort} from '../src/duration-sort.mjs';
-import {ETC_SOON_MS, etcCountdown, etcDisplayValue, etcRemainingSortValue, etcSortValue, formatEtcDuration} from '../src/etc-countdown.mjs';
-import {requestStatusLabel} from '../src/request-status.mjs';
+import {defaultDurationSort} from '../src/utils/ui/duration-sort.mjs';
+import {ETC_SOON_MS, etcCountdown, etcDisplayValue, etcRemainingSortValue, etcSortValue, formatEtcDuration} from '../src/utils/ui/etc-countdown.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 import {isIdleVehicleRequest} from '../request-idle.mjs';
-import {dateColumnsFirst, requestColumnsInWorkflowOrder} from '../src/table-actions-model.mjs';
-import {dailyUpdatesExportText} from '../src/daily-updates-order.mjs';
+import {dateColumnsFirst, requestColumnsInWorkflowOrder} from '../src/utils/ui/table-actions-model.mjs';
+import {dailyUpdatesExportText} from '../src/utils/ui/daily-updates-order.mjs';
 
 const now = at('2026-09-18 14:00:00');
 const open = {ref: 'REQ-ETC-1', door: 'LDM6 - 1064', site: 'Sasti OB', status: 'Open', start: '2026-09-18 10:00:00', expectedCompletionAt: '2026-09-18 18:00'};
 
-const componentSource = readFileSync(new URL('../src/etc-countdown.jsx', import.meta.url), 'utf8');
+const componentSource = readFileSync(new URL('../src/components/ui/etc-countdown.jsx', import.meta.url), 'utf8');
 const compiledComponent = await transformWithOxc(componentSource.replace(/^import .*;$/gm, '').replace(/export default /g, '').replace(/export /g, ''), 'etc-countdown.jsx', {jsx: {runtime: 'classic'}});
 const {EtcCountdown, subscribeLiveNow, liveNowListenerCount} = new Function('React', 'useState', 'useEffect', 'etcCountdown', `${compiledComponent.code};return {EtcCountdown, subscribeLiveNow, liveNowListenerCount};`)(React, React.useState, React.useEffect, etcCountdown);
 
@@ -127,7 +127,7 @@ test('ETC and its countdown follow Days of breakdown in the maintenance lead lay
   assert.deepEqual(dated.map(column => column.key), ['etc', 'start', 'etcRemaining']);
 });
 
-const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 const tableSource = main.slice(main.indexOf('function MobileWorkflowTable('), main.indexOf('function RequestEditForm('));
 const {code: compiledTable} = await transformWithOxc(tableSource, 'workflow-table.jsx', {jsx: {runtime: 'classic'}, target: 'es2022'});
 const Null = () => null;
@@ -221,5 +221,5 @@ test('the maintenance request and on-road tables opt into the ETC countdown', ()
   assert.doesNotMatch(main, /isMis && tab === "requests"[^\n]*showEtc/);
   assert.match(tableSource, /const startedHeader = \(\) => <>\{workflowHeader\("start", startedLabel\)\}\{workflowHeader\("etc", "ETC"\)\}/);
   assert.match(main, /key === "etc" \? etcSortValue\(row\) : key === "etcRemaining" \? etcRemainingSortValue\(row, now\) : key === "breakdownDays"/);
-  assert.match(main, /import EtcCountdown from "\.\/etc-countdown\.jsx";/);
+  assert.match(main, /import EtcCountdown from "(?:\.\.?\/)+(?:[\w-]+\/)*etc-countdown\.jsx";/);
 });

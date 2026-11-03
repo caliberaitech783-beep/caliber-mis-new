@@ -1,12 +1,12 @@
-import {dashboardMisQueue, misQueueDate} from '../src/dashboard-mis-queue.mjs';
+import {dashboardMisQueue, misQueueDate} from '../src/utils/dashboard/dashboard-mis-queue.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {validateClosingMeterReadings} from '../request-workflow.mjs';
 import {requestsVisibleToMisWorkspace} from '../mis-request-visibility.mjs';
-import {visibleInMisRequests} from '../src/mis-history.mjs';
-import {requestEventDate} from '../src/dashboard-request-data.mjs';
-const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+import {visibleInMisRequests} from '../src/utils/ui/mis-history.mjs';
+import {requestEventDate} from '../src/utils/dashboard/dashboard-request-data.mjs';
+const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 
 test('closing counters cannot decrease or conflict with their named field', () => {
   const before = {meterType:'KMR',openingMeterReadings:{HMR:'14834',KMR:'243679'}};

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import pg from 'pg';
 import {hashPassword} from '../password-auth.mjs';
-import {visibleInMisRequests,visibleInMisHistory} from '../src/mis-history.mjs';
-import {visibleInMaintenanceHistory} from '../src/maintenance-history.mjs';
-import {visibleInProductionHistory} from '../src/production-history.mjs';
+import {visibleInMisRequests,visibleInMisHistory} from '../src/utils/ui/mis-history.mjs';
+import {visibleInMaintenanceHistory} from '../src/utils/requests/maintenance-history.mjs';
+import {visibleInProductionHistory} from '../src/utils/ui/production-history.mjs';
 import {buildDepartmentReports,DEPARTMENT_REPORT_TITLES} from '../department-reports.mjs';
 
 // Opt-in real PostgreSQL + HTTP acceptance test. Never point this at production.

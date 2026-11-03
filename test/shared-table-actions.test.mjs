@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 import React from "react";
-import {tableElements, tableCellText, tableModel, projectTableRow, tableSlots, selectTableRows, dateColumnsFirst, jobReferenceColumnsLast, requestColumnsInWorkflowOrder} from "../src/table-actions-model.mjs";
+import {tableElements, tableCellText, tableModel, projectTableRow, tableSlots, selectTableRows, dateColumnsFirst, jobReferenceColumnsLast, requestColumnsInWorkflowOrder} from "../src/utils/ui/table-actions-model.mjs";
 
 const h = React.createElement;
 const row = (key, ...cells) => h("tr", {key}, cells.map((value, i) => h("td", {key: i}, value)));
@@ -28,9 +28,9 @@ test("job references stay first outside Reports without changing other columns o
   assert.deepEqual(ordered.map(c => c.label), ["Job reference", "Started", "Closed", "Actions", "Site", "Ticket reference"]);
   assert.deepEqual(tableSlots(projectTableRow(row("record", ...labels), ordered.map(c => c.index))).map(s => tableCellText(s.cell)), ordered.map(c => c.label));
   assert.deepEqual(columns.map(c => c.label), labels);
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.doesNotMatch(main, /jobReferenceColumnsLast/);
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   assert.match(shared, /jobReferenceColumnsLast\(dateColumnsFirst\(originalColumns\)\)/);
 });
 
@@ -41,7 +41,7 @@ test("status leads, then non-report dates, while remaining columns retain their 
   assert.deepEqual(ordered.map(c => c.label), ["Status", "Started", "Closed", "MIS verified at", "First trip time", "Actions", "Site", "Closed by", "Turn around time (TAT)"]);
   assert.deepEqual(tableSlots(projectTableRow(row("record", ...labels), ordered.map(c => c.index))).map(s => tableCellText(s.cell)), ordered.map(c => c.label));
   assert.deepEqual(columns.map(c => c.label), labels);
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const report = main.slice(main.indexOf("function ReportTable("), main.indexOf("function ReportTable(") + 12000);
   assert.match(report, /<table className="report-filter-table">/);
   assert.doesNotMatch(report, /dateColumnsFirst/);
@@ -87,13 +87,13 @@ test("grouped headers and empty-state colspan follow the displayed column order"
 });
 
 test("every application table uses shared Actions or the existing Reports Actions", () => {
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const jsx = main.split(/\r?\n/).filter(line => !line.includes("printDocument.write") && !line.includes('<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"')).join("\n");
   assert.equal((jsx.match(/<table(?=[ >])/g) || []).length, 1);
   assert.match(jsx, /<table className="report-filter-table">/);
   assert.ok((jsx.match(/<ActionsTable(?=[ >])/g) || []).length >= 17);
   assert.match(jsx, /resetLabel = "Reset report"/);
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   for (const control of ["onColumns", "onFilter", "onSort", "onClearSort", "onReset"]) assert.ok(shared.includes(control));
   assert.match(shared, /resetLabel="Reset table"/);
   assert.match(shared, /recordDateFilter===false \? null/);
@@ -111,7 +111,7 @@ test("data-sort-value drives sorting so dates and durations order by their raw v
 });
 
 test("plain column headings in shared Actions tables sort on click", () => {
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   assert.match(shared, /const sortableHeaderRow = \(row\) =>/);
   assert.match(shared, /cell\.type !== "th" \|\| !column \|\| span > 1 \|\| cell\.props\.onSort/);
   assert.match(shared, /className=\{`sort-header\$\{active \? " active" : ""\}`\}/);
@@ -120,8 +120,8 @@ test("plain column headings in shared Actions tables sort on click", () => {
 });
 
 test("plain column headings in shared Actions tables open a sort-and-filter popover", () => {
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(main, /<SharedActionsTable \{\.\.\.props\}[^\n]*FilterableHeader=\{FilterableHeader\} \/>/);
   assert.match(shared, /FilterableHeader = null/);
   assert.match(shared, /const \[openFilter, setOpenFilter\] = useState\(null\);/);
@@ -142,7 +142,7 @@ test("date range filters apply to shared Actions tables using the raw sort value
 });
 
 test("date column headings open only From / To date pickers", () => {
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(main, /dateColumn = looksLikeDateColumn\(values\)/);
   assert.match(main, / : dateColumn \? <div className="column-filter-range" role="group"/, "date columns open only the From / To pickers");
   assert.doesNotMatch(main, /rangeOpen|Filter by date range/);
@@ -160,9 +160,9 @@ test("rows without a value sort last in both directions", () => {
 });
 
 test("Total Fleet lists sort Started oldest-to-latest from the heading instead of picking dates", () => {
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const browser = fs.readFileSync(new URL("../src/dashboard-record-browser.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const browser = fs.readFileSync(new URL("../src/components/dashboard/dashboard-record-browser.jsx", import.meta.url), "utf8");
   assert.match(shared, /dateSortOnly=\{cell\.props\["data-filter-mode"\] === "date-sort"\}/);
   assert.match(browser, /<th data-filter-mode=\{requestRecords \? undefined : "date-sort"\}>Started<\/th>/);
   assert.match(main, /dateSortOnly = false,/);
@@ -172,13 +172,13 @@ test("Total Fleet lists sort Started oldest-to-latest from the heading instead o
 });
 
 test("column arrangements are remembered per table and cleared by Reset table", async () => {
-  const shared = fs.readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8");
+  const shared = fs.readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8");
   assert.match(shared, /useColumnPreferences\("shared-table", columns\)/);
   assert.match(shared, /const allColumnKeys = columns\.map\(\(column\) => column\.key\);/);
   assert.match(shared, /ensureJobReferenceVisibleKeys\(storedVisible, columns\)/);
   assert.match(shared, /const next = ensureJobReferenceVisibleKeys\(keys, columns\);/);
   assert.match(shared, /const reset = \(\) => \{[^}]*setVisible\(allColumnKeys\); \};/, "Reset table restores and clears the saved arrangement");
-  const {restoreColumnOrder, storeColumnOrder, ensureJobReferenceVisibleKeys} = await import("../src/table-actions-model.mjs");
+  const {restoreColumnOrder, storeColumnOrder, ensureJobReferenceVisibleKeys} = await import("../src/utils/ui/table-actions-model.mjs");
   const store = new Map();
   globalThis.localStorage = {getItem: (k) => store.has(k) ? store.get(k) : null, setItem: (k, v) => store.set(k, String(v)), removeItem: (k) => store.delete(k)};
   try {
@@ -204,7 +204,7 @@ test("shared Actions tables and column popovers accept several values per column
   const both = "__any__:" + JSON.stringify(["EICHER TIPPERS", "VOLVO TIPPERS"]);
   assert.deepEqual(selectTableRows(rows, columns, {[columns[1].key]: both}, {}).map(r => r.key), ["e", "v"]);
   assert.deepEqual(selectTableRows(rows, columns, {[columns[1].key]: "EXCAVATOR"}, {}).map(r => r.key), ["x"], "single values still work");
-  const main = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const main = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   assert.match(main, /onClick=\{\(\) => onFilterChange\(toggleFilterValue\(filterValue, value \|\| EMPTY_TABLE_FILTER_VALUE\)\)\}/);
   assert.match(main, /return cellMatchesFilterValues\(value, selected\);/);
   assert.match(main, /parseFilterValues\(filters\[column\.key\]\)\.length > 1 && <option value=\{filters\[column\.key\]\}>/);

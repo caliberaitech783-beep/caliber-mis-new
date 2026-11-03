@@ -35,7 +35,7 @@ test('CRM account locking is explicitly paused without changing its saved 72-hou
   assert.equal(policy.ADMIN_LOCK_POLICY_PAUSED,true);
   assert.equal(policy.ADMIN_LOCK_HOURS,72);
   assert.equal(policy.ADMIN_LOCK_TICKET_CUTOFF,'2026-08-28T00:00:00+05:30');
-  assert.match(server,/import\s*\{[^}]*ADMIN_LOCK_POLICY_PAUSED[^}]*\}\s*from\s*['"]\.\/admin-lock-policy\.mjs['"]/);
+  assert.match(server,/import\s*\{[^}]*ADMIN_LOCK_POLICY_PAUSED[^}]*\}\s*from\s*['"](?:\.\.?\/)+(?:[\w-]+\/)*admin-lock-policy\.mjs['"]/);
   assert.match(server,/crmAdminLockPolicyPaused:\s*ADMIN_LOCK_POLICY_PAUSED/);
 });
 

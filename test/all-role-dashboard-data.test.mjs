@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const client = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = fs.readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const requestLoader = fs.readFileSync(new URL("../src/dashboard-request-data.mjs", import.meta.url), "utf8");
+const requestLoader = fs.readFileSync(new URL("../src/utils/dashboard/dashboard-request-data.mjs", import.meta.url), "utf8");
 
 test("only production starts a second site-wide dashboard feed", () => {
   const normal = client.slice(client.indexOf("function Normal("), client.indexOf("function App("));

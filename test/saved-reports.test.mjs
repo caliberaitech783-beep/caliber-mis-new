@@ -10,11 +10,11 @@ import {
   savedReportUserKey,
   savedReportValidationError,
   serializeTableView,
-} from "../src/saved-reports.mjs";
+} from "../src/utils/reports/saved-reports.mjs";
 
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8").replace(/\r\n/g, "\n");
-const main = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
-const shared = readFileSync(new URL("../src/shared-actions-table.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const main = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
+const shared = readFileSync(new URL("../src/components/ui/shared-actions-table.jsx", import.meta.url), "utf8").replace(/\r\n/g, "\n");
 const routeOf = (start) => server.slice(server.indexOf(start), server.indexOf("\napp.", server.indexOf(start) + start.length));
 
 test("report names are trimmed, required and capped; the table key mixes the title and the column set", () => {
@@ -42,7 +42,7 @@ test("a saved view keeps only what the table can restore and drops columns that 
 });
 
 test("the dialogs name the report, warn before replacing, offer printing after saving and list saved views", () => {
-  const source = readFileSync(new URL("../src/saved-reports.jsx", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/pages/reports/saved-reports.jsx", import.meta.url), "utf8");
   assert.match(source, /export function SaveReportDialog\(\{ title = "", defaultName = "", existingNames = \[\], onSave, onClose \}\)/);
   assert.match(source, /A report with this name exists and will be replaced\./);
   assert.match(source, /export function PrintReportPrompt\(\{ name = "", canPrint = true, onPrint, onClose \}\)/);

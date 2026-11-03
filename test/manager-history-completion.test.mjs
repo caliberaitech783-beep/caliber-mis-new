@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {requestMeterReadingLabel} from '../request-equipment.mjs';
 
 test('all manager closed histories enable completion details without changing active queues', () => {
-  const source = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+  const source = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
   assert.match(source, /<BreakdownTable rows=\{visibleDetailRows\}[^>]*showCompletionDetails=\{queueTab==="history"\}/);
   assert.match(source, /showCompletionDetails = false/);
   assert.ok(source.includes('["maintenanceWork", "Work completion action taken"], ["closingHmr", "Closing HMR"], ["closingKmr", "Closing KMR"]'));

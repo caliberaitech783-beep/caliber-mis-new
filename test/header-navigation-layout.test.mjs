@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("desktop navigation uses bounded tracks and collapses before labels can overlap", () => {
-  const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-  const styles = readFileSync(new URL("../src/topbar.css", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+  const styles = readFileSync(new URL("../src/styles/topbar.css", import.meta.url), "utf8");
 
   assert.match(source, /className="nav-label"/);
   assert.match(styles, /grid-template-columns: max-content minmax\(0, 1fr\) clamp\(235px, 18vw, 310px\)/);

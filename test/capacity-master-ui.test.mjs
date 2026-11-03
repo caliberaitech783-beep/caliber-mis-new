@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {capacityRegionLocations} from '../production-report-api.mjs';
 
-const source=readFileSync(new URL('../src/capacity-master.jsx',import.meta.url),'utf8');
+const source=readFileSync(new URL('../src/pages/masters/capacity-master.jsx',import.meta.url),'utf8');
 
 test('capacity master adds Region Master location and job type in the requested positions and history',()=>{
  const location=source.indexOf('<label>Location<select');

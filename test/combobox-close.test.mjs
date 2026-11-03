@@ -1,9 +1,10 @@
+import {frontendSourceUrl} from './helpers/frontend-source.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import {searchSiteDoors,doorLabel} from '../src/door-search.mjs';
+import {searchSiteDoors,doorLabel} from '../src/utils/ui/door-search.mjs';
 import * as equipment from '../request-equipment.mjs';
 
 const find=(node,predicate)=>!React.isValidElement(node)?[]:[...(predicate(node)?[node]:[]),...React.Children.toArray(node.props.children).flatMap(child=>find(child,predicate))];
@@ -15,7 +16,7 @@ for(const [file,name,initialProps,selectionValue] of [
   ['equipment-combobox.jsx','EquipmentCombobox',{records,group:'vehicle'},v=>v.id],
 ]){
   for(const method of ['mouse','Enter'])test(`${name}: ${method} selection closes after focus restoration and allows reopening`,async()=>{
-    const source=fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
+    const source=fs.readFileSync(frontendSourceUrl(file),'utf8').replace(/^import .*;\r?\n/gm,'').replace('export default function','function');
     const {code}=await transformWithOxc(source,file,{jsx:{runtime:'classic'}});
     const state=[],refs=[],frames=[];let cursor=0,refCursor=0,tree,value='';
     const input=()=>find(tree,n=>n.props.role==='combobox')[0];

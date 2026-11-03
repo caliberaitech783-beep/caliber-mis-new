@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const client = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const readability = fs.readFileSync(new URL("../src/dashboard-readability.css", import.meta.url), "utf8");
-const night = fs.readFileSync(new URL("../src/dashboard-night.css", import.meta.url), "utf8");
+const client = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const readability = fs.readFileSync(new URL("../src/styles/dashboard-readability.css", import.meta.url), "utf8");
+const night = fs.readFileSync(new URL("../src/styles/dashboard-night.css", import.meta.url), "utf8");
 
 test("the site-wise BD table ends with a Total row after the site rows", () => {
   const table = client.indexOf('className="mine-breakdown-site-table"');

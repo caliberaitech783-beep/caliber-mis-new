@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {formatTemperature,coordinatesForSite,temperatureUrl,fetchLiveTemperature,locateViewer,resolveTemperatureCoordinates,DEFAULT_COORDINATES,SITE_COORDINATES} from '../src/live-temperature.mjs';
+import {formatTemperature,coordinatesForSite,temperatureUrl,fetchLiveTemperature,locateViewer,resolveTemperatureCoordinates,DEFAULT_COORDINATES,SITE_COORDINATES} from '../src/services/ui/live-temperature.mjs';
 
-const dialog=readFileSync(new URL('../src/help-training.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const styles=readFileSync(new URL('../src/help-training.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const dialog=readFileSync(new URL('../src/pages/help/help-training.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n');
+const styles=readFileSync(new URL('../src/styles/help-training.css',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 
 test('temperature is shown as "(37°C) 98.6°F" and dashes while unknown',()=>{
   assert.equal(formatTemperature(37),'(37°C) 98.6°F');
@@ -42,7 +42,7 @@ test('the reading comes from Open-Meteo and failures throw',async()=>{
 
 test('the dialog shows the live reading before the icon and the icon matches the header badge',()=>{
   assert.match(dialog,/export default function HelpTraining\(\{role = "", roles = \[\], location = ""\}\)/);
-  assert.match(dialog,/import \{useLiveTemperature\} from "\.\/live-temperature-chip\.jsx";/,'shared hook');
+  assert.match(dialog,/import \{useLiveTemperature\} from "(?:\.\.?\/)+(?:[\w-]+\/)*live-temperature-chip\.jsx";/,'shared hook');
   assert.match(dialog,/const temperature = useLiveTemperature\(location, open\);/,'only polls while the dialog is open');
   assert.match(dialog,/<span className="help-training-heading-lead">\s*<span className=\{`help-training-weather[^`]*`\}[^>]*role="status" aria-live="polite"[^>]*>\{formatTemperature\(temperature\.celsius\)\}<\/span>\s*<span className="help-training-heading-icon"><CircleHelp \/><\/span>\s*<\/span>/);
   assert.match(styles,/\.help-training-dialog>header\{grid-template-columns:auto minmax\(0,1fr\) auto 40px\}/);

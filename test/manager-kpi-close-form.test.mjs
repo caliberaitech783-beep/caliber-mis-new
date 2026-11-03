@@ -3,7 +3,7 @@ import fs from "node:fs";
 import test from "node:test";
 
 test("manager KPI and maintenance close form use the requested labels, cards, tooltips, and TAT",()=>{
-  const source=fs.readFileSync(new URL("../src/main.jsx",import.meta.url),"utf8");
+  const source=fs.readFileSync(new URL("../src/app/App.jsx",import.meta.url),"utf8");
   const server=fs.readFileSync(new URL("../server.mjs",import.meta.url),"utf8");
   const manager=source.slice(source.indexOf("function ManagerDashboard"),source.indexOf("function Dashboard"));
   const closeForm=source.slice(source.indexOf("function CloseRequestForm"),source.indexOf("function VerifyRequestForm"));

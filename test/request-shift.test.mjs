@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
-import * as model from '../src/table-actions-model.mjs';
+import * as model from '../src/utils/ui/table-actions-model.mjs';
 import * as shifts from '../request-shift.mjs';
 import {SHIFT_MASTER_DEFAULTS} from '../shift-master.mjs';
 import {withSerialColumn} from '../serial-column.mjs';
@@ -38,7 +38,7 @@ test('Shift stays first in request exports without duplicate serial numbers or c
 });
 
 test('shared request table adds matching shift cells and retains non-request tables',async()=>{
-  const source=readFileSync(new URL('../src/request-shift-context.jsx',import.meta.url),'utf8');
+  const source=readFileSync(new URL('../src/hooks/request-shift-context.jsx',import.meta.url),'utf8');
   const {code}=await transformWithOxc(source.replace(/^import .*;\r?\n/gm,'').replace(/export /g,''),'request-shift.jsx',{jsx:{runtime:'classic'}});
   const dependencies={React,...React,...model,...shifts};
   const exports=new Function(...Object.keys(dependencies),code+';return {withRequestShiftCells};')(...Object.values(dependencies));

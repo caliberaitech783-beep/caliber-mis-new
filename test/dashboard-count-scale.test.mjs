@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { dashboardCountScale } from "../src/dashboard-count-scale.mjs";
+import { dashboardCountScale } from "../src/utils/dashboard/dashboard-count-scale.mjs";
 
 test("fleet and lifecycle counts use readable, equally spaced whole-count intervals", () => {
   assert.deepEqual(dashboardCountScale([48, 142, 49, 208]), { maximum: 250, ticks: [0, 50, 100, 150, 200, 250] });

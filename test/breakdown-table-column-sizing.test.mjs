@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const mainSource = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styleSource = fs.readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+const mainSource = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styleSource = fs.readFileSync(new URL("../src/styles/style.css", import.meta.url), "utf8");
 
 test("breakdown tables size columns from their widest header or cell content", () => {
   assert.match(mainSource, /<ActionsTable\s+className="breakdown-table-auto-fit"/);

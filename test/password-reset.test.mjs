@@ -54,7 +54,7 @@ test("server stores only hashed OTPs and enforces expiry, attempts, rate limits,
 });
 
 test("password reset is exposed only inside the login component", () => {
-  const source = fs.readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+  const source = fs.readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
   const login = source.slice(source.indexOf("function Login"), source.indexOf("function Side"));
   const afterLogin = source.slice(source.indexOf("function Side"));
 

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capturePhotoForInput} from '../src/camera-upload.mjs';
+import {capturePhotoForInput} from '../src/services/ui/camera-upload.mjs';
 test('camera selection populates original required input and invokes the existing upload change flow',()=>{
   const file={name:'camera.jpg',type:'image/jpeg',size:123};
   const events=[];

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {requestStatusLabel} from '../src/request-status.mjs';
-import {visibleInMisRequests, visibleInMisHistory} from '../src/mis-history.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
+import {visibleInMisRequests, visibleInMisHistory} from '../src/utils/ui/mis-history.mjs';
 import {buildDepartmentReports} from '../department-reports.mjs';
 import {buildDirectorReportTables} from '../director-report-bundle.mjs';
 
@@ -41,7 +41,7 @@ test('department and scheduled director reports export Verified for verified req
 });
 
 test('status sort rank follows the request lifecycle rather than the alphabet', async () => {
-  const {requestStatusSortRank} = await import('../src/request-status.mjs');
+  const {requestStatusSortRank} = await import('../src/utils/requests/request-status.mjs');
   const ordered = ['Open', 'Pending', 'Accepted', 'In progress', 'Awaiting parts', 'Idle', 'Closed', 'Verified'];
   const ranks = ordered.map(requestStatusSortRank);
   assert.deepEqual([...ranks].sort((a, b) => a - b), ranks);

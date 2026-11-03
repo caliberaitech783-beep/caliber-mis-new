@@ -6,7 +6,7 @@ import {randomUUID} from 'node:crypto';
 import {savedLogBookFilters} from '../saved-log-book-filters.mjs';
 import {registerLogBooks,LOG_BOOK_SCHEMA} from '../log-book.mjs';
 import {SCAN_SCHEMA} from '../bulk-card-scanning.mjs';
-import {requestedMisPage,misPageUrl} from '../src/mis-navigation.mjs';
+import {requestedMisPage,misPageUrl} from '../src/utils/ui/mis-navigation.mjs';
 import {misPageAllowed} from '../mis-application-access.mjs';
 
 process.env.VLB_TWO_STAGE_BATCHES='0'; // legacy single-step batch expectations

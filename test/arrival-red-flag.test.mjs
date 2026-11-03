@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { buildDepartmentReports } from "../department-reports.mjs";
 
-const client = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const client = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const server = readFileSync(new URL("../server.mjs", import.meta.url), "utf8");
-const styles = readFileSync(new URL("../src/mobile-workflow.css", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/styles/mobile-workflow.css", import.meta.url), "utf8");
 
 test("maintenance can flag overdue or accepted-late active vehicles and retain original evidence", () => {
   assert.match(server, /ADD COLUMN IF NOT EXISTS arrival_flagged_at TIMESTAMPTZ/);

@@ -1,11 +1,11 @@
-import {requestStatusLabel} from '../src/request-status.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import React from "react";
 import { transformWithOxc } from "vite";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const panel = source.slice(source.indexOf("function AiFeederPanel("), source.indexOf("function AiFeeder("));
 const {code} = await transformWithOxc(panel, "info-pulse-panel.jsx", {jsx: {runtime: "classic"}});
 const Null = () => null;

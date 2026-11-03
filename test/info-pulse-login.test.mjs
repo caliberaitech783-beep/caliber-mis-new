@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import React from 'react';
 import {transformWithOxc} from 'vite';
 
-const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
+const main = readFileSync(new URL('../src/app/App.jsx', import.meta.url), 'utf8');
 const source = main.slice(main.indexOf('function AiFeederPanel('), main.indexOf('function NotificationEntryField('));
 const {code} = await transformWithOxc(source, 'InfoPulse.jsx', {jsx: {runtime: 'classic'}});
 function nodes(tree, predicate) {

@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8').replace(/\r\n/g,'\n');
-const chip=read('../src/live-temperature-chip.jsx');
-const styles=read('../src/live-temperature-chip.css');
-const main=read('../src/main.jsx');
+const chip=read('../src/components/ui/live-temperature-chip.jsx');
+const styles=read('../src/styles/live-temperature-chip.css');
+const main=read('../src/app/App.jsx');
 
 test('the admin header (Admin, Super Admin, Manager) shows the live temperature chip next to the theme switch',()=>{
-  assert.match(main,/import LiveTemperatureChip from "\.\/live-temperature-chip\.jsx";/);
+  assert.match(main,/import LiveTemperatureChip from "(?:\.\.?\/)+(?:[\w-]+\/)*live-temperature-chip\.jsx";/);
   assert.match(main,/<HeaderClock \/>\s*<div>\s*<LiveTemperatureChip location=\{profileLocation\} \/>\s*<ThemeToggle theme=\{theme\} onToggle=\{toggleTheme\} \/>/);
   assert.equal((main.match(/<LiveTemperatureChip /g)||[]).length,1);
 });

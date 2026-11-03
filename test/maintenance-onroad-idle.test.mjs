@@ -4,13 +4,13 @@ import {readFileSync} from 'node:fs';
 import {isIdleVehicleRequest} from '../request-idle.mjs';
 import {liveEquipmentRoadStatus,liveEquipmentRoadStatuses} from '../dashboard-equipment-metrics.mjs';
 import {matchesBreakdownMovement} from '../dashboard-breakdown-movement.mjs';
-import {availabilityRequestsForDate} from '../src/dashboard-availability.mjs';
-import {visibleInMaintenanceHistory} from '../src/maintenance-history.mjs';
-import {requestStatusLabel} from '../src/request-status.mjs';
+import {availabilityRequestsForDate} from '../src/utils/dashboard/dashboard-availability.mjs';
+import {visibleInMaintenanceHistory} from '../src/utils/requests/maintenance-history.mjs';
+import {requestStatusLabel} from '../src/utils/requests/request-status.mjs';
 import {requestDeletable} from '../request-deletion.mjs';
 import {dashboardFleetSnapshot} from '../dashboard-fleet-snapshot.mjs';
-import {buildDailyBdBalance} from '../src/daily-bd-balance.mjs';
-import {requestWriteOutcomeConfirmed} from '../src/request-write-recovery.mjs';
+import {buildDailyBdBalance} from '../src/utils/dashboard/daily-bd-balance.mjs';
+import {requestWriteOutcomeConfirmed} from '../src/services/requests/request-write-recovery.mjs';
 
 const idle={ref:'CLOSED-IDLE',status:'Closed',vehicleIdle:true,door:'V1',site:'Sasti OC',start:'2026-09-26 08:00:00',acceptedAt:'2026-09-26 08:10:00',closedAt:'2026-09-27 10:00:00',idealRequestedAt:'2026-09-27 10:01:00',idleReason:'No driver'};
 const asset={door:'V1',site:'Sasti OC',currentLocation:'Sasti OC',category:'Vehicle'};
@@ -58,7 +58,7 @@ test('closure records maintenance time and migration backs up previous fields wi
   assert.match(server,/idle_maintenance_closed_v1_backup/);
   assert.match(server,/closed_at=CASE WHEN ideal_requested_at>=GREATEST\(started_at,accepted_at\)/);
   assert.match(server,/closed_at=CASE WHEN status='Closed' THEN closed_at ELSE COALESCE\(ideal_requested_at,NOW\(\)\) END/);
-  const ui=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
   const form=ui.slice(ui.indexOf('function CloseRequestForm('),ui.indexOf('function VerifyRequestForm('));
   assert.match(form,/if \(!idleDecision.current && status === "Closed"\)/);
   assert.match(form,/setIdlePrompt\(true\)/);

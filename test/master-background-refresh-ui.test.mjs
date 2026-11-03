@@ -5,7 +5,7 @@ import {readFileSync} from "node:fs";
 import React from "react";
 import {transformWithOxc} from "vite";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
 const Null = () => null;
 const MasterLoadError = () => null, MasterLoader = () => null;
 const definitions = [

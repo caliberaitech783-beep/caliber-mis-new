@@ -29,7 +29,7 @@ test('joined serial digits, absent numbers and wrong-site equipment are blocked 
 });
 test('scan review and repeated detail/summary normalization keep TA35 as Tpc 35',async()=>{
  const {normalizeScanEquipmentRows}=await import('../scan-machine-rules.mjs');
- const {scanFieldIssues}=await import('../src/scan-field-review.mjs');
+ const {scanFieldIssues}=await import('../src/utils/scanning/scan-field-review.mjs');
  const input={machineNotationRuleVersion:1,tripBodyRuleVersion:2,location:'Jayant OC',timeMode:'without',trips:[{equipmentName:'TA35',tripCount:2},{equipmentName:'V49',tripCount:1}],scanMachineSummary:[{equipmentName:'T35',tripCount:2},{equipmentName:'U49',tripCount:1}]};
  const before=JSON.stringify(suffixedAssets),scan=normalizeScanEquipmentRows(input,suffixedAssets),first=validateTripEquipment(scan,suffixedAssets),second=validateTripEquipment(first.draft,suffixedAssets);
  assert.deepEqual(first.issues,{});assert.deepEqual(second,first);
@@ -63,7 +63,7 @@ test('UP registrations cannot supply a missing, wrong-site or ambiguous Volvo ma
  assert.match(resolveTripEquipment({equipmentName:'U49'},[...upRegistrationAssets,{id:'duplicate-v49',kind:'equipment',door:'Vpc49 - 99999',site:'Jayant OC'}],'Jayant').error,/Multiple equipment/);
 });
 test('scan normalization and review accept U49 with real-style UP registrations',async()=>{
- const {normalizeScanEquipmentRows}=await import('../scan-machine-rules.mjs');const {scanFieldIssues}=await import('../src/scan-field-review.mjs');
+ const {normalizeScanEquipmentRows}=await import('../scan-machine-rules.mjs');const {scanFieldIssues}=await import('../src/utils/scanning/scan-field-review.mjs');
  const input={machineNotationRuleVersion:1,tripBodyRuleVersion:2,location:'Jayant OC',timeMode:'without',trips:[{equipmentName:'U49',tripCount:2}],scanMachineSummary:[{equipmentName:'U49',tripCount:2}]};
  const scan=normalizeScanEquipmentRows(input,upRegistrationAssets),result=validateTripEquipment(scan,upRegistrationAssets);
  assert.deepEqual(result.issues,{});assert.equal(result.draft.trips[0].equipmentName,'Vpc 49');assert.equal(result.draft.scanMachineSummary[0].equipmentName,'Vpc 49');assert.equal(result.draft.trips[0].originalEquipmentName,'U49');

@@ -1,9 +1,9 @@
 // Local-only fixture: actual production components, in-memory sample API, no database connection.
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import VlbReopenDialog from '../../src/vlb-reopen-dialog.jsx';
-import VlbBatchApprovals from '../../src/vlb-batch-approvals.jsx';
-import '../../src/vlb-create-batch.css';
+import VlbReopenDialog from '../../src/components/logbooks/vlb-reopen-dialog.jsx';
+import VlbBatchApprovals from '../../src/pages/logbooks/vlb-batch-approvals.jsx';
+import '../../src/styles/vlb-create-batch.css';
 const batch={id:'00000000-0000-4000-8000-000000000001',name:'CMLL/SASTI OC/30TH -OCT-26/S1/B01',site:'Sasti OC',report_date:'2026-10-30',shift:'S1',closed_at:'2026-10-30T12:45:00Z',closure_revision:1,canRequestReopen:true,canReopen:false,requests:[]};
 window.fetch=async(url,options={})=>{
  if(!String(url).startsWith('/api/vlb-batches'))throw Error('Fixture API only');

@@ -68,7 +68,7 @@ test('HTTP employee transfer flow enforces site scope, preserves history, sends 
 });
 
 test('transfer UI provides form, inboxes, record details and exportable history via shared ReportSection',()=>{
- const ui=readFileSync(new URL('../src/employee-transfer.jsx',import.meta.url),'utf8');const main=readFileSync(new URL('../src/main.jsx',import.meta.url),'utf8');
+ const ui=readFileSync(new URL('../src/pages/people/employee-transfer.jsx',import.meta.url),'utf8');const main=readFileSync(new URL('../src/app/App.jsx',import.meta.url),'utf8');
  for(const text of ['Employee ID','Where to transfer','Outgoing','Incoming','History','ReportSection','Approval history','effectiveDate','employee-transfer-access'])assert.ok(ui.includes(text),text);
  assert.ok(main.includes('data-workspace="employee-transfer"'));assert.ok(main.includes('renderedActive === "Employee Transfer"'));
  const server=readFileSync(new URL('../server.mjs',import.meta.url),'utf8');assert.ok(server.includes('${EMPLOYEE_TRANSFER_SCHEMA}'));assert.ok(server.includes('registerEmployeeTransfers(app,'));

@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const source = readFileSync(new URL("../src/main.jsx", import.meta.url), "utf8");
-const styles = readFileSync(new URL("../src/master-loader.css", import.meta.url), "utf8");
+const source = readFileSync(new URL("../src/app/App.jsx", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/styles/master-loader.css", import.meta.url), "utf8");
 
 test("Caliber activity mark is centered inside the rotating loader ring", () => {
   assert.match(source, /function CaliberActivityMark/);

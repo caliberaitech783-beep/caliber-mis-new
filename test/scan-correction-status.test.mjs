@@ -4,8 +4,8 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {readFileSync} from 'node:fs';
 import {transformWithOxc} from 'vite';
-import {scanReviewHelp} from '../src/scan-review-layout.mjs';
-const source=readFileSync(new URL('../src/scan-correction-status.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n').replace(/^import .*;\n/gm,'').replace('export default function','function');
+import {scanReviewHelp} from '../src/utils/scanning/scan-review-layout.mjs';
+const source=readFileSync(new URL('../src/components/scanning/scan-correction-status.jsx',import.meta.url),'utf8').replace(/\r\n/g,'\n').replace(/^import .*;\n/gm,'').replace('export default function','function');
 const {code}=await transformWithOxc(source,'scan-correction-status.jsx',{jsx:{runtime:'classic'}});
 const Status=new Function('React','scanReviewHelp',code+';return ScanCorrectionStatus;')(React,scanReviewHelp);
 test('saved corrections and remaining checks produce one truthful combined status',()=>{
